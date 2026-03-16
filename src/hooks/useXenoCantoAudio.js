@@ -6,7 +6,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 const XC_API   = 'https://xeno-canto.org/api/2/recordings'
-const LS_PREFIX = 'bhn_xc_v1_'
+const LS_PREFIX = 'bhn_xc_v2_'  // bumped to evict any stale empty-result caches
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000   // 7 days
 
 // ── localStorage helpers ──────────────────────────────────────────────────────
