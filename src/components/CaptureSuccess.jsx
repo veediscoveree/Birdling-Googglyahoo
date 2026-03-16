@@ -9,7 +9,7 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAvia
   const [showContent, setShowContent] = useState(false)
   const [stars, setStars]             = useState([])
   const [songPlaying, setSongPlaying] = useState(false)
-  const loopAudioRef = useRef(null)
+  const audioRef = useRef(null)   // rendered <audio> element ref
 
   // Fetch recordings (uses localStorage cache — fast on repeat visits)
   const speciesName = bird.xenoCantoSpecies || bird.scientificName
@@ -17,32 +17,36 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAvia
 
   // ── Auto-play best song on loop once recordings are ready ────────────────
   useEffect(() => {
-    if (audioLoading || !songs.length) return
+    const audio = audioRef.current
+    if (audioLoading || !songs.length || !audio) return
     const best = pickBestSong(songs, 10)
     if (!best?.url) return
 
-    const audio = new Audio(best.url)
-    audio.loop  = true
-    loopAudioRef.current = audio
+    audio.src  = best.url
+    audio.loop = true
+    audio.load()
     audio.play()
       .then(() => setSongPlaying(true))
-      .catch(() => {/* autoplay blocked — user can tap to play manually */})
+      .catch(() => {/* autoplay blocked — user can tap ♪ pill to start */})
 
     return () => { audio.pause(); audio.src = '' }
   }, [audioLoading, songs])
 
   // ── Stop song when user navigates away ──────────────────────────────────
   const handleNav = (fn) => () => {
-    if (loopAudioRef.current) { loopAudioRef.current.pause(); loopAudioRef.current = null }
+    const audio = audioRef.current
+    if (audio) { audio.pause(); audio.src = '' }
     fn()
   }
 
   // ── Tap-to-play if autoplay was blocked ─────────────────────────────────
   const handleTapPlay = () => {
-    if (loopAudioRef.current && !songPlaying) {
-      loopAudioRef.current.play().then(() => setSongPlaying(true)).catch(() => {})
-    } else if (loopAudioRef.current && songPlaying) {
-      loopAudioRef.current.pause()
+    const audio = audioRef.current
+    if (!audio) return
+    if (!songPlaying) {
+      audio.play().then(() => setSongPlaying(true)).catch(() => {})
+    } else {
+      audio.pause()
       setSongPlaying(false)
     }
   }
@@ -74,6 +78,10 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAvia
       padding: '24px 24px 36px',
       overflow: 'hidden',
     }}>
+
+      {/* Rendered <audio> element — required for reliable iOS playback */}
+      <audio ref={audioRef} preload="none" style={{ display: 'none' }}
+        onEnded={() => setSongPlaying(false)} onError={() => setSongPlaying(false)} />
 
       {/* ── Star burst particles ───────────────────────────────────────── */}
       {isNew && stars.map(s => (
