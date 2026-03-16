@@ -5,7 +5,8 @@ import { useState } from 'react'
 import { useWikimediaPhotos } from '../hooks/useWikimediaPhotos'
 
 export default function BirdPhotos({ bird }) {
-  const { photos, loading, error } = useWikimediaPhotos(bird.wikimediaSearchTerms)
+  const searchTerms = bird.wikimediaSearchTerms || [bird.scientificName, `${bird.commonName} bird`]
+  const { photos, loading, error } = useWikimediaPhotos(searchTerms)
   const [selected, setSelected] = useState(0)
   const [lightbox, setLightbox] = useState(false)
 

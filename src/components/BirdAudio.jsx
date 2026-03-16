@@ -66,7 +66,8 @@ function RecordingRow({ rec, isPlaying, onPlay }) {
 }
 
 export default function BirdAudio({ bird }) {
-  const { songs, calls, loading, playing, play } = useXenoCantoAudio(bird.xenoCantoSpecies)
+  const speciesName = bird.xenoCantoSpecies || bird.scientificName
+  const { songs, calls, loading, playing, play } = useXenoCantoAudio(speciesName)
 
   if (loading) return (
     <div style={{ padding: '32px 0', textAlign: 'center', color: 'var(--text-dim)' }}>
@@ -83,7 +84,7 @@ export default function BirdAudio({ bird }) {
       borderRadius: 12, textAlign: 'center', color: 'var(--text-dim)', fontSize: 13,
     }}>
       Audio unavailable offline.<br/>
-      <a href={`https://xeno-canto.org/explore?query=${encodeURIComponent(bird.xenoCantoSpecies)}`}
+      <a href={`https://xeno-canto.org/explore?query=${encodeURIComponent(speciesName)}`}
         target="_blank" rel="noopener noreferrer"
         style={{ color: 'var(--accent-green)', marginTop: 6, display: 'inline-block' }}>
         Find recordings on xeno-canto ↗

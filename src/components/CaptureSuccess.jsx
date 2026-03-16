@@ -12,7 +12,8 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAvia
   const loopAudioRef = useRef(null)
 
   // Fetch recordings (uses localStorage cache — fast on repeat visits)
-  const { songs, loading: audioLoading } = useXenoCantoAudio(bird.xenoCantoSpecies)
+  const speciesName = bird.xenoCantoSpecies || bird.scientificName
+  const { songs, loading: audioLoading } = useXenoCantoAudio(speciesName)
 
   // ── Auto-play best song on loop once recordings are ready ────────────────
   useEffect(() => {
