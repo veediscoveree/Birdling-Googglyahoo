@@ -85,15 +85,27 @@ export default function App() {
     setIsNewCapture(isNew)
     if (isNew) {
       setCapturedBirds(prev => [...prev, currentBird.id])
+      // Introduced birds subtract points; native birds add them
       setScore(prev => prev + currentBird.points)
     } else {
-      setScore(prev => prev + Math.floor(currentBird.points * 0.1))
-      // Rotate fun fact on resighting
+      // Resighting: introduced birds give 0 extra, native give 10%
+      if (!currentBird.introduced) {
+        setScore(prev => prev + Math.floor(currentBird.points * 0.1))
+      }
       const facts = currentBird.funFacts || [currentBird.funFact]
       setFunFactIndex(prev => (prev + 1) % facts.length)
     }
     setScreen(SCREEN.SUCCESS)
   }, [currentBird, capturedBirds])
+
+  // Release an introduced bird: undo the capture and restore points
+  const handleRelease = useCallback(() => {
+    if (!currentBird) return
+    setCapturedBirds(prev => prev.filter(id => id !== currentBird.id))
+    // Restore the penalty (points is negative for introduced birds)
+    setScore(prev => prev - currentBird.points)
+    setScreen(SCREEN.RADAR)
+  }, [currentBird])
 
   const handleMissed       = useCallback(() => setScreen(SCREEN.RADAR), [])
   const handleViewAviary   = useCallback(() => setScreen(SCREEN.AVIARY), [])
@@ -124,12 +136,14 @@ export default function App() {
       )}
       {screen === SCREEN.BINOCULARS && currentBird && (
         <BinocularsCapture bird={currentBird}
+          encounterDistance={encounterInfo?.distance}
           onSuccess={handleCaptureSuccess} onMiss={handleMissed}/>
       )}
       {screen === SCREEN.SUCCESS && currentBird && (
         <CaptureSuccess bird={currentBird} isNew={isNewCapture} score={score}
           funFact={getCurrentFunFact(currentBird)}
-          onViewAviary={handleViewAviary} onContinue={goToRadar}/>
+          onViewAviary={handleViewAviary} onContinue={goToRadar}
+          onRelease={handleRelease}/>
       )}
       {screen === SCREEN.AVIARY && (
         <Aviary capturedBirds={capturedBirds} score={score}

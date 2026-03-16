@@ -5,7 +5,7 @@ import { BirdAvatar } from './BirdAvatars'
 import { getRarityLabel } from '../data/birds'
 import { useXenoCantoAudio, pickBestSong } from '../hooks/useXenoCantoAudio'
 
-export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAviary, onContinue }) {
+export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAviary, onContinue, onRelease }) {
   const [showContent, setShowContent] = useState(false)
   const [stars, setStars]             = useState([])
   const [songPlaying, setSongPlaying] = useState(false)
@@ -99,16 +99,32 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAvia
 
       {/* ── Header ────────────────────────────────────────────────────── */}
       <div style={{ textAlign: 'center', zIndex: 1, animation: 'slideDown 0.4s ease' }}>
-        <div style={{
-          fontSize: 13, letterSpacing: 2, fontWeight: 700,
-          color: isNew ? 'var(--accent-green)' : 'var(--accent-amber)',
-          textTransform: 'uppercase', marginBottom: 4,
-        }}>
-          {isNew ? '★ New Species!' : 'Resighting'}
-        </div>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700, color: 'var(--text-primary)' }}>
-          {isNew ? 'Captured!' : 'Seen Again'}
-        </div>
+        {bird.introduced ? (
+          <>
+            <div style={{
+              fontSize: 13, letterSpacing: 2, fontWeight: 700,
+              color: '#ff7043', textTransform: 'uppercase', marginBottom: 4,
+            }}>
+              ⚠ Introduced Species
+            </div>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700, color: 'var(--text-primary)' }}>
+              Photographed
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{
+              fontSize: 13, letterSpacing: 2, fontWeight: 700,
+              color: isNew ? 'var(--accent-green)' : 'var(--accent-amber)',
+              textTransform: 'uppercase', marginBottom: 4,
+            }}>
+              {isNew ? '★ New Species!' : 'Resighting'}
+            </div>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700, color: 'var(--text-primary)' }}>
+              {isNew ? 'Captured!' : 'Seen Again'}
+            </div>
+          </>
+        )}
       </div>
 
       {/* ── Bird display ──────────────────────────────────────────────── */}
@@ -141,9 +157,18 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAvia
               <span className={`rarity-badge rarity-${bird.rarity}`}>
                 {getRarityLabel(bird.rarity)}
               </span>
-              <span className="points-badge">
-                +{isNew ? bird.points : Math.floor(bird.points * 0.1)} pts
-              </span>
+              {bird.introduced ? (
+                <span style={{
+                  background: 'rgba(255,112,67,0.15)', border: '1px solid rgba(255,112,67,0.4)',
+                  borderRadius: 99, padding: '3px 10px', fontSize: 12, fontWeight: 700, color: '#ff7043',
+                }}>
+                  {bird.points} pts
+                </span>
+              ) : (
+                <span className="points-badge">
+                  +{isNew ? bird.points : Math.floor(bird.points * 0.1)} pts
+                </span>
+              )}
               {/* Song indicator — tap to toggle */}
               {bestSong && (
                 <button
@@ -171,27 +196,64 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAvia
       {/* ── Teaser description ────────────────────────────────────────── */}
       {showContent && (
         <div className="animate-slideUp" style={{
-          background: 'var(--bg-card)', borderRadius: 16, padding: '14px 16px',
-          width: '100%', border: '1px solid rgba(255,255,255,0.07)', zIndex: 1,
+          background: bird.introduced ? 'rgba(255,112,67,0.07)' : 'var(--bg-card)',
+          borderRadius: 16, padding: '14px 16px', width: '100%', zIndex: 1,
+          border: bird.introduced ? '1px solid rgba(255,112,67,0.25)' : '1px solid rgba(255,255,255,0.07)',
         }}>
-          <div style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: 1, marginBottom: 6 }}>
-            FIELD GUIDE — UNLOCKED
-          </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-            {funFact || bird.funFact}
-          </div>
+          {bird.introduced ? (
+            <>
+              <div style={{ fontSize: 10, color: '#ff7043', letterSpacing: 1, marginBottom: 6, fontWeight: 700 }}>
+                WHY THIS MATTERS
+              </div>
+              <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                {bird.invasiveNote}
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: 1, marginBottom: 6 }}>
+                FIELD GUIDE — UNLOCKED
+              </div>
+              <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                {funFact || bird.funFact}
+              </div>
+            </>
+          )}
         </div>
       )}
 
       {/* ── Action buttons ─────────────────────────────────────────────── */}
       {showContent && (
         <div className="animate-slideUp" style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', zIndex: 1 }}>
-          <button className="btn btn-primary btn-lg" onClick={handleNav(onViewAviary)}>
-            🪶 View in Aviary
-          </button>
-          <button className="btn btn-outline" onClick={handleNav(onContinue)}>
-            Keep Exploring
-          </button>
+          {bird.introduced ? (
+            <>
+              <button
+                className="btn btn-lg"
+                onClick={handleNav(onRelease || onContinue)}
+                style={{
+                  background: 'rgba(61,220,127,0.12)', border: '1px solid rgba(61,220,127,0.4)',
+                  color: 'var(--accent-green)', fontWeight: 700,
+                }}
+              >
+                🕊 Release — Keep Your Points
+              </button>
+              <button className="btn btn-primary btn-lg" onClick={handleNav(onViewAviary)}>
+                Add to Aviary ({bird.points} pts)
+              </button>
+              <button className="btn btn-outline" onClick={handleNav(onContinue)}>
+                Keep Exploring
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn btn-primary btn-lg" onClick={handleNav(onViewAviary)}>
+                🪶 View in Aviary
+              </button>
+              <button className="btn btn-outline" onClick={handleNav(onContinue)}>
+                Keep Exploring
+              </button>
+            </>
+          )}
         </div>
       )}
     </div>
