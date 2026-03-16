@@ -73,8 +73,11 @@ async function fetchRecordings(speciesName, type) {
       sonogramUrl: r.sono?.small,
       xcUrl:       `https://xeno-canto.org/${r.id}`,
     }))
-    memCache[cacheKey] = recs
-    lsSet(cacheKey, recs)
+    // Only cache non-empty results so transient failures are retried next load
+    if (recs.length > 0) {
+      memCache[cacheKey] = recs
+      lsSet(cacheKey, recs)
+    }
     return recs
   } catch {
     return []
@@ -97,7 +100,12 @@ export function useXenoCantoAudio(xenoCantoSpecies) {
     Promise.all([
       fetchRecordings(xenoCantoSpecies, 'song'),
       fetchRecordings(xenoCantoSpecies, 'call'),
-    ]).then(([songRecs, callRecs]) => {
+    ]).then(async ([songRecs, callRecs]) => {
+      // Fall back to untyped query if both typed queries returned nothing
+      if (songRecs.length === 0 && callRecs.length === 0) {
+        const all = await fetchRecordings(xenoCantoSpecies, '')
+        songRecs = all.slice(0, 8)
+      }
       if (!cancelled) {
         setSongs(songRecs)
         setCalls(callRecs)
