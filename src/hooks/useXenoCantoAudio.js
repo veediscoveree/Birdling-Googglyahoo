@@ -46,7 +46,8 @@ export function pickBestSong(songs, minSec = 10) {
 
 // ── Fetcher ───────────────────────────────────────────────────────────────────
 async function fetchRecordings(speciesName, type) {
-  const query    = `"${speciesName}" cnt:"United States" q:A${type ? ` type:${type}` : ''}`
+  // Broad query — quality sorted client-side so we get results even without A-grade US recordings
+  const query    = `"${speciesName}"${type ? ` type:${type}` : ''}`
   const cacheKey = query
 
   if (memCache[cacheKey]) return memCache[cacheKey]
@@ -57,9 +58,10 @@ async function fetchRecordings(speciesName, type) {
   try {
     const res  = await fetch(`${XC_API}?${params}`)
     const data = await res.json()
-    const recs = (data.recordings || []).slice(0, 8).map(r => ({
+    const recs = (data.recordings || []).slice(0, 12).map(r => ({
       id:          r.id,
-      url:         r.file,
+      // Normalise protocol-relative URLs ("//xeno-canto.org/...") to https
+      url:         r.file ? (r.file.startsWith('//') ? `https:${r.file}` : r.file) : null,
       type:        r.type,
       length:      r.length,
       quality:     r.q,

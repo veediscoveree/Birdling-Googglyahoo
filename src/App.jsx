@@ -18,15 +18,27 @@ const ENCOUNTER_DELAY_MS = 6000
 export default function App() {
   const [screen, setScreen]               = useState(SCREEN.RADAR)
   const [currentBird, setCurrentBird]     = useState(null)
-  const [capturedBirds, setCapturedBirds] = useState([])
+  const [capturedBirds, setCapturedBirds] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('bhn_captured') || '[]') } catch { return [] }
+  })
   const [selectedBird, setSelectedBird]   = useState(null)
   const [encounterInfo, setEncounterInfo] = useState(null)
   const [isNewCapture, setIsNewCapture]   = useState(false)
-  const [score, setScore]                 = useState(0)
+  const [score, setScore]                 = useState(() => {
+    try { return parseInt(localStorage.getItem('bhn_score') || '0', 10) } catch { return 0 }
+  })
   const [userLocation, setUserLocation]   = useState({ lat: 40.7614, lng: -73.9776 })
   const [funFactIndex, setFunFactIndex]   = useState(0)
 
   const { nearbyBirds, eBirdActive } = useEBirdLocation(userLocation)
+
+  // Persist aviary across reloads
+  useEffect(() => {
+    try { localStorage.setItem('bhn_captured', JSON.stringify(capturedBirds)) } catch {}
+  }, [capturedBirds])
+  useEffect(() => {
+    try { localStorage.setItem('bhn_score', String(score)) } catch {}
+  }, [score])
 
   // Geolocation
   useEffect(() => {
