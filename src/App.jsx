@@ -6,63 +6,67 @@ import CaptureSuccess from './components/CaptureSuccess'
 import Aviary from './components/Aviary'
 import BirdDetail from './components/BirdDetail'
 import { BIRDS, getRandomBird } from './data/birds'
+import { useEBirdLocation } from './hooks/useEBirdLocation'
 
 const SCREEN = {
-  RADAR:       'radar',
-  ENCOUNTER:   'encounter',
-  BINOCULARS:  'binoculars',
-  SUCCESS:     'success',
-  AVIARY:      'aviary',
-  BIRD_DETAIL: 'birdDetail',
+  RADAR: 'radar', ENCOUNTER: 'encounter', BINOCULARS: 'binoculars',
+  SUCCESS: 'success', AVIARY: 'aviary', BIRD_DETAIL: 'birdDetail',
 }
 
-const ENCOUNTER_DELAY_MS = 6000  // show first bird encounter after 6s
+const ENCOUNTER_DELAY_MS = 6000
 
 export default function App() {
-  const [screen, setScreen]             = useState(SCREEN.RADAR)
-  const [currentBird, setCurrentBird]   = useState(null)
-  const [capturedBirds, setCapturedBirds] = useState([]) // array of bird ids
-  const [selectedBird, setSelectedBird] = useState(null)
+  const [screen, setScreen]               = useState(SCREEN.RADAR)
+  const [currentBird, setCurrentBird]     = useState(null)
+  const [capturedBirds, setCapturedBirds] = useState([])
+  const [selectedBird, setSelectedBird]   = useState(null)
   const [encounterInfo, setEncounterInfo] = useState(null)
-  const [isNewCapture, setIsNewCapture] = useState(false)
-  const [score, setScore]               = useState(0)
-  const [userLocation, setUserLocation] = useState({ lat: 40.7614, lng: -73.9776 })
+  const [isNewCapture, setIsNewCapture]   = useState(false)
+  const [score, setScore]                 = useState(0)
+  const [userLocation, setUserLocation]   = useState({ lat: 40.7614, lng: -73.9776 })
+  const [funFactIndex, setFunFactIndex]   = useState(0)
 
-  // Try to get real location
+  const { nearbyBirds, eBirdActive } = useEBirdLocation(userLocation)
+
+  // Geolocation
   useEffect(() => {
     navigator.geolocation?.getCurrentPosition(
       pos => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => {} // silently fall back to NYC
+      () => {}
     )
   }, [])
 
-  // ── Encounter trigger ──────────────────────────────────────────────────────
-  // On the radar screen, trigger an encounter after a delay.
-  // In production this would fire from eBird/geofence proximity detection.
+  // Encounter trigger — picks from nearby birds (location-aware)
   useEffect(() => {
     if (screen !== SCREEN.RADAR) return
-    const directions = ['to the north', 'nearby', 'to the east', 'in the park', '50m away', 'just ahead']
-    const habitats   = ['the hedgerow', 'a nearby oak', 'the water\'s edge', 'the lawn', 'an open field', 'the treetops']
+    const pool = nearbyBirds.length > 0 ? nearbyBirds : BIRDS
+    const DIRECTIONS = ['to the north','nearby','to the east','in the park','50m away','just ahead']
+    const HABITATS   = ['the hedgerow','a nearby oak','the water\'s edge','the lawn','open field','the treetops']
+
     const timer = setTimeout(() => {
-      const bird = getRandomBird()
+      // Weight toward common species 70% of the time
+      const common = pool.filter(b => b.rarity === 'common')
+      const bird = (common.length > 0 && Math.random() < 0.7)
+        ? common[Math.floor(Math.random() * common.length)]
+        : pool[Math.floor(Math.random() * pool.length)]
+
       setCurrentBird(bird)
+      setFunFactIndex(0)  // reset for new bird
       setEncounterInfo({
         distance: Math.floor(Math.random() * 180) + 20,
-        direction: directions[Math.floor(Math.random() * directions.length)],
-        habitat: habitats[Math.floor(Math.random() * habitats.length)],
-        isEBirdVerified: Math.random() > 0.5,
+        direction: DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)],
+        habitat: HABITATS[Math.floor(Math.random() * HABITATS.length)],
+        isEBirdVerified: eBirdActive && Math.random() > 0.4,
       })
       setScreen(SCREEN.ENCOUNTER)
     }, ENCOUNTER_DELAY_MS)
+
     return () => clearTimeout(timer)
-  }, [screen])
+  }, [screen, nearbyBirds, eBirdActive])
 
-  // ── Screen handlers ────────────────────────────────────────────────────────
-  const goToRadar = useCallback(() => setScreen(SCREEN.RADAR), [])
-
+  const goToRadar       = useCallback(() => setScreen(SCREEN.RADAR), [])
   const handleStartCapture = useCallback(() => setScreen(SCREEN.BINOCULARS), [])
-
-  const handleDismissEncounter = useCallback(() => setScreen(SCREEN.RADAR), [])
+  const handleDismiss   = useCallback(() => setScreen(SCREEN.RADAR), [])
 
   const handleCaptureSuccess = useCallback(() => {
     const isNew = !capturedBirds.includes(currentBird.id)
@@ -72,75 +76,56 @@ export default function App() {
       setScore(prev => prev + currentBird.points)
     } else {
       setScore(prev => prev + Math.floor(currentBird.points * 0.1))
+      // Rotate fun fact on resighting
+      const facts = currentBird.funFacts || [currentBird.funFact]
+      setFunFactIndex(prev => (prev + 1) % facts.length)
     }
     setScreen(SCREEN.SUCCESS)
   }, [currentBird, capturedBirds])
 
-  const handleMissed = useCallback(() => setScreen(SCREEN.RADAR), [])
-
-  const handleViewAviary = useCallback(() => setScreen(SCREEN.AVIARY), [])
+  const handleMissed       = useCallback(() => setScreen(SCREEN.RADAR), [])
+  const handleViewAviary   = useCallback(() => setScreen(SCREEN.AVIARY), [])
+  const handleBackToAviary = useCallback(() => setScreen(SCREEN.AVIARY), [])
 
   const handleSelectBird = useCallback((birdId) => {
     setSelectedBird(BIRDS.find(b => b.id === birdId))
     setScreen(SCREEN.BIRD_DETAIL)
   }, [])
 
-  const handleBackToAviary = useCallback(() => setScreen(SCREEN.AVIARY), [])
+  // Get the current fun fact for the active bird (rotates on resighting)
+  const getCurrentFunFact = (bird) => {
+    if (!bird) return ''
+    const facts = bird.funFacts || [bird.funFact]
+    return facts[funFactIndex % facts.length]
+  }
 
-  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="app">
       {screen === SCREEN.RADAR && (
-        <RadarScreen
-          capturedBirds={capturedBirds}
-          score={score}
-          userLocation={userLocation}
-          onViewAviary={handleViewAviary}
-        />
+        <RadarScreen capturedBirds={capturedBirds} score={score}
+          userLocation={userLocation} eBirdActive={eBirdActive}
+          nearbyBirds={nearbyBirds} onViewAviary={handleViewAviary}/>
       )}
-
       {screen === SCREEN.ENCOUNTER && currentBird && (
-        <BirdEncounter
-          bird={currentBird}
-          info={encounterInfo}
-          onStartCapture={handleStartCapture}
-          onDismiss={handleDismissEncounter}
-        />
+        <BirdEncounter bird={currentBird} info={encounterInfo}
+          onStartCapture={handleStartCapture} onDismiss={handleDismiss}/>
       )}
-
       {screen === SCREEN.BINOCULARS && currentBird && (
-        <BinocularsCapture
-          bird={currentBird}
-          onSuccess={handleCaptureSuccess}
-          onMiss={handleMissed}
-        />
+        <BinocularsCapture bird={currentBird}
+          onSuccess={handleCaptureSuccess} onMiss={handleMissed}/>
       )}
-
       {screen === SCREEN.SUCCESS && currentBird && (
-        <CaptureSuccess
-          bird={currentBird}
-          isNew={isNewCapture}
-          score={score}
-          onViewAviary={handleViewAviary}
-          onContinue={goToRadar}
-        />
+        <CaptureSuccess bird={currentBird} isNew={isNewCapture} score={score}
+          funFact={getCurrentFunFact(currentBird)}
+          onViewAviary={handleViewAviary} onContinue={goToRadar}/>
       )}
-
       {screen === SCREEN.AVIARY && (
-        <Aviary
-          capturedBirds={capturedBirds}
-          score={score}
-          onSelectBird={handleSelectBird}
-          onBack={goToRadar}
-        />
+        <Aviary capturedBirds={capturedBirds} score={score}
+          allBirds={BIRDS} onSelectBird={handleSelectBird} onBack={goToRadar}/>
       )}
-
       {screen === SCREEN.BIRD_DETAIL && selectedBird && (
-        <BirdDetail
-          bird={selectedBird}
-          captured={capturedBirds.includes(selectedBird.id)}
-          onBack={handleBackToAviary}
-        />
+        <BirdDetail bird={selectedBird} captured={capturedBirds.includes(selectedBird.id)}
+          onBack={handleBackToAviary}/>
       )}
     </div>
   )

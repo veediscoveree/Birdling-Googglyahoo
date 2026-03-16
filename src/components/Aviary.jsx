@@ -21,8 +21,9 @@ function getProgressLabel(pct) {
   return PROGRESS_LABELS[0]
 }
 
-export default function Aviary({ capturedBirds, score, onSelectBird, onBack }) {
-  const pct = Math.round((capturedBirds.length / BIRDS.length) * 100)
+export default function Aviary({ capturedBirds, score, allBirds, onSelectBird, onBack }) {
+  const birds = allBirds || BIRDS
+  const pct = Math.round((capturedBirds.length / birds.length) * 100)
   const [label, labelColor] = getProgressLabel(pct)
 
   return (
@@ -48,7 +49,7 @@ export default function Aviary({ capturedBirds, score, onSelectBird, onBack }) {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
           <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600 }}>
-            {capturedBirds.length} / {BIRDS.length} species
+            {capturedBirds.length} / {birds.length} species
           </span>
           <span style={{
             fontSize: 12, fontWeight: 700, color: labelColor, padding: '2px 10px',
@@ -79,7 +80,7 @@ export default function Aviary({ capturedBirds, score, onSelectBird, onBack }) {
               CAPTURED ({capturedBirds.length})
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 24 }}>
-              {BIRDS.filter(b => capturedBirds.includes(b.id)).map(bird => (
+              {birds.filter(b => capturedBirds.includes(b.id)).map(bird => (
                 <button
                   key={bird.id}
                   onClick={() => onSelectBird(bird.id)}
@@ -123,13 +124,13 @@ export default function Aviary({ capturedBirds, score, onSelectBird, onBack }) {
         )}
 
         {/* Undiscovered section */}
-        {BIRDS.filter(b => !capturedBirds.includes(b.id)).length > 0 && (
+        {birds.filter(b => !capturedBirds.includes(b.id)).length > 0 && (
           <>
             <div style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: 1, marginBottom: 10 }}>
               NOT YET FOUND ({BIRDS.length - capturedBirds.length})
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-              {BIRDS.filter(b => !capturedBirds.includes(b.id)).map(bird => (
+              {birds.filter(b => !capturedBirds.includes(b.id)).map(bird => (
                 <div key={bird.id} style={{
                   background: 'var(--bg-card)',
                   border: '1px solid rgba(255,255,255,0.04)',

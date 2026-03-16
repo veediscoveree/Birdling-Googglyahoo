@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { BirdAvatar } from './BirdAvatars'
 import { getRarityLabel } from '../data/birds'
 
-export default function CaptureSuccess({ bird, isNew, score, onViewAviary, onContinue }) {
+export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAviary, onContinue }) {
   const [showContent, setShowContent] = useState(false)
   const [stars, setStars]             = useState([])
 
@@ -142,7 +142,7 @@ export default function CaptureSuccess({ bird, isNew, score, onViewAviary, onCon
             FIELD GUIDE — UNLOCKED
           </div>
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-            {bird.funFact}
+            {funFact || bird.funFact}
           </div>
         </div>
       )}
