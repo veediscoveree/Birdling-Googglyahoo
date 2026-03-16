@@ -1,33 +1,48 @@
 // Fetches CC-licensed bird photos from Wikimedia Commons.
 // Uses the MediaWiki API with CORS support — no key required.
+// Results are persisted in localStorage (7-day TTL) for instant repeat loads.
 
 import { useState, useEffect } from 'react'
 
-const WIKI_API = 'https://commons.wikimedia.org/w/api.php'
+const WIKI_API  = 'https://commons.wikimedia.org/w/api.php'
 const THUMB_WIDTH = 640
+const LS_PREFIX  = 'bhn_wiki_v1_'
+const CACHE_TTL  = 7 * 24 * 60 * 60 * 1000   // 7 days
 
-// Cache across renders
-const cache = {}
+// ── localStorage helpers ──────────────────────────────────────────────────────
+function lsGet(key) {
+  try {
+    const raw = localStorage.getItem(LS_PREFIX + key)
+    if (!raw) return null
+    const { data, ts } = JSON.parse(raw)
+    if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem(LS_PREFIX + key); return null }
+    return data
+  } catch { return null }
+}
+function lsSet(key, data) {
+  try { localStorage.setItem(LS_PREFIX + key, JSON.stringify({ data, ts: Date.now() })) } catch {}
+}
+
+// ── In-memory cache ───────────────────────────────────────────────────────────
+const memCache = {}
 
 async function searchWikimediaImages(searchTerms, limit = 8) {
   const cacheKey = searchTerms.join('|')
-  if (cache[cacheKey]) return cache[cacheKey]
 
-  // Search Commons for each term, collect file titles
+  if (memCache[cacheKey]) return memCache[cacheKey]
+  const persisted = lsGet(cacheKey)
+  if (persisted) { memCache[cacheKey] = persisted; return persisted }
+
   const fileTitles = new Set()
 
   for (const term of searchTerms.slice(0, 3)) {
     const params = new URLSearchParams({
-      action: 'query',
-      list: 'search',
-      srsearch: term,
-      srnamespace: 6,      // File namespace
-      srlimit: 6,
-      format: 'json',
-      origin: '*',
+      action: 'query', list: 'search',
+      srsearch: term, srnamespace: 6, srlimit: 6,
+      format: 'json', origin: '*',
     })
     try {
-      const res = await fetch(`${WIKI_API}?${params}`)
+      const res  = await fetch(`${WIKI_API}?${params}`)
       const data = await res.json()
       data.query?.search?.forEach(r => fileTitles.add(r.title))
     } catch { /* skip on network error */ }
@@ -36,7 +51,6 @@ async function searchWikimediaImages(searchTerms, limit = 8) {
 
   if (fileTitles.size === 0) return []
 
-  // Batch fetch image URLs for all found titles
   const params = new URLSearchParams({
     action: 'query',
     titles: [...fileTitles].slice(0, limit).join('|'),
@@ -48,8 +62,8 @@ async function searchWikimediaImages(searchTerms, limit = 8) {
   })
 
   try {
-    const res = await fetch(`${WIKI_API}?${params}`)
-    const data = await res.json()
+    const res   = await fetch(`${WIKI_API}?${params}`)
+    const data  = await res.json()
     const pages = Object.values(data.query?.pages || {})
 
     const photos = pages
@@ -58,15 +72,14 @@ async function searchWikimediaImages(searchTerms, limit = 8) {
         const info = p.imageinfo[0]
         const meta = info.extmetadata || {}
         return {
-          thumbUrl: info.thumburl || info.url,
-          fullUrl: info.url,
-          title: p.title.replace('File:', ''),
-          credit: meta.Artist?.value?.replace(/<[^>]+>/g, '') || 'Wikimedia Commons',
-          license: meta.LicenseShortName?.value || 'CC',
+          thumbUrl:    info.thumburl || info.url,
+          fullUrl:     info.url,
+          title:       p.title.replace('File:', ''),
+          credit:      meta.Artist?.value?.replace(/<[^>]+>/g, '') || 'Wikimedia Commons',
+          license:     meta.LicenseShortName?.value || 'CC',
           description: meta.ImageDescription?.value?.replace(/<[^>]+>/g, '').slice(0, 120) || '',
         }
       })
-      // Filter to likely bird photos (skip maps, logos, etc.)
       .filter(p => {
         const t = p.title.toLowerCase()
         return !t.includes('map') && !t.includes('range') && !t.includes('logo')
@@ -74,7 +87,8 @@ async function searchWikimediaImages(searchTerms, limit = 8) {
           && (p.thumbUrl.endsWith('.jpg') || p.thumbUrl.endsWith('.jpeg') || p.thumbUrl.endsWith('.png'))
       })
 
-    cache[cacheKey] = photos
+    memCache[cacheKey] = photos
+    lsSet(cacheKey, photos)
     return photos
   } catch {
     return []
@@ -94,7 +108,7 @@ export function useWikimediaPhotos(wikimediaSearchTerms) {
 
     searchWikimediaImages(wikimediaSearchTerms)
       .then(results => { if (!cancelled) { setPhotos(results); setLoading(false) } })
-      .catch(e    => { if (!cancelled) { setError(e.message); setLoading(false) } })
+      .catch(e      => { if (!cancelled) { setError(e.message); setLoading(false) } })
 
     return () => { cancelled = true }
   }, [wikimediaSearchTerms?.join('|')])
