@@ -496,10 +496,11 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const gameTimeRef     = useRef(ENCOUNTER_TIME_MS)
 
   // Drag state for focus knob
-  const focusKnobRef    = useRef({ dragging: false, startY: 0, startFocus: 35 })
+  const focusKnobRef    = useRef({ dragging: false, startX: 0, startFocus: 35 })
 
-  // Lens ref for mouse tracking
-  const lensRef = useRef(null)
+  // Lens ref for mouse tracking; focusSliderRef for the horizontal focus slider
+  const lensRef        = useRef(null)
+  const focusSliderRef = useRef(null)
 
   // ── React state (triggers re-renders) ─────────────────────────────────────
   const [focusPct, setFocusPct]         = useState(0)
@@ -566,17 +567,24 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     }
   }, [])
 
-  // ── Focus knob drag ───────────────────────────────────────────────────────
+  // ── Focus slider drag (horizontal) ───────────────────────────────────────
   const handleFocusPointerDown = useCallback((e) => {
     e.stopPropagation()
-    focusKnobRef.current = { dragging: true, startY: e.clientY, startFocus: opticalFocusRef.current }
+    // Jump knob to the clicked position on the track
+    const rect = e.currentTarget.getBoundingClientRect()
+    const pct  = clamp((e.clientX - rect.left) / rect.width, 0, 1)
+    const newFocus = Math.round(5 + pct * 145)
+    opticalFocusRef.current = newFocus
+    setOpticalFocusDisplay(newFocus)
+    focusKnobRef.current = { dragging: true, startX: e.clientX, startFocus: newFocus }
   }, [])
 
   useEffect(() => {
     const onMove = (e) => {
       if (!focusKnobRef.current.dragging) return
-      const dy = focusKnobRef.current.startY - e.clientY   // up = closer = less distance
-      const delta = dy * 0.8  // 0.8m per pixel
+      const dx      = e.clientX - focusKnobRef.current.startX
+      const sliderW = focusSliderRef.current?.getBoundingClientRect().width ?? 300
+      const delta   = (dx / sliderW) * 145   // 145m total range
       const newFocus = clamp(focusKnobRef.current.startFocus + delta, 5, 150)
       opticalFocusRef.current = newFocus
       setOpticalFocusDisplay(Math.round(newFocus))
@@ -591,10 +599,16 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   }, [])
 
   // ── Main game loop ────────────────────────────────────────────────────────
-  const startGame = useCallback(() => {
+  const startGame = useCallback(async () => {
     if (started) return
     setStarted(true)
     gameActiveRef.current = true
+
+    // iOS 13+ requires an explicit permission grant for DeviceOrientationEvent
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      try { await DeviceOrientationEvent.requestPermission() } catch {}
+    }
 
     const movementPattern = bird.captureStats.movementPattern || 'perching'
     behaviorRef.current = makeBehaviorEngine(movementPattern, { x: 0.3, y: 0.1 })
@@ -689,7 +703,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   }, [])
 
   // ── Rendering helpers ─────────────────────────────────────────────────────
-  const LENS_R = 110
+  const LENS_R = 95
   const birdX = viewPos.x * LENS_R * 0.7
   const birdY = viewPos.y * LENS_R * 0.7
 
@@ -708,8 +722,9 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const distanceScaleFactor = clamp((50 / birdDistance) * 0.8 + 0.2, 0.5, 1.4)
   const avatarSize = Math.round(80 * distanceScaleFactor)
 
-  // Focus knob position (0=near, 1=far on the track)
+  // Focus slider position (0=near/left, 1=far/right on track)
   const focusKnobPos = clamp((opticalFocusDisplay - 5) / 145, 0, 1)  // 5–150m range
+  const birdTickPos  = clamp((birdDistance - 5) / 145, 0, 1)
 
   const lensContent = (parallaxX = 0) => (
     <div style={{
@@ -787,68 +802,58 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     </div>
   )
 
-  // ── Focus knob (vertical dial on right side) ──────────────────────────────
-  const KNOB_H = 120  // track height in px
-  const KNOB_W = 32
-  const knobY = focusKnobPos * (KNOB_H - 20)  // knob position on track
-
-  const focusKnobEl = started && (
-    <div
-      data-focus-knob="true"
-      style={{
-        position: 'absolute',
-        right: -KNOB_W - 10,
-        top: '50%',
-        transform: 'translateY(-50%)',
-        width: KNOB_W,
-        height: KNOB_H,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        userSelect: 'none',
-      }}
-    >
-      {/* Track */}
+  // ── Horizontal focus slider (below binoculars) ───────────────────────────
+  const focusSliderEl = started && (
+    <div style={{ width: '82%', padding: '10px 0 16px' }}>
+      {/* Label row */}
       <div style={{
-        width: 6,
-        height: KNOB_H,
-        background: 'rgba(255,255,255,0.12)',
-        borderRadius: 3,
-        position: 'relative',
-        cursor: 'pointer',
+        display: 'flex', justifyContent: 'space-between', marginBottom: 6,
+        fontSize: 9, color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace', letterSpacing: 0.5,
       }}>
-        {/* Fill from knob to bottom (far = bottom) */}
+        <span>NEAR  5m</span>
+        <span style={{ color: opticalGood ? '#3ddc7f' : '#f5a623', fontWeight: 700, fontSize: 10 }}>
+          FOCUS {opticalFocusDisplay}m → {birdDistance}m
+        </span>
+        <span>FAR  150m</span>
+      </div>
+      {/* Track hit area */}
+      <div
+        ref={focusSliderRef}
+        data-focus-knob="true"
+        onPointerDown={handleFocusPointerDown}
+        style={{
+          position: 'relative', height: 32, cursor: 'pointer', touchAction: 'none', userSelect: 'none',
+        }}
+      >
+        {/* Track background */}
         <div style={{
           position: 'absolute', left: 0, right: 0,
-          top: knobY + 10, bottom: 0,
-          background: opticalGood ? 'rgba(61,220,127,0.4)' : 'rgba(255,165,0,0.3)',
-          borderRadius: 3,
+          top: '50%', height: 5, transform: 'translateY(-50%)',
+          background: 'rgba(255,255,255,0.1)', borderRadius: 3,
         }}/>
-        {/* Knob pill */}
-        <div
-          onPointerDown={handleFocusPointerDown}
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: knobY,
-            transform: 'translateX(-50%)',
-            width: 20,
-            height: 20,
-            borderRadius: '50%',
-            background: opticalGood ? '#3ddc7f' : '#f5a623',
-            border: '2px solid rgba(255,255,255,0.3)',
-            cursor: 'grab',
-            boxShadow: opticalGood ? '0 0 8px rgba(61,220,127,0.6)' : '0 0 6px rgba(245,166,35,0.4)',
-            transition: 'background 0.2s, box-shadow 0.2s',
-          }}
-        />
+        {/* Bird distance target tick (white bar showing where to aim) */}
+        <div style={{
+          position: 'absolute',
+          left: `${birdTickPos * 100}%`,
+          top: '50%', transform: 'translate(-50%, -50%)',
+          width: 3, height: 20,
+          background: opticalGood ? 'rgba(61,220,127,0.9)' : 'rgba(255,255,255,0.45)',
+          borderRadius: 2,
+          transition: 'background 0.2s',
+        }}/>
+        {/* Draggable knob */}
+        <div style={{
+          position: 'absolute',
+          left: `${focusKnobPos * 100}%`,
+          top: '50%', transform: 'translate(-50%, -50%)',
+          width: 24, height: 24, borderRadius: '50%',
+          background: opticalGood ? '#3ddc7f' : '#f5a623',
+          border: '2px solid rgba(255,255,255,0.4)',
+          boxShadow: opticalGood ? '0 0 10px rgba(61,220,127,0.7)' : '0 0 8px rgba(245,166,35,0.5)',
+          pointerEvents: 'none',
+          transition: 'background 0.2s, box-shadow 0.2s',
+        }}/>
       </div>
-      {/* Labels */}
-      <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.5)', marginTop: 3, fontFamily: 'monospace' }}>FAR</div>
-      <div style={{ fontSize: 9, color: opticalGood ? '#3ddc7f' : '#f5a623', fontFamily: 'monospace', fontWeight: 700 }}>
-        {opticalFocusDisplay}m
-      </div>
-      <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace' }}>NEAR</div>
     </div>
   )
 
@@ -929,7 +934,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
           </div>
           <div style={{ fontSize: 13, color: 'var(--text-dim)', textAlign: 'center', maxWidth: 290, lineHeight: 1.5 }}>
             <strong style={{ color: 'var(--text-secondary)' }}>Mobile:</strong> tilt to pan the view.<br/>
-            <strong style={{ color: 'var(--text-secondary)' }}>Focus dial:</strong> drag the orange knob to match the bird's distance.<br/>
+            <strong style={{ color: 'var(--text-secondary)' }}>Focus bar:</strong> slide the orange knob to match the bird's distance.<br/>
             Move slowly — sudden movements spook it!
           </div>
           <button className="btn btn-primary btn-lg" onClick={startGame} style={{ marginTop: 8, width: 220 }}>
@@ -937,10 +942,10 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
           </button>
         </div>
       ) : (
-        <div ref={lensRef} style={{ flex: 1, display: 'flex', alignItems: 'center',
-          justifyContent: 'center', width: '100%' }}>
+        <div ref={lensRef} style={{ flex: 1, display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center', width: '100%' }}>
           {/* Binoculars body */}
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             {/* Left lens */}
             <div style={{ position: 'relative', zIndex: 2 }}>
               {lensContent(-3)}
@@ -952,9 +957,9 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
             <div style={{ position: 'relative', zIndex: 2 }}>
               {lensContent(3)}
             </div>
-            {/* Focus knob — positioned right of right lens */}
-            {focusKnobEl}
           </div>
+          {/* Horizontal focus slider */}
+          {focusSliderEl}
         </div>
       )}
 
@@ -968,7 +973,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
             </span>
             <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
             <span style={{ color: opticalGood ? 'var(--accent-green)' : '#f5a623' }}>
-              {opticalGood ? '● Focus sharp' : `◐ Adjust focus dial (${opticalFocusDisplay}m → ${birdDistance}m)`}
+              {opticalGood ? '● Focus sharp' : `◐ Slide focus to ${birdDistance}m`}
             </span>
             <span style={{ marginLeft: 'auto', color: 'var(--text-dim)' }}>{focusPct}%</span>
           </div>
