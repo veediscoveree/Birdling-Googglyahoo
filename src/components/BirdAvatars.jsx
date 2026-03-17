@@ -3,7 +3,29 @@
 // and to convey the species' key field marks at a glance.
 // All avatars are pure SVG — no external images required.
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Component } from 'react'
+
+// ── ErrorBoundary — catches runtime render errors in individual avatar SVGs ───
+class AvatarErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { error: null } }
+  static getDerivedStateFromError(error) { return { error } }
+  componentDidCatch(error, info) {
+    console.error('[BirdAvatar] render error for birdId=' + this.props.birdId, error, info)
+  }
+  render() {
+    if (this.state.error) {
+      const { size = 120, style = {}, birdId } = this.props
+      return (
+        <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Bird">
+          <circle cx="60" cy="60" r="50" fill="#1a2a1a" opacity="0.7"/>
+          <text x="60" y="52" textAnchor="middle" fill="#6dbf67" fontSize="26">🐦</text>
+          <text x="60" y="72" textAnchor="middle" fill="#4a7a48" fontSize="9">{birdId?.replace(/_/g,' ')}</text>
+        </svg>
+      )
+    }
+    return this.props.children
+  }
+}
 
 // ── Northern Cardinal (male) ──────────────────────────────────────────────────
 export function CardinalAvatar({ size = 120, animated = false, style = {} }) {
@@ -1910,7 +1932,7 @@ export function AmericanKestrelAvatar({ size = 120, animated = false, style = {}
 // ── Avatar router ─────────────────────────────────────────────────────────────
 export function BirdAvatar({ birdId, size = 120, animated = false, style = {} }) {
   const props = { size, animated, style }
-  switch (birdId) {
+  const avatar = (() => { switch (birdId) {
     case 'northern_cardinal':      return <CardinalAvatar {...props} />
     case 'american_robin':         return <RobinAvatar {...props} />
     case 'blue_jay':               return <BlueJayAvatar {...props} />
@@ -1958,13 +1980,15 @@ export function BirdAvatar({ birdId, size = 120, animated = false, style = {} })
     // ── Residents ─────────────────────────────────────────
     case 'eastern_towhee':         return <EasternTowheeAvatar {...props} />
     default:
+      console.error('[BirdAvatar] no avatar for birdId:', birdId)
       return (
         <svg viewBox="0 0 100 100" width={size} height={size} style={style}>
           <circle cx="50" cy="50" r="40" fill="#333" opacity="0.6"/>
           <text x="50" y="55" textAnchor="middle" fill="#aaa" fontSize="28">?</text>
         </svg>
       )
-  }
+  }})()
+  return <AvatarErrorBoundary birdId={birdId} size={size} style={style}>{avatar}</AvatarErrorBoundary>
 }
 
 // Silhouette version for locked/undiscovered birds

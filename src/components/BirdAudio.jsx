@@ -9,7 +9,7 @@ const QUALITY_COLOR = { A: '#3ddc7f', B: '#a8d878', C: '#f5a623', D: '#ff8a65', 
 
 export default function BirdAudio({ bird }) {
   const speciesName = bird.xenoCantoSpecies || bird.scientificName
-  const { songs, calls, loading } = useXenoCantoAudio(speciesName)
+  const { songs, calls, loading, apiError } = useXenoCantoAudio(speciesName)
   const [playing, setPlaying] = useState(null)
   const audioRef = useRef(null)
 
@@ -41,7 +41,14 @@ export default function BirdAudio({ bird }) {
 
   if (!songs.length && !calls.length) return (
     <div style={{ padding: '24px 16px', background: 'var(--bg-card)', borderRadius: 12, textAlign: 'center', color: 'var(--text-dim)', fontSize: 13 }}>
-      No recordings found for this species.
+      {apiError
+        ? <>Audio unavailable — xeno-canto.org could not be reached.<br/>
+            <a href={`https://xeno-canto.org/explore?query=${encodeURIComponent(speciesName)}`}
+               target="_blank" rel="noopener noreferrer"
+               style={{ color: 'var(--accent-sky)', marginTop: 6, display: 'inline-block' }}>
+              Listen on xeno-canto.org ↗
+            </a></>
+        : 'No recordings found for this species.'}
     </div>
   )
 

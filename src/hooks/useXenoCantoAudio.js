@@ -5,7 +5,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 
-const XC_API   = 'https://xeno-canto.org/api/2/recordings'
+const XC_API        = 'https://xeno-canto.org/api/2/recordings'
+const XC_API_PROXY  = 'https://corsproxy.io/?url=https://xeno-canto.org/api/2/recordings'
 const LS_PREFIX = 'bhn_xc_v2_'  // bumped to evict any stale empty-result caches
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000   // 7 days
 
@@ -45,8 +46,30 @@ export function pickBestSong(songs, minSec = 10) {
 }
 
 // ── Fetcher ───────────────────────────────────────────────────────────────────
+function parseXCResponse(data) {
+  return (data.recordings || []).slice(0, 12).map(r => ({
+    id:          r.id,
+    url:         r.file ? (r.file.startsWith('//') ? `https:${r.file}` : r.file) : null,
+    type:        r.type,
+    length:      r.length,
+    quality:     r.q,
+    location:    r.loc,
+    country:     r.cnt,
+    date:        r.date,
+    recordist:   r.rec,
+    license:     r.lic,
+    sonogramUrl: r.sono?.small,
+    xcUrl:       `https://xeno-canto.org/${r.id}`,
+  }))
+}
+
+async function tryFetch(url) {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return res.json()
+}
+
 async function fetchRecordings(speciesName, type) {
-  // Broad query — quality sorted client-side so we get results even without A-grade US recordings
   const query    = `"${speciesName}"${type ? ` type:${type}` : ''}`
   const cacheKey = query
 
@@ -55,41 +78,33 @@ async function fetchRecordings(speciesName, type) {
   if (persisted) { memCache[cacheKey] = persisted; return persisted }
 
   const params = new URLSearchParams({ query })
-  try {
-    const res  = await fetch(`${XC_API}?${params}`)
-    const data = await res.json()
-    const recs = (data.recordings || []).slice(0, 12).map(r => ({
-      id:          r.id,
-      // Normalise protocol-relative URLs ("//xeno-canto.org/...") to https
-      url:         r.file ? (r.file.startsWith('//') ? `https:${r.file}` : r.file) : null,
-      type:        r.type,
-      length:      r.length,
-      quality:     r.q,
-      location:    r.loc,
-      country:     r.cnt,
-      date:        r.date,
-      recordist:   r.rec,
-      license:     r.lic,
-      sonogramUrl: r.sono?.small,
-      xcUrl:       `https://xeno-canto.org/${r.id}`,
-    }))
-    // Only cache non-empty results so transient failures are retried next load
-    if (recs.length > 0) {
-      memCache[cacheKey] = recs
-      lsSet(cacheKey, recs)
+
+  // Try direct API first; fall back to CORS proxy (needed when served from file://)
+  let recs = []
+  for (const base of [XC_API, XC_API_PROXY]) {
+    try {
+      const data = await tryFetch(`${base}?${params}`)
+      recs = parseXCResponse(data)
+      break  // success — stop trying
+    } catch (e) {
+      console.warn(`[XC] fetch failed via ${base}:`, e.message)
     }
-    return recs
-  } catch {
-    return []
   }
+
+  if (recs.length > 0) {
+    memCache[cacheKey] = recs
+    lsSet(cacheKey, recs)
+  }
+  return recs
 }
 
 // ── Hook ──────────────────────────────────────────────────────────────────────
 export function useXenoCantoAudio(xenoCantoSpecies) {
-  const [songs, setSongs]     = useState([])
-  const [calls, setCalls]     = useState([])
-  const [loading, setLoading] = useState(true)
-  const [playing, setPlaying] = useState(null)   // recording id
+  const [songs, setSongs]       = useState([])
+  const [calls, setCalls]       = useState([])
+  const [loading, setLoading]   = useState(true)
+  const [apiError, setApiError] = useState(false)
+  const [playing, setPlaying]   = useState(null)
   const audioRef = useRef(null)
 
   useEffect(() => {
@@ -105,13 +120,19 @@ export function useXenoCantoAudio(xenoCantoSpecies) {
       if (songRecs.length === 0 && callRecs.length === 0) {
         const all = await fetchRecordings(xenoCantoSpecies, '')
         songRecs = all.slice(0, 8)
+        if (all.length === 0) {
+          // Still nothing — mark as API error so UI can show the right message
+          if (!cancelled) setApiError(true)
+        }
       }
       if (!cancelled) {
         setSongs(songRecs)
         setCalls(callRecs)
         setLoading(false)
       }
-    }).catch(() => { if (!cancelled) setLoading(false) })
+    }).catch(() => {
+      if (!cancelled) { setApiError(true); setLoading(false) }
+    })
 
     return () => { cancelled = true }
   }, [xenoCantoSpecies])
@@ -134,5 +155,5 @@ export function useXenoCantoAudio(xenoCantoSpecies) {
 
   useEffect(() => () => { if (audioRef.current) audioRef.current.pause() }, [])
 
-  return { songs, calls, loading, playing, play, stop, bestSong: pickBestSong(songs) }
+  return { songs, calls, loading, apiError, playing, play, stop, bestSong: pickBestSong(songs) }
 }
