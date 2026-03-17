@@ -5,8 +5,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 
-const XC_API        = 'https://xeno-canto.org/api/2/recordings'
-const XC_API_PROXY  = 'https://corsproxy.io/?url=https://xeno-canto.org/api/2/recordings'
+const XC_API          = 'https://xeno-canto.org/api/2/recordings'
+const CORS_PROXY      = 'https://corsproxy.io/?url='
 const LS_PREFIX = 'bhn_xc_v2_'  // bumped to evict any stale empty-result caches
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000   // 7 days
 
@@ -77,17 +77,18 @@ async function fetchRecordings(speciesName, type) {
   const persisted = lsGet(cacheKey)
   if (persisted) { memCache[cacheKey] = persisted; return persisted }
 
-  const params = new URLSearchParams({ query })
+  const targetUrl = `${XC_API}?${new URLSearchParams({ query })}`
+  // Proxy URL must encode the full target URL (including its query string) as a single param
+  const proxyUrl  = `${CORS_PROXY}${encodeURIComponent(targetUrl)}`
 
-  // Try direct API first; fall back to CORS proxy (needed when served from file://)
   let recs = []
-  for (const base of [XC_API, XC_API_PROXY]) {
+  for (const url of [targetUrl, proxyUrl]) {
     try {
-      const data = await tryFetch(`${base}?${params}`)
+      const data = await tryFetch(url)
       recs = parseXCResponse(data)
       break  // success — stop trying
     } catch (e) {
-      console.warn(`[XC] fetch failed via ${base}:`, e.message)
+      console.warn(`[XC] fetch failed via ${url}:`, e.message)
     }
   }
 
