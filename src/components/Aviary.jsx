@@ -13,8 +13,8 @@ const RANKS = [
   { min: 5,   label: 'Patch Birder',        color: '#2196f3' },
   { min: 10,  label: 'Field Birder',        color: '#00bcd4' },
   { min: 20,  label: 'Avid Birder',         color: '#9c27b0' },
-  { min: 30,  label: 'Serious Lister',      color: '#ff9800' },
-  { min: 41,  label: '★ Master Birder ★',   color: '#ffd700' },
+  { min: 35,  label: 'Serious Lister',      color: '#ff9800' },
+  { min: 51,  label: '★ Master Birder ★',   color: '#ffd700' },
 ]
 
 function getRank(n) {
@@ -27,8 +27,8 @@ const MILESTONES = {
   5:  '🔭 5 species — you\'re hooked now.',
   10: '📒 10 species — your field notes are filling up.',
   20: '🦅 20 species — a solid patch list.',
-  30: '🗺️ 30 species — you\'re covering real ground.',
-  41: '🏆 All 41 species! The aviary is complete.',
+  35: '🗺️ 35 species — you\'re covering serious ground.',
+  51: '🏆 All 51 species! The field guide is complete.',
 }
 
 // ── Species sequence number (padded, like a field guide) ─────────────────────

@@ -84,7 +84,7 @@ export default function App() {
       setCurrentBird(bird)
       setFunFactIndex(0)  // reset for new bird
       setEncounterInfo({
-        distance:      Math.floor(Math.random() * 180) + 20,
+        distance:      Math.floor(Math.random() * 110) + 20,  // 20–130m, stays within focus slider range (5–150m)
         direction:     DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)],
         habitat:       obs?.locName || HABITATS[Math.floor(Math.random() * HABITATS.length)],
         isEBirdVerified: !!obs,
