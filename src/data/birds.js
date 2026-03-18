@@ -2566,6 +2566,580 @@ export const BIRDS = [
     ],
     eBirdCode: 'eastem', merlinId: 'Eastern_Towhee',
   },
+
+  // ─────────────────────────────────────────────────────────────
+  // ATLANTIC FLYWAY WARBLERS — NE enrichment batch
+  // ─────────────────────────────────────────────────────────────
+
+  // ── Black-throated Green Warbler ──────────────────────────────
+  {
+    id: 'blackthroated_green_warbler',
+    commonName: 'Black-throated Green Warbler',
+    scientificName: 'Setophaga virens',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [11, 13], wingspan_cm: [17, 20], weight_g: [7, 11],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#4a8a3a', female: '#5a9a4a' },
+      uiColor: '#4a8a3a',
+      secondaryColors: { male: ['#1A1A1A (throat)', '#FFEE88 (face)'], female: ['#AAC8AA (throat)', '#FFEE88 (face)'] },
+      distinctiveMarkings: {
+        male: ['Olive-green back', 'Bright yellow face', 'Solid black throat and upper breast', 'Two white wing bars'],
+        female: ['Same pattern; yellow-olive replaces black on throat'],
+      },
+      plumageDescription: {
+        male: 'Olive-green back, glowing yellow face, and a bold black bib — one of the most cleanly patterned warblers on the flyway.',
+        female: 'Nearly identical but throat is pale yellow-olive rather than black.',
+      },
+    },
+    primaryHabitat: ['hemlock_forest', 'mixed_conifers', 'woodland_canopy'],
+    feedingLayer: 'canopy', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 3 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'High, thin "tsip"',
+      songDescription: '"Zoo zee zoo zoo zee" — a dreamy, buzzy phrase. One of the signature sounds of the northeastern hemlock forest.',
+      loudness: 6, callFrequency: 5,
+      singingSeason: { spring: 'frequent', summer: 'frequent', fall: 'rare', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'common' },
+      summer: { presence: 'breeder', commonness: 'common' },
+      fall:   { presence: 'migrant', commonness: 'uncommon' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'SE'],
+    captureStats: {
+      difficulty: 5, speed: 6, flightiness: 6, camouflage: 4, sizeScore: 2,
+      movementPattern: 'canopy_gleaning',
+      captureBackground: 'hemlock_canopy',
+      behaviorNotes: 'Forages methodically through hemlock boughs. Often sings from an exposed upper branch — look for the yellow face catching the light.',
+    },
+    rarity: 'uncommon', rarityColor: '#2196f3', points: 210,
+    verificationThreshold: 0.70, verificationMethods: 2,
+    description: 'A gem of the hemlock forest. The Black-throated Green Warbler\'s song — five lazy, buzzy notes — is one of the most evocative sounds of the northeastern spring canopy.',
+    funFacts: [
+      'One male was recorded singing 466 times in an hour — remarkable even by warbler standards.',
+      'Where woolly adelgid kills hemlocks, Black-throated Green Warbler numbers fall almost immediately — making it a sentinel for hemlock health.',
+    ],
+    eBirdCode: 'btnwar', merlinId: 'Black-throated_Green_Warbler',
+  },
+
+  // ── Blackburnian Warbler ──────────────────────────────────────
+  {
+    id: 'blackburnian_warbler',
+    commonName: 'Blackburnian Warbler',
+    scientificName: 'Setophaga fusca',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [11, 13], wingspan_cm: [20, 22], weight_g: [8, 13],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#FF6B00', female: '#E8A050' },
+      uiColor: '#FF6B00',
+      secondaryColors: { male: ['#1A1A1A (back, cheek)', '#FFFFFF (wing patch)'], female: ['#B87030 (throat)', '#F5F5DC (wing bars)'] },
+      distinctiveMarkings: {
+        male: ['Blazing orange throat — the "fire throat"', 'Black-and-white streaked back', 'Large white wing patch', 'Black cheek patch framing orange face'],
+        female: ['Same pattern but orange replaced with pale yellow-buff'],
+      },
+      plumageDescription: {
+        male: 'The male Blackburnian is genuinely startling: a throat the color of embers, set against a black-and-white body. Nothing else in North America looks like this.',
+        female: 'Streaked brown above, yellow-buff throat. Recognizable by the streaking pattern and two white wing bars, but far more subtly marked than the male.',
+      },
+    },
+    primaryHabitat: ['mature_conifers', 'spruce_fir_forest', 'woodland_canopy'],
+    feedingLayer: 'canopy', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 2 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'Sharp "tsip" or "chip"',
+      songDescription: 'An ultra-high, thin ascending whistle, often ending with a rising note beyond many adult ears. One of the highest-pitched warbler songs.',
+      loudness: 6, callFrequency: 4,
+      singingSeason: { spring: 'frequent', summer: 'moderate', fall: 'silent', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'uncommon' },
+      summer: { presence: 'breeder', commonness: 'uncommon' },
+      fall:   { presence: 'migrant', commonness: 'rare' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'SE'],
+    captureStats: {
+      difficulty: 7, speed: 7, flightiness: 7, camouflage: 3, sizeScore: 2,
+      movementPattern: 'high_canopy_creeping',
+      captureBackground: 'spruce_canopy',
+      behaviorNotes: 'Almost always forages at the very tops of tall conifers — stiff neck required. During migration, may drop lower into mixed flocks.',
+    },
+    rarity: 'rare', rarityColor: '#9c27b0', points: 320,
+    verificationThreshold: 0.75, verificationMethods: 2,
+    description: 'The Blackburnian Warbler is the fire-throated jewel of the spruce-fir canopy. The male\'s blazing orange throat is unlike anything else in North American birds.',
+    funFacts: [
+      'The Blackburnian was named after Anna Blackburne, an 18th-century English botanist who never visited North America but maintained a private natural history museum.',
+      'Its song is so high-pitched that some birders over 50 genuinely cannot hear it — a hearing test disguised as a field trip.',
+    ],
+    eBirdCode: 'blawar', merlinId: 'Blackburnian_Warbler',
+  },
+
+  // ── Magnolia Warbler ──────────────────────────────────────────
+  {
+    id: 'magnolia_warbler',
+    commonName: 'Magnolia Warbler',
+    scientificName: 'Setophaga magnolia',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [11, 13], wingspan_cm: [16, 20], weight_g: [6, 12],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#FFD700', female: '#EEC950' },
+      uiColor: '#FFD700',
+      secondaryColors: { male: ['#1A1A1A (back, necklace streaks)', '#FFFFFF (wing patch, tail band)'], female: ['#7a7a7a (back)', '#1A1A1A (light streaking)'] },
+      distinctiveMarkings: {
+        male: ['Yellow rump and underparts', 'Heavy black necklace streaks', 'Black back with gray crown', 'Broad white tail band visible in flight'],
+        female: ['Two white wing bars, yellow wash below with faint streaking'],
+      },
+      plumageDescription: {
+        male: 'Unmistakable: blazing yellow below with a heavy black necklace of streaks, gray crown, and a white tail band that flashes in flight. Looks like a warbler wearing a thunderbolt.',
+        female: 'Gray-olive above, yellow below with faint streaking. The white tail band is still diagnostic.',
+      },
+    },
+    primaryHabitat: ['young_conifers', 'forest_edges', 'spruce_regeneration'],
+    feedingLayer: 'shrub', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 4 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'Nasal "tseet" — distinctive even among warblers',
+      songDescription: '"Weeta weeta weeteo" — short, sweet, and emphatic. Often compared to a fast Yellow Warbler.',
+      loudness: 6, callFrequency: 6,
+      singingSeason: { spring: 'frequent', summer: 'frequent', fall: 'rare', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'common' },
+      summer: { presence: 'breeder', commonness: 'uncommon' },
+      fall:   { presence: 'migrant', commonness: 'common' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'SE'],
+    captureStats: {
+      difficulty: 5, speed: 6, flightiness: 5, camouflage: 2, sizeScore: 2,
+      movementPattern: 'active_gleaning',
+      captureBackground: 'young_spruce',
+      behaviorNotes: 'Active and low-foraging during migration — easier to see than many warblers. Males fan the tail frequently, flashing the diagnostic white tail band.',
+    },
+    rarity: 'uncommon', rarityColor: '#2196f3', points: 220,
+    verificationThreshold: 0.70, verificationMethods: 2,
+    description: 'The Magnolia Warbler was named not for its habitat but because Alexander Wilson first collected one in a magnolia tree in 1811. It\'s one of the showiest migrants of the Atlantic flyway.',
+    funFacts: [
+      'Despite the name, Magnolia Warblers don\'t use magnolias — Wilson just happened to first see one in one.',
+      'Magnolias are among the most cooperative migrants: during fall migration, they often forage low and slowly, giving excellent looks.',
+    ],
+    eBirdCode: 'magwar', merlinId: 'Magnolia_Warbler',
+  },
+
+  // ── Chestnut-sided Warbler ────────────────────────────────────
+  {
+    id: 'chestnuside_warbler',
+    commonName: 'Chestnut-sided Warbler',
+    scientificName: 'Setophaga pensylvanica',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [11, 13], wingspan_cm: [16, 19], weight_g: [8, 13],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#FFFF99', female: '#E0E8B0' },
+      uiColor: '#8B4513',
+      secondaryColors: { male: ['#8B4513 (chestnut sides)', '#FFFF99 (crown)', '#1A1A1A (face mask)'], female: ['light chestnut sides, lime-green cap'] },
+      distinctiveMarkings: {
+        male: ['Bright yellow cap', 'Rich chestnut stripe along flanks', 'White face and underparts', 'Black cheek and malar stripe'],
+        female: ['Lime-green cap, reduced chestnut, faint streaking'],
+      },
+      plumageDescription: {
+        male: 'Distinctive in every season: yellow cap, chestnut flanks, and white underparts divided by black facial markings. Looks permanently surprised.',
+        female: 'Olive-green cap, reduced or absent chestnut, white below. Two white wing bars.',
+      },
+    },
+    primaryHabitat: ['shrubby_regrowth', 'forest_edges', 'overgrown_clearcuts'],
+    feedingLayer: 'shrub', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 3 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'Sharp "chip"',
+      songDescription: '"Please please pleased to meetcha" — one of the most memorable mnemonic phrases in birding. The final note emphatically drops.',
+      loudness: 7, callFrequency: 7,
+      singingSeason: { spring: 'frequent', summer: 'frequent', fall: 'rare', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'common' },
+      summer: { presence: 'breeder', commonness: 'common' },
+      fall:   { presence: 'migrant', commonness: 'uncommon' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'SE'],
+    captureStats: {
+      difficulty: 4, speed: 5, flightiness: 5, camouflage: 3, sizeScore: 2,
+      movementPattern: 'shrub_gleaning',
+      captureBackground: 'shrubby_edge',
+      behaviorNotes: 'Forages in dense shrubs, often holding wings slightly drooped. Males are bold and approach intruders — territorial.',
+    },
+    rarity: 'uncommon', rarityColor: '#2196f3', points: 190,
+    verificationThreshold: 0.68, verificationMethods: 2,
+    description: 'Before European settlement, the Chestnut-sided Warbler was rare — it thrives in young second-growth forest that humans inadvertently created. It\'s one of the few species genuinely benefiting from forest fragmentation.',
+    funFacts: [
+      'John James Audubon saw this species only once in his lifetime. Now it\'s one of the most common warblers in the northeastern US — a complete reversal driven by land use change.',
+      'Males hold two song types: one for attracting mates and one for repelling rivals.',
+    ],
+    eBirdCode: 'chswar', merlinId: 'Chestnut-sided_Warbler',
+  },
+
+  // ── Black-throated Blue Warbler ───────────────────────────────
+  {
+    id: 'blackthroated_blue_warbler',
+    commonName: 'Black-throated Blue Warbler',
+    scientificName: 'Setophaga caerulescens',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [12, 14], wingspan_cm: [17, 20], weight_g: [8, 13],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#1a3a8a', female: '#7a9a6a' },
+      uiColor: '#1a3a8a',
+      secondaryColors: { male: ['#1A1A1A (throat, flanks)', '#FFFFFF (belly, wing spot)'], female: ['#FFFFF0 (supercilium)', '#9ab07a (underparts)'] },
+      distinctiveMarkings: {
+        male: ['Deep navy-blue back and crown', 'Solid black face and throat', 'White belly', 'Small white wing spot ("handkerchief")'],
+        female: ['Olive-green above, buffy below — entirely different look. White supercilium and tiny white wing spot are the giveaways'],
+      },
+      plumageDescription: {
+        male: 'One of the most strikingly two-toned warblers: rich navy-blue above, jet black below on the face and throat, clean white belly. The white wing spot is a tiny beacon.',
+        female: 'Looks like a completely different species. Plain olive-green above, warm buff below. The white wing spot and pale eyebrow stripe are the identification keys.',
+      },
+    },
+    primaryHabitat: ['deciduous_forest', 'rhododendron_understory', 'mountain_slopes'],
+    feedingLayer: 'shrub', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 2 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'Flat "chuck" — low for a warbler',
+      songDescription: '"I am so laz-eee" — a slow, husky, ascending buzz. Sounds as if the bird is too relaxed to finish its sentence.',
+      loudness: 6, callFrequency: 5,
+      singingSeason: { spring: 'frequent', summer: 'moderate', fall: 'rare', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'common' },
+      summer: { presence: 'breeder', commonness: 'uncommon' },
+      fall:   { presence: 'migrant', commonness: 'common' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'SE'],
+    captureStats: {
+      difficulty: 5, speed: 5, flightiness: 5, camouflage: 5, sizeScore: 2,
+      movementPattern: 'understory_foraging',
+      captureBackground: 'rhododendron_forest',
+      behaviorNotes: 'Forages low to mid-story, often in dense rhododendron. Males sing repeatedly from exposed perches. The female\'s olive camouflage makes her hard to spot.',
+    },
+    rarity: 'uncommon', rarityColor: '#2196f3', points: 230,
+    verificationThreshold: 0.72, verificationMethods: 2,
+    description: 'The Black-throated Blue Warbler is unusual in that males and females look so different they were described as separate species by Audubon and Wilson. The male is indigo-dark; the female is plainly olive.',
+    funFacts: [
+      'BTB Warblers return to the same 1–3 hectare territory year after year — remarkable site fidelity for a bird that winters in the Caribbean.',
+      'Female BTBs are among the plainest-looking warblers in the east — a classic case of sexual dimorphism taken to extremes.',
+    ],
+    eBirdCode: 'btbwar', merlinId: 'Black-throated_Blue_Warbler',
+  },
+
+  // ── Canada Warbler ────────────────────────────────────────────
+  {
+    id: 'canada_warbler',
+    commonName: 'Canada Warbler',
+    scientificName: 'Cardellina canadensis',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [12, 14], wingspan_cm: [17, 20], weight_g: [9, 13],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#607090', female: '#708090' },
+      uiColor: '#607090',
+      secondaryColors: { male: ['#FFD700 (underparts, eye ring)', '#1A1A1A (necklace streaks, face)'], female: ['#FFD700 (underparts)', '#888 (reduced necklace)'] },
+      distinctiveMarkings: {
+        male: ['Gray-blue back and cap', 'Bright yellow underparts', 'Bold black necklace of spots across breast', 'Yellow eye ring', 'No wing bars'],
+        female: ['Same pattern; necklace is faint or absent'],
+      },
+      plumageDescription: {
+        male: 'Clean and graphic: blue-gray back, brilliant yellow below, with a necklace of black spots that looks hand-painted. Yellow spectacles (eye ring) add to the jeweled look.',
+        female: 'Olive-gray above, yellow below, with a faint necklace and yellow eye ring. Still distinctive once you know the pattern.',
+      },
+    },
+    primaryHabitat: ['cool_damp_forest', 'alder_thickets', 'stream_corridors', 'boreal_edge'],
+    feedingLayer: 'shrub', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 2 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'Sharp "chep"',
+      songDescription: 'An erratic, bubbling chip-chip-chittychitty-chip — like a musical sentence with no grammar. Complex and variable.',
+      loudness: 6, callFrequency: 6,
+      singingSeason: { spring: 'frequent', summer: 'frequent', fall: 'rare', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'uncommon' },
+      summer: { presence: 'breeder', commonness: 'uncommon' },
+      fall:   { presence: 'migrant', commonness: 'rare' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'SE'],
+    captureStats: {
+      difficulty: 6, speed: 7, flightiness: 6, camouflage: 3, sizeScore: 2,
+      movementPattern: 'low_active_gleaning',
+      captureBackground: 'stream_alders',
+      behaviorNotes: 'Hyperactive forager, constantly in motion. Often found in cool, damp, densely vegetated areas — stream corridors with alders are a reliable spot.',
+    },
+    rarity: 'rare', rarityColor: '#9c27b0', points: 300,
+    verificationThreshold: 0.75, verificationMethods: 2,
+    description: 'The Canada Warbler is one of the last warblers to arrive in spring and one of the first to depart in fall. It\'s declining rapidly — a loss of its boreal breeding habitat makes every sighting significant.',
+    funFacts: [
+      'Canada Warblers have one of the shortest breeding seasons of any warbler — often less than 8 weeks on territory before heading south.',
+      'Listed as a species of conservation concern in Canada; populations have declined over 70% since the 1970s.',
+    ],
+    eBirdCode: 'canwar', merlinId: 'Canada_Warbler',
+  },
+
+  // ── Nashville Warbler ─────────────────────────────────────────
+  {
+    id: 'nashville_warbler',
+    commonName: 'Nashville Warbler',
+    scientificName: 'Leiothlypis ruficapilla',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [11, 12], wingspan_cm: [17, 19], weight_g: [7, 11],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#6a7a5a', female: '#7a8a6a' },
+      uiColor: '#a8c840',
+      secondaryColors: { male: ['#FFD700 (throat/breast/belly)', '#FFFFFF (eye ring)', '#1A1A1A (lores)', 'chestnut crown patch (often hidden)'], female: ['#e8e000 (yellow below)', '#FFFFFF (eye ring)'] },
+      distinctiveMarkings: {
+        male: ['Gray head', 'Bold white eye ring', 'Bright yellow below', 'No wing bars', 'Hidden rufous crown patch'],
+        female: ['Same pattern, slightly duller'],
+      },
+      plumageDescription: {
+        male: 'A clean, neat warbler: gray head capped with a hidden rufous patch, white eye ring, yellow below, olive-green back. No wing bars gives it an unusually clean look.',
+        female: 'Similar to male but slightly duller. The white eye ring is still prominent.',
+      },
+    },
+    primaryHabitat: ['boggy_forest', 'brushy_clearcuts', 'shrubby_edges', 'boreal_burns'],
+    feedingLayer: 'shrub', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 3 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'Sharp "seet"',
+      songDescription: '"Seebit seebit seebit, tititi" — a two-part song: a run of sharp notes followed by a fast, high trill. Easily learned.',
+      loudness: 6, callFrequency: 6,
+      singingSeason: { spring: 'frequent', summer: 'frequent', fall: 'rare', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'common' },
+      summer: { presence: 'breeder', commonness: 'uncommon' },
+      fall:   { presence: 'migrant', commonness: 'uncommon' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'SE'],
+    captureStats: {
+      difficulty: 5, speed: 6, flightiness: 5, camouflage: 4, sizeScore: 2,
+      movementPattern: 'active_gleaning',
+      captureBackground: 'boreal_shrubs',
+      behaviorNotes: 'Bobs its tail constantly — a useful behavior clue. During migration, turns up in almost any shrubby habitat.',
+    },
+    rarity: 'uncommon', rarityColor: '#2196f3', points: 200,
+    verificationThreshold: 0.68, verificationMethods: 2,
+    description: 'Despite the name, the Nashville Warbler was simply first described from a specimen collected near Nashville in 1811. It breeds in boreal bogs and burns far to the north — most Nashvillians rarely see it.',
+    funFacts: [
+      'Nashville Warblers persistently bob their tails — a habit so consistent it\'s become one of the field marks.',
+      'Two distinct populations: eastern birds migrate down the Atlantic flyway; western birds funnel through the Pacific Coast.',
+    ],
+    eBirdCode: 'naswar', merlinId: 'Nashville_Warbler',
+  },
+
+  // ── Wilson's Warbler ──────────────────────────────────────────
+  {
+    id: 'wilsons_warbler',
+    commonName: "Wilson's Warbler",
+    scientificName: 'Cardellina pusilla',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [10, 12], wingspan_cm: [14, 17], weight_g: [5, 10],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#d4c800', female: '#c8bc00' },
+      uiColor: '#d4c800',
+      secondaryColors: { male: ['#1A1A1A (cap)', '#FFE800 (forehead/underparts)', '#6a8a3a (back)'], female: ['no or reduced black cap'] },
+      distinctiveMarkings: {
+        male: ['Solid black cap', 'Bright yellow face and underparts', 'Olive-green back', 'No wing bars'],
+        female: ['Olive cap (sometimes with a dark wash), yellow below'],
+      },
+      plumageDescription: {
+        male: 'A tiny yellow fireball with a bold black beret. One of the simplest, most recognizable warblers.',
+        female: 'Yellow-olive below, olive-green above. May show a slight darkening on crown but lacks the male\'s crisp cap.',
+      },
+    },
+    primaryHabitat: ['willow_thickets', 'stream_edges', 'boreal_shrubs', 'alder_bogs'],
+    feedingLayer: 'shrub', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 4 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'Flat, emphatic "chmp"',
+      songDescription: 'A rapid, chattering "chl-chl-chl-chlchl-chl" — a fast cascade of notes tumbling downward, speeding up at the end.',
+      loudness: 6, callFrequency: 7,
+      singingSeason: { spring: 'frequent', summer: 'frequent', fall: 'rare', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'common' },
+      summer: { presence: 'breeder', commonness: 'uncommon' },
+      fall:   { presence: 'migrant', commonness: 'common' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'NW', 'SE'],
+    captureStats: {
+      difficulty: 4, speed: 7, flightiness: 6, camouflage: 2, sizeScore: 1,
+      movementPattern: 'rapid_gleaning',
+      captureBackground: 'willow_thicket',
+      behaviorNotes: 'Constantly in motion — flitting, hovering, and chasing insects. One of the most active warblers. Often flicks its tail sideways.',
+    },
+    rarity: 'uncommon', rarityColor: '#2196f3', points: 195,
+    verificationThreshold: 0.68, verificationMethods: 2,
+    description: "Wilson's Warbler was named by Alexander Wilson, who also named it, making it the only bird self-named by its own namer. Small, fast, and dazzling — the black cap on a yellow bird is unmistakable.",
+    funFacts: [
+      "Wilson's Warbler is one of the most abundant warblers in the western US, yet fairly uncommon in the east — two very different population densities separated by the Rockies.",
+      'Males arrive on breeding grounds and immediately begin establishing territories, singing before females even arrive.',
+    ],
+    eBirdCode: 'wlswar', merlinId: "Wilson's_Warbler",
+  },
+
+  // ── Bay-breasted Warbler ──────────────────────────────────────
+  {
+    id: 'baybreasted_warbler',
+    commonName: 'Bay-breasted Warbler',
+    scientificName: 'Setophaga castanea',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [12, 14], wingspan_cm: [19, 22], weight_g: [9, 16],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#6B2F18', female: '#9a8060' },
+      uiColor: '#8B4513',
+      secondaryColors: { male: ['#1A1A1A (cap and face)', '#FFCF8A (neck patch)', '#F0EAD6 (belly)'], female: ['olive-green above', 'buffy-white below', 'faint chestnut wash'] },
+      distinctiveMarkings: {
+        male: ['Rich chestnut crown and breast', 'Black face mask', 'Buffy neck patch', 'Two white wing bars'],
+        female: ['Fall female is the confusing one: olive-green, buffy, nearly identical to Bay-breasted Warbler fall — even experts hesitate'],
+      },
+      plumageDescription: {
+        male: 'Striking in spring: chestnut cap, face masked black, warm buff neck patch, chestnut washes on the flanks. Looks like a bird wearing a hood.',
+        female: 'Olive-green above, buffy-white below with faint greenish wash on flanks. Two white wing bars.',
+      },
+    },
+    primaryHabitat: ['mature_boreal_forest', 'spruce_forest', 'forest_canopy'],
+    feedingLayer: 'canopy', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 3 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'High, thin "seet"',
+      songDescription: 'Very high, thin "seesy seesy seesy" — almost inaudibly high for some listeners. Similar to Blackburnian but softer.',
+      loudness: 5, callFrequency: 4,
+      singingSeason: { spring: 'frequent', summer: 'moderate', fall: 'silent', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'uncommon' },
+      summer: { presence: 'breeder', commonness: 'uncommon' },
+      fall:   { presence: 'migrant', commonness: 'rare' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'SE'],
+    captureStats: {
+      difficulty: 7, speed: 6, flightiness: 6, camouflage: 5, sizeScore: 2,
+      movementPattern: 'canopy_creeping',
+      captureBackground: 'spruce_canopy',
+      behaviorNotes: 'Forages high in the canopy. Rare outside peak migration windows. Fall birds are a classic identification challenge.',
+    },
+    rarity: 'rare', rarityColor: '#9c27b0', points: 310,
+    verificationThreshold: 0.75, verificationMethods: 2,
+    description: 'The Bay-breasted Warbler breeds in boreal forests and is tightly linked to spruce budworm outbreaks — its population can boom dramatically when caterpillars are plentiful, then crash.',
+    funFacts: [
+      'Bay-breasted Warbler populations track spruce budworm outbreaks so closely that some ornithologists use them as a budworm index.',
+      'Fall Bay-breasted Warblers are famously difficult to identify — they look nearly identical to fall Blackpoll and Pine Warblers. Birders call the trio "Confusing Fall Warblers."',
+    ],
+    eBirdCode: 'babwar', merlinId: 'Bay-breasted_Warbler',
+  },
+
+  // ── Prairie Warbler ───────────────────────────────────────────
+  {
+    id: 'prairie_warbler',
+    commonName: 'Prairie Warbler',
+    scientificName: 'Setophaga discolor',
+    family: 'Parulidae', order: 'Passeriformes',
+    sizeCategory: 'tiny', length_cm: [11, 13], wingspan_cm: [15, 18], weight_g: [6, 9],
+    appearance: {
+      billShape: 'thin', billSizeRelative: 'small',
+      billColor: { male: 'dark', female: 'dark' },
+      crestPresent: false,
+      primaryColor: { male: '#D4A820', female: '#C89C18' },
+      uiColor: '#D4A820',
+      secondaryColors: { male: ['#1A1A1A (cheek crescent, flank streaks)', '#CC4018 (chestnut back streaks)', '#FFEE00 (face, underparts)'], female: ['reduced marks, olive back'] },
+      distinctiveMarkings: {
+        male: ['Yellow face with black cheek crescent', 'Yellow underparts with black flank streaks', 'Chestnut back streaks (diagnostic)', 'Yellow supercilium'],
+        female: ['Olive-yellow above, yellow below, faint face pattern'],
+      },
+      plumageDescription: {
+        male: 'A busy little bird: yellow below with black streaks on the flanks, a curved black cheek crescent, chestnut marks on the back, and yellow above the eye. The tail is pumped constantly.',
+        female: 'Olive-green above, yellow below, with faint cheek markings. Identified by behavior (tail-wagging) and habitat.',
+      },
+    },
+    primaryHabitat: ['old_fields', 'pine_barrens', 'scrubby_edge', 'powerline_cuts'],
+    feedingLayer: 'shrub', flightStyle: 'direct',
+    socialBehavior: { breeding: 'territorial_pairs', winter: 'mixed_flocks' },
+    typicalGroupSize: { min: 1, max: 2 }, activeHours: 'diurnal',
+    sound: {
+      callDescription: 'Soft "chup"',
+      songDescription: 'An ascending buzzy "zee zee zee zee zee" climbing the scale — like a tiny motor revving up. Very distinctive and easy to learn.',
+      loudness: 6, callFrequency: 8,
+      singingSeason: { spring: 'frequent', summer: 'frequent', fall: 'rare', winter: 'silent' },
+    },
+    seasons: {
+      spring: { presence: 'migrant', commonness: 'common' },
+      summer: { presence: 'breeder', commonness: 'common' },
+      fall:   { presence: 'migrant', commonness: 'uncommon' },
+      winter: { presence: 'absent', commonness: 'absent' },
+    },
+    range: 'atlantic_flyway',
+    regions: ['NE', 'SE'],
+    captureStats: {
+      difficulty: 4, speed: 5, flightiness: 4, camouflage: 3, sizeScore: 2,
+      movementPattern: 'low_shrub_gleaning',
+      captureBackground: 'scrubby_field',
+      behaviorNotes: 'Pumps its tail almost constantly — the most reliable field clue. Found in scrubby, open habitats rather than forest. Sings persistently all morning.',
+    },
+    rarity: 'uncommon', rarityColor: '#2196f3', points: 185,
+    verificationThreshold: 0.68, verificationMethods: 2,
+    description: 'Despite the name, the Prairie Warbler doesn\'t live on prairies — it favors old fields, pine barrens, and scrubby edges. Its constantly-pumped tail and ascending buzzy song make it one of the most distinctive warblers of the eastern flyway.',
+    funFacts: [
+      'Prairie Warblers vigorously pump their tails up and down while foraging — a habit so consistent it\'s used as a field identification clue.',
+      'This species is closely tied to early successional habitat, meaning conservation requires managing fields rather than protecting old-growth — an unusual management challenge.',
+    ],
+    eBirdCode: 'prawar', merlinId: 'Prairie_Warbler',
+  },
 ]
 
 // ── Helper utilities ──────────────────────────────────────────────────────────
@@ -2596,6 +3170,74 @@ export const getCurrentSeason = (month = new Date().getMonth()) => {
   if (month >= 8 && month <= 10) return 'fall'
   return 'winter'
 }
+
+// Regional presence map — which quadrants each species is found in
+// NE = Northeast US, SE = Southeast US, NW = Northwest US, SW = Southwest US
+export const BIRD_REGIONS = {
+  northern_cardinal:              ['NE', 'SE'],
+  american_robin:                 ['NE', 'SE', 'NW', 'SW'],
+  blue_jay:                       ['NE', 'SE'],
+  black_capped_chickadee:         ['NE', 'NW'],
+  tufted_titmouse:                ['NE', 'SE'],
+  american_goldfinch:             ['NE', 'SE', 'NW'],
+  mallard:                        ['NE', 'SE', 'NW', 'SW'],
+  red_tailed_hawk:                ['NE', 'SE', 'NW', 'SW'],
+  great_blue_heron:               ['NE', 'SE', 'NW', 'SW'],
+  mourning_dove:                  ['NE', 'SE', 'NW', 'SW'],
+  american_crow:                  ['NE', 'SE', 'NW', 'SW'],
+  song_sparrow:                   ['NE', 'SE', 'NW', 'SW'],
+  downy_woodpecker:               ['NE', 'SE', 'NW'],
+  white_breasted_nuthatch:        ['NE', 'SE', 'NW'],
+  dark_eyed_junco:                ['NE', 'SE', 'NW', 'SW'],
+  house_finch:                    ['NE', 'SE', 'NW', 'SW'],
+  house_sparrow:                  ['NE', 'SE', 'NW', 'SW'],
+  european_starling:              ['NE', 'SE', 'NW', 'SW'],
+  red_winged_blackbird:           ['NE', 'SE', 'NW', 'SW'],
+  canada_goose:                   ['NE', 'SE', 'NW', 'SW'],
+  osprey:                         ['NE', 'SE', 'NW', 'SW'],
+  eastern_bluebird:               ['NE', 'SE'],
+  ruby_throated_hummingbird:      ['NE', 'SE'],
+  cedar_waxwing:                  ['NE', 'SE', 'NW'],
+  turkey_vulture:                 ['NE', 'SE', 'SW'],
+  common_grackle:                 ['NE', 'SE'],
+  barn_swallow:                   ['NE', 'SE', 'NW', 'SW'],
+  american_kestrel:               ['NE', 'SE', 'NW', 'SW'],
+  prothonotary_warbler:           ['SE'],
+  american_redstart:              ['NE', 'SE'],
+  common_yellowthroat:            ['NE', 'SE', 'NW', 'SW'],
+  black_and_white_warbler:        ['NE', 'SE'],
+  yellow_rumped_warbler:          ['NE', 'SE', 'NW', 'SW'],
+  red_eyed_vireo:                 ['NE', 'SE'],
+  blue_headed_vireo:              ['NE', 'SE'],
+  yellow_throated_vireo:          ['NE', 'SE'],
+  scarlet_tanager:                ['NE', 'SE'],
+  baltimore_oriole:               ['NE', 'SE'],
+  rose_breasted_grosbeak:         ['NE', 'SE'],
+  indigo_bunting:                 ['NE', 'SE'],
+  wood_thrush:                    ['NE', 'SE'],
+  eastern_towhee:                 ['NE', 'SE'],
+  // Atlantic flyway warblers (new)
+  blackthroated_green_warbler:    ['NE', 'SE'],
+  blackburnian_warbler:           ['NE', 'SE'],
+  magnolia_warbler:               ['NE', 'SE'],
+  chestnuside_warbler:            ['NE', 'SE'],
+  blackthroated_blue_warbler:     ['NE', 'SE'],
+  canada_warbler:                 ['NE', 'SE'],
+  nashville_warbler:              ['NE', 'SE'],
+  wilsons_warbler:                ['NE', 'NW', 'SE'],
+  baybreasted_warbler:            ['NE', 'SE'],
+  prairie_warbler:                ['NE', 'SE'],
+}
+
+// Returns region list for a bird id; defaults to all if unknown
+export const getBirdRegions = (id) => BIRD_REGIONS[id] || ['NE', 'SE', 'NW', 'SW']
+
+// Filter birds by current region
+export const getBirdsForRegion = (region) =>
+  BIRDS.filter(b => {
+    const regions = b.regions || getBirdRegions(b.id)
+    return regions.includes(region)
+  })
 
 // Pick a random bird weighted slightly toward 'common' species
 export const getRandomBird = (preferCommon = true) => {

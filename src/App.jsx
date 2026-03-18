@@ -5,12 +5,26 @@ import BinocularsCapture from './components/BinocularsCapture'
 import CaptureSuccess from './components/CaptureSuccess'
 import Aviary from './components/Aviary'
 import BirdDetail from './components/BirdDetail'
+import Leaderboard from './components/Leaderboard'
 import { BIRDS, getRandomBird } from './data/birds'
 import { useEBirdLocation } from './hooks/useEBirdLocation'
+
+function timeAgo(obsDt) {
+  if (!obsDt) return ''
+  const d = new Date(obsDt.replace(' ', 'T'))
+  if (isNaN(d)) return ''
+  const mins = Math.round((Date.now() - d) / 60000)
+  if (mins < 2)  return 'just now'
+  if (mins < 60) return `${mins}m ago`
+  const hrs = Math.round(mins / 60)
+  if (hrs < 24)  return `${hrs}h ago`
+  return `${Math.round(hrs / 24)}d ago`
+}
 
 const SCREEN = {
   RADAR: 'radar', ENCOUNTER: 'encounter', BINOCULARS: 'binoculars',
   SUCCESS: 'success', AVIARY: 'aviary', BIRD_DETAIL: 'birdDetail',
+  LEADERBOARD: 'leaderboard',
 }
 
 const ENCOUNTER_DELAY_MS = 6000
@@ -62,13 +76,20 @@ export default function App() {
         ? common[Math.floor(Math.random() * common.length)]
         : pool[Math.floor(Math.random() * pool.length)]
 
+      // Find matching eBird observation for this bird
+      const obs = eBirdActive
+        ? eBirdObs.find(o => o.bird.id === bird.id)
+        : null
+
       setCurrentBird(bird)
       setFunFactIndex(0)  // reset for new bird
       setEncounterInfo({
-        distance: Math.floor(Math.random() * 180) + 20,
-        direction: DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)],
-        habitat: HABITATS[Math.floor(Math.random() * HABITATS.length)],
-        isEBirdVerified: eBirdActive && Math.random() > 0.4,
+        distance:      Math.floor(Math.random() * 180) + 20,
+        direction:     DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)],
+        habitat:       obs?.locName || HABITATS[Math.floor(Math.random() * HABITATS.length)],
+        isEBirdVerified: !!obs,
+        eBirdLocName:  obs?.locName || null,
+        eBirdTimeAgo:  obs?.obsDt   ? timeAgo(obs.obsDt) : null,
       })
       setScreen(SCREEN.ENCOUNTER)
     }, ENCOUNTER_DELAY_MS)
@@ -107,9 +128,10 @@ export default function App() {
     setScreen(SCREEN.RADAR)
   }, [currentBird])
 
-  const handleMissed       = useCallback(() => setScreen(SCREEN.RADAR), [])
-  const handleViewAviary   = useCallback(() => setScreen(SCREEN.AVIARY), [])
-  const handleBackToAviary = useCallback(() => setScreen(SCREEN.AVIARY), [])
+  const handleMissed           = useCallback(() => setScreen(SCREEN.RADAR), [])
+  const handleViewAviary       = useCallback(() => setScreen(SCREEN.AVIARY), [])
+  const handleBackToAviary     = useCallback(() => setScreen(SCREEN.AVIARY), [])
+  const handleViewLeaderboard  = useCallback(() => setScreen(SCREEN.LEADERBOARD), [])
 
   const handleSelectBird = useCallback((birdId) => {
     setSelectedBird(BIRDS.find(b => b.id === birdId))
@@ -129,7 +151,8 @@ export default function App() {
         <RadarScreen capturedBirds={capturedBirds} score={score}
           userLocation={userLocation} eBirdActive={eBirdActive}
           nearbyBirds={nearbyBirds} eBirdObs={eBirdObs}
-          onViewAviary={handleViewAviary}/>
+          onViewAviary={handleViewAviary}
+          onViewLeaderboard={handleViewLeaderboard}/>
       )}
       {screen === SCREEN.ENCOUNTER && currentBird && (
         <BirdEncounter bird={currentBird} info={encounterInfo}
@@ -153,6 +176,9 @@ export default function App() {
       {screen === SCREEN.BIRD_DETAIL && selectedBird && (
         <BirdDetail bird={selectedBird} captured={capturedBirds.includes(selectedBird.id)}
           onBack={handleBackToAviary}/>
+      )}
+      {screen === SCREEN.LEADERBOARD && (
+        <Leaderboard capturedBirds={capturedBirds} score={score} onBack={goToRadar}/>
       )}
     </div>
   )

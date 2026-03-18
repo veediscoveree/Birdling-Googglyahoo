@@ -1929,6 +1929,300 @@ export function AmericanKestrelAvatar({ size = 120, animated = false, style = {}
   )
 }
 
+// ── Atlantic Flyway Warbler Avatars ───────────────────────────────────────────
+// Compact but field-mark-accurate SVG warblers.
+// All share a 120×120 viewBox and the same posture template.
+
+export function BlackthroatedGreenWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Black-throated Green Warbler">
+      {/* Tail */}
+      <path d="M 72 88 C 80 92 88 104 88 112 C 80 106 74 96 72 90" fill="#3a6a2a"/>
+      {/* Body — olive-green */}
+      <ellipse cx="60" cy="82" rx="20" ry="16" fill="#4a8a3a"/>
+      {/* Wing bars — two white */}
+      <path d="M 44 78 C 56 74 72 74 78 80" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      <path d="M 46 84 C 58 80 72 80 76 86" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+      {/* Head — yellow face */}
+      <circle cx="48" cy="56" r="16" fill="#FFEE88"/>
+      {/* Olive-green cap */}
+      <path d="M 34 52 C 36 40 50 35 58 40 C 60 48 54 52 44 54 Z" fill="#4a8a3a"/>
+      {/* Black throat bib */}
+      <path d="M 34 60 C 38 55 52 54 58 58 C 58 68 50 72 38 70 Z" fill="#1A1A1A"/>
+      {/* Bill */}
+      <path d="M 32 56 L 22 58 L 32 61 Z" fill="#2A2A2A"/>
+      {/* Eye */}
+      <circle cx="46" cy="52" r="3" fill="#1A1A1A"/>
+      <circle cx="45" cy="51" r="1.1" fill="white" opacity="0.85"/>
+      {/* Legs */}
+      <path d="M 50 98 L 47 112 M 62 98 L 65 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function BlackburnianWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Blackburnian Warbler">
+      {/* Tail */}
+      <path d="M 72 88 C 82 92 90 104 90 112 C 80 104 74 96 72 90" fill="#1a1a1a"/>
+      {/* Body — black with white belly */}
+      <ellipse cx="60" cy="82" rx="20" ry="16" fill="#1A1A1A"/>
+      <ellipse cx="60" cy="86" rx="12" ry="10" fill="#F5F5F0"/>
+      {/* Large white wing patch */}
+      <path d="M 44 72 C 56 68 72 68 78 76 C 72 80 56 82 44 78 Z" fill="white" opacity="0.9"/>
+      {/* Black-streaked back */}
+      <path d="M 48 74 L 52 88 M 56 72 L 58 88 M 64 73 L 64 87" stroke="#1A1A1A" strokeWidth="1.8" opacity="0.6"/>
+      {/* Head — black with fiery orange face */}
+      <circle cx="48" cy="56" r="16" fill="#1A1A1A"/>
+      {/* Fire orange throat/face */}
+      <path d="M 32 54 C 34 46 44 42 54 44 C 58 48 58 58 52 62 C 44 64 34 62 32 56 Z" fill="#FF6B00"/>
+      {/* Black cheek within the orange */}
+      <path d="M 34 58 C 36 54 42 52 46 56 C 44 60 36 62 34 60 Z" fill="#1A1A1A"/>
+      {/* Bill */}
+      <path d="M 32 54 L 21 56 L 32 59 Z" fill="#2A2A2A"/>
+      {/* Eye */}
+      <circle cx="46" cy="52" r="3" fill="#1A1A1A"/>
+      <circle cx="45" cy="51" r="1.1" fill="white" opacity="0.9"/>
+      {/* Legs */}
+      <path d="M 50 98 L 47 112 M 62 98 L 65 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function MagnoliaWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Magnolia Warbler">
+      {/* Tail — white band diagnostic */}
+      <path d="M 55 90 C 50 100 48 110 50 118 C 56 112 60 102 60 92" fill="#1A1A1A"/>
+      <path d="M 65 90 C 70 100 72 110 70 118 C 64 112 60 102 60 92" fill="#1A1A1A"/>
+      <rect x="46" y="90" width="28" height="5" rx="2" fill="white" opacity="0.9"/>
+      {/* Body — yellow with heavy black streaks */}
+      <ellipse cx="60" cy="80" rx="20" ry="16" fill="#FFD700"/>
+      <path d="M 46 74 L 44 90 M 52 72 L 50 90 M 58 71 L 58 90 M 64 71 L 66 90 M 70 74 L 72 90"
+        stroke="#1A1A1A" strokeWidth="2.2" strokeLinecap="round" opacity="0.8"/>
+      {/* White wing patch */}
+      <path d="M 44 72 C 54 68 70 68 76 74 C 70 78 54 78 44 76 Z" fill="white" opacity="0.85"/>
+      {/* Head — gray cap */}
+      <circle cx="48" cy="56" r="16" fill="#606060"/>
+      {/* Yellow chin/throat */}
+      <ellipse cx="44" cy="64" rx="10" ry="7" fill="#FFD700"/>
+      {/* Black mask */}
+      <path d="M 34 54 C 36 48 44 46 52 48 C 54 52 50 58 42 58 Z" fill="#1A1A1A"/>
+      {/* Bill */}
+      <path d="M 32 55 L 22 57 L 32 60 Z" fill="#2A2A2A"/>
+      {/* Eye — bright against mask */}
+      <circle cx="46" cy="52" r="3" fill="#1A1A1A"/>
+      <circle cx="45" cy="51" r="1.2" fill="white" opacity="0.9"/>
+      {/* Legs */}
+      <path d="M 50 96 L 47 110 M 62 96 L 65 110" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function ChestnutsideWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Chestnut-sided Warbler">
+      {/* Tail */}
+      <path d="M 72 88 C 80 92 88 102 88 110 C 80 104 74 96 72 90" fill="#6a6a4a"/>
+      {/* Body — white with chestnut sides */}
+      <ellipse cx="60" cy="82" rx="20" ry="16" fill="#F5F5F0"/>
+      {/* Chestnut flank stripes */}
+      <path d="M 42 74 C 40 80 40 88 44 94" stroke="#8B4513" strokeWidth="5" fill="none" strokeLinecap="round" opacity="0.85"/>
+      <path d="M 78 74 C 80 80 80 88 76 94" stroke="#8B4513" strokeWidth="5" fill="none" strokeLinecap="round" opacity="0.85"/>
+      {/* Wing bars */}
+      <path d="M 46 76 C 58 72 70 72 76 78" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      <path d="M 48 82 C 58 78 70 78 76 84" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+      {/* Head — bright yellow cap */}
+      <circle cx="48" cy="56" r="16" fill="#F5F5F0"/>
+      {/* Yellow cap */}
+      <path d="M 34 50 C 36 38 50 34 58 40 C 58 48 52 52 40 52 Z" fill="#FFE800"/>
+      {/* Black face mask/cheek */}
+      <path d="M 38 56 C 36 52 38 48 44 46 C 48 48 50 52 48 58 C 44 60 38 60 38 58 Z" fill="#1A1A1A"/>
+      {/* White face area */}
+      <ellipse cx="44" cy="60" rx="6" ry="4" fill="#F5F5F0"/>
+      {/* Bill */}
+      <path d="M 32 55 L 22 57 L 32 60 Z" fill="#2A2A2A"/>
+      {/* Eye */}
+      <circle cx="46" cy="52" r="3" fill="#1A1A1A"/>
+      <circle cx="45" cy="51" r="1.1" fill="white" opacity="0.85"/>
+      {/* Legs */}
+      <path d="M 50 98 L 47 112 M 62 98 L 65 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function BlackthroatedBlueWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Black-throated Blue Warbler">
+      {/* Tail */}
+      <path d="M 72 88 C 80 94 86 106 86 114 C 78 106 72 96 72 90" fill="#1a2a6a"/>
+      {/* Body — deep navy */}
+      <ellipse cx="60" cy="82" rx="20" ry="16" fill="#1a3a8a"/>
+      {/* White belly patch */}
+      <ellipse cx="60" cy="87" rx="12" ry="9" fill="white"/>
+      {/* Head — navy */}
+      <circle cx="48" cy="56" r="16" fill="#1a3a8a"/>
+      {/* Black face / throat */}
+      <path d="M 32 54 C 34 46 42 42 50 44 C 54 48 54 62 46 66 C 36 68 30 62 32 56 Z" fill="#0a0a2a"/>
+      {/* Small white wing spot — "handkerchief" */}
+      <circle cx="66" cy="76" r="5" fill="white" opacity="0.9"/>
+      {/* Bill */}
+      <path d="M 32 54 L 21 56 L 32 59 Z" fill="#1A1A1A"/>
+      {/* Eye */}
+      <circle cx="46" cy="52" r="3" fill="#0a0a2a"/>
+      <circle cx="45" cy="51" r="1.1" fill="white" opacity="0.9"/>
+      {/* Legs */}
+      <path d="M 50 98 L 47 112 M 62 98 L 65 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function CanadaWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Canada Warbler">
+      {/* Tail */}
+      <path d="M 72 88 C 80 92 86 104 86 112 C 78 104 72 96 72 90" fill="#607090"/>
+      {/* Body — yellow with gray */}
+      <ellipse cx="60" cy="82" rx="20" ry="16" fill="#FFD700"/>
+      {/* Gray back overlay */}
+      <path d="M 44 74 C 52 70 70 70 76 76 C 72 80 52 80 44 78 Z" fill="#607090"/>
+      {/* Black necklace streaks */}
+      <path d="M 44 80 C 46 76 50 74 54 77 M 58 73 L 58 79 M 62 73 L 63 79 M 68 76 C 70 72 72 74 72 78"
+        stroke="#1A1A1A" strokeWidth="2" strokeLinecap="round"/>
+      {/* Head — blue-gray */}
+      <circle cx="48" cy="56" r="16" fill="#607090"/>
+      {/* Yellow eye ring */}
+      <circle cx="46" cy="53" r="5.5" fill="none" stroke="#FFD700" strokeWidth="2"/>
+      {/* Yellow chin */}
+      <ellipse cx="44" cy="64" rx="9" ry="6" fill="#FFD700"/>
+      {/* Black forehead/lores */}
+      <path d="M 34 52 C 36 48 42 46 46 49 C 44 52 38 54 34 54 Z" fill="#1A1A1A"/>
+      {/* Bill */}
+      <path d="M 32 55 L 22 57 L 32 60 Z" fill="#2A2A2A"/>
+      {/* Eye */}
+      <circle cx="46" cy="53" r="3" fill="#1A1A1A"/>
+      <circle cx="45" cy="52" r="1.1" fill="white" opacity="0.85"/>
+      {/* Legs */}
+      <path d="M 50 98 L 47 112 M 62 98 L 65 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function NashvilleWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Nashville Warbler">
+      {/* Tail — pumped slightly up */}
+      <path d="M 70 85 C 80 84 90 90 92 100 C 82 96 74 90 70 87" fill="#5a6a4a"/>
+      {/* Body — olive-green, yellow below */}
+      <ellipse cx="60" cy="82" rx="20" ry="16" fill="#a8c840"/>
+      <ellipse cx="60" cy="87" rx="16" ry="10" fill="#FFE800"/>
+      {/* No wing bars — clean look */}
+      {/* Head — gray */}
+      <circle cx="48" cy="56" r="16" fill="#7a8a7a"/>
+      {/* White eye ring — prominent */}
+      <circle cx="46" cy="53" r="6" fill="none" stroke="white" strokeWidth="2.2"/>
+      {/* Yellow chin/throat */}
+      <ellipse cx="44" cy="64" rx="9" ry="6" fill="#FFE800"/>
+      {/* Lores dark */}
+      <path d="M 34 54 C 36 50 40 48 44 51 C 42 54 36 56 34 56 Z" fill="#2a2a2a"/>
+      {/* Bill — thin */}
+      <path d="M 32 55 L 21 57 L 32 60 Z" fill="#2A2A2A"/>
+      {/* Eye */}
+      <circle cx="46" cy="53" r="3" fill="#1A1A1A"/>
+      <circle cx="45" cy="52" r="1.1" fill="white" opacity="0.9"/>
+      {/* Legs — tail lifted suggests tail-bobbing */}
+      <path d="M 50 98 L 46 112 M 62 98 L 65 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function WilsonsWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Wilson's Warbler">
+      {/* Tail — flicked sideways */}
+      <path d="M 74 86 C 86 84 94 92 96 102 C 86 96 76 90 72 88" fill="#6a8a3a"/>
+      {/* Body — olive-green */}
+      <ellipse cx="60" cy="82" rx="20" ry="16" fill="#6a8a3a"/>
+      {/* Yellow underparts */}
+      <ellipse cx="60" cy="86" rx="16" ry="11" fill="#FFE800"/>
+      {/* Head — yellow with black cap */}
+      <circle cx="48" cy="56" r="16" fill="#FFE800"/>
+      {/* Black cap — the beret */}
+      <path d="M 32 50 C 34 36 52 30 60 36 C 62 42 58 50 48 52 C 40 54 34 52 32 50 Z" fill="#1A1A1A"/>
+      {/* Bill — thin */}
+      <path d="M 32 56 L 21 58 L 32 61 Z" fill="#2A2A2A"/>
+      {/* Eye */}
+      <circle cx="46" cy="54" r="3" fill="#1A1A1A"/>
+      <circle cx="45" cy="53" r="1.2" fill="white" opacity="0.85"/>
+      {/* Legs */}
+      <path d="M 50 98 L 47 112 M 62 98 L 65 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function BaybreastedWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Bay-breasted Warbler">
+      {/* Tail */}
+      <path d="M 72 88 C 80 92 88 104 88 112 C 80 104 74 96 72 90" fill="#1a1a1a"/>
+      {/* Body — chestnut flanks, buff belly */}
+      <ellipse cx="60" cy="82" rx="20" ry="16" fill="#F0EAD6"/>
+      {/* Chestnut breast/sides */}
+      <path d="M 42 72 C 44 82 46 92 50 98 C 44 96 40 88 40 78 Z" fill="#6B2F18" opacity="0.9"/>
+      <path d="M 78 72 C 76 82 74 92 70 98 C 76 96 80 88 80 78 Z" fill="#6B2F18" opacity="0.9"/>
+      <path d="M 44 72 C 52 68 70 68 76 74 C 70 78 52 78 44 76 Z" fill="#6B2F18" opacity="0.9"/>
+      {/* Wing bars */}
+      <path d="M 46 78 C 58 74 70 74 76 80" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      <path d="M 48 84 C 58 80 70 80 74 86" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+      {/* Head — chestnut cap, black mask */}
+      <circle cx="48" cy="56" r="16" fill="#1A1A1A"/>
+      {/* Chestnut crown */}
+      <path d="M 34 50 C 36 38 52 34 60 40 C 60 48 54 52 44 52 Z" fill="#6B2F18"/>
+      {/* Buffy neck patch */}
+      <ellipse cx="54" cy="56" rx="6" ry="5" fill="#FFCF8A"/>
+      {/* Bill */}
+      <path d="M 32 54 L 22 56 L 32 59 Z" fill="#2A2A2A"/>
+      {/* Eye */}
+      <circle cx="46" cy="52" r="3" fill="#1A1A1A"/>
+      <circle cx="45" cy="51" r="1.1" fill="white" opacity="0.9"/>
+      {/* Legs */}
+      <path d="M 50 98 L 47 112 M 62 98 L 65 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function PrairieWarblerAvatar({ size = 120, style = {} }) {
+  return (
+    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Prairie Warbler">
+      {/* Tail — pumped up (tail-wagger) */}
+      <path d="M 70 82 C 80 78 92 82 96 92 C 86 88 74 86 70 84" fill="#6a7a2a"/>
+      {/* Body — olive above, yellow below */}
+      <ellipse cx="58" cy="82" rx="20" ry="16" fill="#a8b830"/>
+      <ellipse cx="58" cy="87" rx="16" ry="10" fill="#FFEE00"/>
+      {/* Black flank streaks */}
+      <path d="M 42 80 L 40 94 M 46 78 L 45 93 M 68 78 L 70 93 M 72 80 L 74 94"
+        stroke="#1A1A1A" strokeWidth="1.8" strokeLinecap="round" opacity="0.75"/>
+      {/* Chestnut back streaks */}
+      <path d="M 52 72 L 54 82 M 58 71 L 59 82 M 63 71 L 62 82"
+        stroke="#8B4010" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+      {/* Head — yellow with black cheek crescent */}
+      <circle cx="46" cy="56" r="16" fill="#FFEE00"/>
+      {/* Yellow supercilium above lores */}
+      {/* Black curved cheek mark */}
+      <path d="M 34 58 C 36 54 40 52 44 54 C 46 58 44 64 40 66 C 36 64 32 62 34 60 Z" fill="#1A1A1A"/>
+      {/* Black lore stripe */}
+      <path d="M 32 52 C 34 48 40 47 44 50 C 40 52 34 52 32 54 Z" fill="#1A1A1A"/>
+      {/* Bill */}
+      <path d="M 30 54 L 20 56 L 30 59 Z" fill="#2A2A2A"/>
+      {/* Eye */}
+      <circle cx="44" cy="53" r="3" fill="#1A1A1A"/>
+      <circle cx="43" cy="52" r="1.1" fill="white" opacity="0.85"/>
+      {/* Legs */}
+      <path d="M 48 98 L 45 112 M 60 98 L 63 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
 // ── Avatar router ─────────────────────────────────────────────────────────────
 export function BirdAvatar({ birdId, size = 120, animated = false, style = {} }) {
   const props = { size, animated, style }
@@ -1978,7 +2272,18 @@ export function BirdAvatar({ birdId, size = 120, animated = false, style = {} })
     case 'indigo_bunting':         return <IndigoBuntingAvatar {...props} />
     case 'wood_thrush':            return <WoodThrushAvatar {...props} />
     // ── Residents ─────────────────────────────────────────
-    case 'eastern_towhee':         return <EasternTowheeAvatar {...props} />
+    case 'eastern_towhee':              return <EasternTowheeAvatar {...props} />
+    // ── Atlantic Flyway Warblers ──────────────────────────────
+    case 'blackthroated_green_warbler': return <BlackthroatedGreenWarblerAvatar {...props} />
+    case 'blackburnian_warbler':        return <BlackburnianWarblerAvatar {...props} />
+    case 'magnolia_warbler':            return <MagnoliaWarblerAvatar {...props} />
+    case 'chestnuside_warbler':         return <ChestnutsideWarblerAvatar {...props} />
+    case 'blackthroated_blue_warbler':  return <BlackthroatedBlueWarblerAvatar {...props} />
+    case 'canada_warbler':              return <CanadaWarblerAvatar {...props} />
+    case 'nashville_warbler':           return <NashvilleWarblerAvatar {...props} />
+    case 'wilsons_warbler':             return <WilsonsWarblerAvatar {...props} />
+    case 'baybreasted_warbler':         return <BaybreastedWarblerAvatar {...props} />
+    case 'prairie_warbler':             return <PrairieWarblerAvatar {...props} />
     default:
       console.error('[BirdAvatar] no avatar for birdId:', birdId)
       return (

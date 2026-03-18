@@ -53,7 +53,13 @@ export default function BirdEncounter({ bird, info, onStartCapture, onDismiss })
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 1 }}>
             {info?.distance}m away · {info?.habitat}
-            {info?.isEBirdVerified && (
+            {info?.eBirdLocName && (
+              <span style={{ marginLeft: 4, color: 'var(--accent-amber)', fontWeight: 600 }}>
+                · last seen at {info.eBirdLocName}
+                {info.eBirdTimeAgo ? ` ${info.eBirdTimeAgo}` : ''}
+              </span>
+            )}
+            {!info?.eBirdLocName && info?.isEBirdVerified && (
               <span style={{ marginLeft: 6, color: 'var(--accent-amber)', fontWeight: 600 }}>
                 · eBird verified
               </span>

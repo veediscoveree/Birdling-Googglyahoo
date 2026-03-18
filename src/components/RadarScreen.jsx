@@ -55,7 +55,7 @@ function buildSightingCards(eBirdObs, eBirdActive) {
   }))
 }
 
-export default function RadarScreen({ capturedBirds, score, userLocation, eBirdActive, nearbyBirds, eBirdObs = [], onViewAviary }) {
+export default function RadarScreen({ capturedBirds, score, userLocation, eBirdActive, nearbyBirds, eBirdObs = [], onViewAviary, onViewLeaderboard }) {
   const [sweepAngle, setSweepAngle] = useState(0)
   const [pingBlips,  setPingBlips]  = useState([])
   const [time,       setTime]       = useState(() => new Date())
@@ -127,8 +127,12 @@ export default function RadarScreen({ capturedBirds, score, userLocation, eBirdA
             ★ {score}
           </div>
           <button className="btn btn-outline btn-sm" onClick={onViewAviary}
-            style={{ padding: '7px 14px', fontSize: 13, gap: 6 }}>
-            🪶 Aviary ({capturedBirds.length})
+            style={{ padding: '7px 14px', fontSize: 13 }}>
+            🪶 {capturedBirds.length}
+          </button>
+          <button className="btn btn-outline btn-sm" onClick={onViewLeaderboard}
+            style={{ padding: '7px 12px', fontSize: 13 }}>
+            🏆
           </button>
         </div>
       </div>
