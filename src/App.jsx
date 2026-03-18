@@ -30,7 +30,7 @@ export default function App() {
   const [userLocation, setUserLocation]   = useState({ lat: 40.7614, lng: -73.9776 })
   const [funFactIndex, setFunFactIndex]   = useState(0)
 
-  const { nearbyBirds, eBirdActive } = useEBirdLocation(userLocation)
+  const { nearbyBirds, eBirdObs, eBirdActive } = useEBirdLocation(userLocation)
 
   // Persist aviary across reloads
   useEffect(() => {
@@ -128,7 +128,8 @@ export default function App() {
       {screen === SCREEN.RADAR && (
         <RadarScreen capturedBirds={capturedBirds} score={score}
           userLocation={userLocation} eBirdActive={eBirdActive}
-          nearbyBirds={nearbyBirds} onViewAviary={handleViewAviary}/>
+          nearbyBirds={nearbyBirds} eBirdObs={eBirdObs}
+          onViewAviary={handleViewAviary}/>
       )}
       {screen === SCREEN.ENCOUNTER && currentBird && (
         <BirdEncounter bird={currentBird} info={encounterInfo}
