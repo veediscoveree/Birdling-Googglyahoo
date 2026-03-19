@@ -6,7 +6,9 @@ import CaptureSuccess from './components/CaptureSuccess'
 import Aviary from './components/Aviary'
 import BirdDetail from './components/BirdDetail'
 import Leaderboard from './components/Leaderboard'
+import VerificationModal from './components/VerificationModal'
 import { BIRDS, getRandomBird } from './data/birds'
+import { detectAutoEvidence } from './lib/verification'
 import { useEBirdLocation } from './hooks/useEBirdLocation'
 
 function timeAgo(obsDt) {
@@ -24,7 +26,7 @@ function timeAgo(obsDt) {
 const SCREEN = {
   RADAR: 'radar', ENCOUNTER: 'encounter', BINOCULARS: 'binoculars',
   SUCCESS: 'success', AVIARY: 'aviary', BIRD_DETAIL: 'birdDetail',
-  LEADERBOARD: 'leaderboard',
+  LEADERBOARD: 'leaderboard', VERIFY: 'verify',
 }
 
 const ENCOUNTER_DELAY_MS = 6000
@@ -43,6 +45,8 @@ export default function App() {
   })
   const [userLocation, setUserLocation]   = useState({ lat: 40.7614, lng: -73.9776 })
   const [funFactIndex, setFunFactIndex]   = useState(0)
+  const [verificationResult, setVerificationResult] = useState(null)
+  const handle = (() => { try { return localStorage.getItem('bhn_handle') || '' } catch { return '' } })()
 
   const { nearbyBirds, eBirdObs, eBirdActive } = useEBirdLocation(userLocation)
 
@@ -132,6 +136,16 @@ export default function App() {
   const handleViewAviary       = useCallback(() => setScreen(SCREEN.AVIARY), [])
   const handleBackToAviary     = useCallback(() => setScreen(SCREEN.AVIARY), [])
   const handleViewLeaderboard  = useCallback(() => setScreen(SCREEN.LEADERBOARD), [])
+  const handleOpenVerify       = useCallback(() => setScreen(SCREEN.VERIFY), [])
+  const handleVerifyConfirm    = useCallback(({ bonusPoints }) => {
+    if (bonusPoints > 0) setScore(prev => prev + bonusPoints)
+    setVerificationResult({ confirmed: true })
+    setScreen(SCREEN.SUCCESS)
+  }, [])
+  const handleVerifySkip       = useCallback(() => {
+    setVerificationResult({ confirmed: false })
+    setScreen(SCREEN.SUCCESS)
+  }, [])
 
   const handleSelectBird = useCallback((birdId) => {
     setSelectedBird(BIRDS.find(b => b.id === birdId))
@@ -166,8 +180,20 @@ export default function App() {
       {screen === SCREEN.SUCCESS && currentBird && (
         <CaptureSuccess bird={currentBird} isNew={isNewCapture} score={score}
           funFact={getCurrentFunFact(currentBird)}
+          verificationResult={verificationResult}
+          onVerify={handleOpenVerify}
           onViewAviary={handleViewAviary} onContinue={goToRadar}
           onRelease={handleRelease}/>
+      )}
+      {screen === SCREEN.VERIFY && currentBird && (
+        <VerificationModal
+          bird={currentBird}
+          eBirdObs={eBirdObs}
+          userLocation={userLocation}
+          handle={handle}
+          initialEvidence={detectAutoEvidence(currentBird, eBirdObs, userLocation)}
+          onConfirm={handleVerifyConfirm}
+          onSkip={handleVerifySkip}/>
       )}
       {screen === SCREEN.AVIARY && (
         <Aviary capturedBirds={capturedBirds} score={score}

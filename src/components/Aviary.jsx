@@ -5,6 +5,7 @@
 
 import { BirdAvatar, BirdSilhouette } from './BirdAvatars'
 import { BIRDS, getRarityLabel } from '../data/birds'
+import { REQUIRED_BY_RARITY, loadLocalVerification } from '../lib/verification'
 
 // ── Rank ladder ───────────────────────────────────────────────────────────────
 const RANKS = [
@@ -158,6 +159,33 @@ export default function Aviary({ capturedBirds, score, allBirds, onSelectBird, o
                       }}>✦</div>
                     )}
                     <BirdAvatar birdId={bird.id} size={90} animated={false}/>
+                    {/* Verification status badge */}
+                    {(() => {
+                      const req = REQUIRED_BY_RARITY[bird.rarity] ?? 0
+                      if (req === 0) return null
+                      const v = loadLocalVerification(bird.id)
+                      const credits = v?.evidence?.length ?? 0
+                      if (credits >= req) return (
+                        <div style={{
+                          position: 'absolute', bottom: 10, right: 8,
+                          fontSize: 9, fontWeight: 700, letterSpacing: 0.3,
+                          color: 'var(--accent-green)',
+                          background: 'rgba(61,220,127,0.12)',
+                          border: '1px solid rgba(61,220,127,0.3)',
+                          borderRadius: 6, padding: '2px 5px',
+                        }}>✓ verified</div>
+                      )
+                      return (
+                        <div style={{
+                          position: 'absolute', bottom: 10, right: 8,
+                          fontSize: 9, fontWeight: 700, letterSpacing: 0.3,
+                          color: '#f5a623',
+                          background: 'rgba(245,166,35,0.1)',
+                          border: '1px solid rgba(245,166,35,0.25)',
+                          borderRadius: 6, padding: '2px 5px',
+                        }}>tentative</div>
+                      )
+                    })()}
                     <div style={{ textAlign: 'center', width: '100%' }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>
                         {bird.commonName}

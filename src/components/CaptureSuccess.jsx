@@ -4,8 +4,9 @@ import { useEffect, useState, useRef } from 'react'
 import { BirdAvatar } from './BirdAvatars'
 import { getRarityLabel } from '../data/birds'
 import { useXenoCantoAudio, pickBestSong } from '../hooks/useXenoCantoAudio'
+import { REQUIRED_BY_RARITY, loadLocalVerification } from '../lib/verification'
 
-export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAviary, onContinue, onRelease }) {
+export default function CaptureSuccess({ bird, isNew, score, funFact, verificationResult, onVerify, onViewAviary, onContinue, onRelease }) {
   const [showContent, setShowContent] = useState(false)
   const [stars, setStars]             = useState([])
   const [songPlaying, setSongPlaying] = useState(false)
@@ -65,6 +66,11 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAvia
   }, [])
 
   const bestSong = songs.length ? pickBestSong(songs, 10) : null
+
+  const required   = REQUIRED_BY_RARITY[bird.rarity] ?? 0
+  const localVerif = loadLocalVerification(bird.id)
+  const isVerified = verificationResult?.confirmed || localVerif?.evidence?.length >= required
+  const needsVerif = required > 0 && !isVerified
 
   return (
     <div className="screen" style={{
@@ -246,6 +252,36 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, onViewAvia
             </>
           ) : (
             <>
+              {/* Verification CTA — required for rare+, optional bonus for common/uncommon */}
+              {!isVerified && onVerify && (
+                <button
+                  className={needsVerif ? 'btn btn-primary btn-lg' : 'btn btn-outline btn-lg'}
+                  onClick={onVerify}
+                  style={needsVerif ? {
+                    background: 'rgba(245,166,35,0.15)',
+                    border: '1px solid rgba(245,166,35,0.5)',
+                    color: 'var(--accent-amber)',
+                  } : {}}
+                >
+                  {needsVerif
+                    ? `⚠ Confirm Record (${bird.rarity})`
+                    : '🔬 Verify for bonus pts'}
+                </button>
+              )}
+              {isVerified && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  fontSize: 13, color: 'var(--accent-green)', fontWeight: 600,
+                  padding: '8px 0',
+                }}>
+                  ✓ Record confirmed
+                  {verificationResult?.bonusPoints > 0 && (
+                    <span style={{ color: 'var(--accent-gold)' }}>
+                      +{verificationResult.bonusPoints} pts
+                    </span>
+                  )}
+                </div>
+              )}
               <button className="btn btn-primary btn-lg" onClick={handleNav(onViewAviary)}>
                 🪶 View in Aviary
               </button>

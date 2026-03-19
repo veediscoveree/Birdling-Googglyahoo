@@ -2193,32 +2193,56 @@ export function BaybreastedWarblerAvatar({ size = 120, style = {} }) {
 
 export function PrairieWarblerAvatar({ size = 120, style = {} }) {
   return (
-    <svg viewBox="0 0 120 120" width={size} height={size} style={style} aria-label="Prairie Warbler">
-      {/* Tail — pumped up (tail-wagger) */}
-      <path d="M 70 82 C 80 78 92 82 96 92 C 86 88 74 86 70 84" fill="#6a7a2a"/>
-      {/* Body — olive above, yellow below */}
-      <ellipse cx="58" cy="82" rx="20" ry="16" fill="#a8b830"/>
-      <ellipse cx="58" cy="87" rx="16" ry="10" fill="#FFEE00"/>
-      {/* Black flank streaks */}
-      <path d="M 42 80 L 40 94 M 46 78 L 45 93 M 68 78 L 70 93 M 72 80 L 74 94"
-        stroke="#1A1A1A" strokeWidth="1.8" strokeLinecap="round" opacity="0.75"/>
-      {/* Chestnut back streaks */}
-      <path d="M 52 72 L 54 82 M 58 71 L 59 82 M 63 71 L 62 82"
-        stroke="#8B4010" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
-      {/* Head — yellow with black cheek crescent */}
-      <circle cx="46" cy="56" r="16" fill="#FFEE00"/>
-      {/* Yellow supercilium above lores */}
-      {/* Black curved cheek mark */}
-      <path d="M 34 58 C 36 54 40 52 44 54 C 46 58 44 64 40 66 C 36 64 32 62 34 60 Z" fill="#1A1A1A"/>
-      {/* Black lore stripe */}
-      <path d="M 32 52 C 34 48 40 47 44 50 C 40 52 34 52 32 54 Z" fill="#1A1A1A"/>
-      {/* Bill */}
-      <path d="M 30 54 L 20 56 L 30 59 Z" fill="#2A2A2A"/>
+    <svg viewBox="0 0 120 125" width={size} height={size} style={style} aria-label="Prairie Warbler">
+      {/* Tail — pumped conspicuously upward — diagnostic behavior */}
+      <path d="M 68 84 C 76 76 90 72 96 80 C 86 80 74 82 68 86" fill="#7a8a30"/>
+      <path d="M 70 88 C 78 82 90 78 96 82 C 86 82 74 86 70 90" fill="#5a6a20" opacity="0.6"/>
+
+      {/* Body — rich olive-green back */}
+      <ellipse cx="56" cy="82" rx="22" ry="17" fill="#8a9a38"/>
+      {/* Bright yellow underparts */}
+      <ellipse cx="54" cy="88" rx="17" ry="11" fill="#FFE400"/>
+
+      {/* Rufous/chestnut back streaks — diagnostic */}
+      <path d="M 46 70 C 47 78 47 86 46 92 M 52 68 C 53 77 53 86 52 92 M 58 68 C 59 77 59 86 58 92"
+        stroke="#9B3A08" strokeWidth="2.8" strokeLinecap="round" opacity="0.65"/>
+
+      {/* Black flank streaks on yellow belly */}
+      <path d="M 39 84 C 38 90 38 98 40 102 M 44 82 C 43 90 43 98 45 102"
+        stroke="#1A1A1A" strokeWidth="1.8" strokeLinecap="round" opacity="0.7"/>
+      <path d="M 68 84 C 69 90 69 98 67 102 M 72 82 C 73 90 73 98 71 102"
+        stroke="#1A1A1A" strokeWidth="1.8" strokeLinecap="round" opacity="0.7"/>
+
+      {/* Head — rich golden yellow */}
+      <circle cx="44" cy="54" r="17" fill="#FFE000"/>
+
+      {/* Yellow supercilium — broad stripe above eye */}
+      <path d="M 27 49 C 31 45 39 43 47 45 C 45 48 37 48 29 52 Z" fill="#FFE800"/>
+
+      {/* Black lore stripe from bill to eye */}
+      <path d="M 27 51 C 29 47 35 45 41 48 C 37 50 31 51 27 53 Z" fill="#1A1A1A"/>
+
+      {/* Curved black cheek crescent — the unmistakable field mark */}
+      <path d="M 30 58 C 31 52 37 49 43 51 C 45 56 43 64 37 67 C 31 65 28 62 30 58 Z"
+        fill="#1A1A1A"/>
+      {/* Pale yellow inside the crescent arc */}
+      <path d="M 34 58 C 35 54 39 52 42 54 C 43 57 42 62 39 64 C 35 63 33 61 34 58 Z"
+        fill="#FFE400" opacity="0.25"/>
+
+      {/* Bill — slender, pointed */}
+      <path d="M 27 53 L 15 55.5 L 27 58 Z" fill="#2A2A2A"/>
+      <line x1="15" y1="55.5" x2="27" y2="55.5" stroke="#1A1A1A" strokeWidth="0.8"/>
+
       {/* Eye */}
-      <circle cx="44" cy="53" r="3" fill="#1A1A1A"/>
-      <circle cx="43" cy="52" r="1.1" fill="white" opacity="0.85"/>
+      <circle cx="41" cy="51" r="3.5" fill="#1A1A1A"/>
+      <circle cx="40" cy="50" r="1.3" fill="white" opacity="0.9"/>
+
       {/* Legs */}
-      <path d="M 48 98 L 45 112 M 60 98 L 63 112" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M 46 100 L 43 114 M 59 100 L 62 114" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M 43 114 L 37 117 M 43 114 L 43 119 M 43 114 L 48 117"
+        stroke="#8B7040" strokeWidth="1.4" strokeLinecap="round"/>
+      <path d="M 62 114 L 56 117 M 62 114 L 62 119 M 62 114 L 67 117"
+        stroke="#8B7040" strokeWidth="1.4" strokeLinecap="round"/>
     </svg>
   )
 }
