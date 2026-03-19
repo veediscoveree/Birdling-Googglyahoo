@@ -200,6 +200,81 @@ function HabitatBackground({ type, lensR }) {
         </g>
       )
 
+    case 'open_water':
+      return (
+        <g>
+          {/* Sky */}
+          <rect x="0" y="0" width={lensR*2} height={lensR*0.85} fill="#6AABCF"/>
+          <rect x="0" y="0" width={lensR*2} height={lensR*0.4} fill="#82BBDF" opacity="0.5"/>
+          {/* Distant treeline */}
+          <path d={`M 0 ${lensR*0.85} C 25 ${lensR*0.7} 55 ${lensR*0.65} 85 ${lensR*0.75} C 105 ${lensR*0.6} 130 ${lensR*0.55} 160 ${lensR*0.7} C 178 ${lensR*0.65} 195 ${lensR*0.75} ${lensR*2} ${lensR*0.8}`}
+            fill="#3A6020" opacity="0.85"/>
+          {/* Water body */}
+          <rect x="0" y={lensR*0.85} width={lensR*2} height={lensR*1.15} fill="#2A6A8A"/>
+          {/* Water surface glint */}
+          <rect x="0" y={lensR*0.85} width={lensR*2} height={lensR*0.06} fill="#5AABCF" opacity="0.5"/>
+          {/* Ripple rings */}
+          {[20, 60, 105, 150, 180].map((x,i) => (
+            <ellipse key={i} cx={x} cy={lensR*(0.98+i*0.1)} rx={16+i*5} ry={3+i}
+              fill="none" stroke="#4A8AAA" strokeWidth="1" opacity="0.35"/>
+          ))}
+          {/* Light reflections */}
+          {[35, 85, 130, 170].map((x,i) => (
+            <line key={i} x1={x} y1={lensR*(0.9+i*0.06)} x2={x+14} y2={lensR*(0.9+i*0.06)}
+              stroke="#80C0E0" strokeWidth="1.2" opacity="0.28"/>
+          ))}
+        </g>
+      )
+
+    case 'open_field':
+      return (
+        <g>
+          {/* Sky */}
+          <rect x="0" y="0" width={lensR*2} height={lensR*0.62} fill="#8AC8E8"/>
+          {/* Clouds */}
+          <ellipse cx={60} cy={lensR*0.22} rx={38} ry={15} fill="white" opacity="0.72"/>
+          <ellipse cx={48} cy={lensR*0.25} rx={28} ry={11} fill="white" opacity="0.65"/>
+          <ellipse cx={158} cy={lensR*0.32} rx={30} ry={12} fill="white" opacity="0.68"/>
+          {/* Open field ground */}
+          <rect x="0" y={lensR*0.62} width={lensR*2} height={lensR*1.38} fill="#6A9040"/>
+          {/* Richer grass mid-layer */}
+          <rect x="0" y={lensR*0.8} width={lensR*2} height={lensR*0.3} fill="#587A32" opacity="0.5"/>
+          {/* Grass tufts */}
+          {Array.from({length:16}, (_,i) => (
+            <path key={i}
+              d={`M ${i*16+6} ${lensR*2} C ${i*16+3} ${lensR*1.5} ${i*16+9} ${lensR*1.25} ${i*16+6} ${lensR*1.15}`}
+              stroke={i%3===0 ? '#9AC050' : '#70A030'} strokeWidth="1.8" fill="none" opacity="0.75"/>
+          ))}
+          {/* Wildflowers */}
+          {[[28,lensR*0.82],[72,lensR*0.9],[118,lensR*0.76],[162,lensR*0.88]].map(([x,y],i) => (
+            <circle key={i} cx={x} cy={y} r={3.5}
+              fill={['#FFD700','#FF8C00','#FF6B6B','#FFFFFF'][i]} opacity="0.9"/>
+          ))}
+        </g>
+      )
+
+    case 'sky':
+      return (
+        <g>
+          {/* Sky gradient */}
+          <rect x="0" y="0" width={lensR*2} height={lensR*2} fill="#4A88C0"/>
+          <rect x="0" y="0" width={lensR*2} height={lensR*0.9} fill="#68A0D0" opacity="0.6"/>
+          {/* Cumulus main */}
+          <ellipse cx={85} cy={lensR*0.52} rx={58} ry={30} fill="white" opacity="0.88"/>
+          <ellipse cx={68} cy={lensR*0.57} rx={42} ry={21} fill="white" opacity="0.92"/>
+          <ellipse cx={105} cy={lensR*0.5} rx={36} ry={18} fill="white" opacity="0.82"/>
+          {/* Cloud shadow */}
+          <ellipse cx={85} cy={lensR*0.7} rx={50} ry={10} fill="#90A8C0" opacity="0.18"/>
+          {/* Second cloud */}
+          <ellipse cx={162} cy={lensR*0.35} rx={32} ry={15} fill="white" opacity="0.75"/>
+          <ellipse cx={150} cy={lensR*0.38} rx={24} ry={11} fill="white" opacity="0.82"/>
+          {/* Distant haze + treeline at bottom */}
+          <rect x="0" y={lensR*1.5} width={lensR*2} height={lensR*0.5} fill="#A0C0D8" opacity="0.4"/>
+          <path d={`M 0 ${lensR*1.7} C 20 ${lensR*1.55} 50 ${lensR*1.48} 80 ${lensR*1.6} C 105 ${lensR*1.42} 135 ${lensR*1.38} 165 ${lensR*1.52} C 182 ${lensR*1.46} 196 ${lensR*1.58} ${lensR*2} ${lensR*1.62}`}
+            fill="#3A5820" opacity="0.65"/>
+        </g>
+      )
+
     default: // generic woodland
       return (
         <g>
@@ -286,11 +361,15 @@ function makeBehaviorEngine(movementPattern, startPos) {
         break
       }
       case 'oriole': {
-        // Pendulum swing → hop along branch → hang
+        // Pendulum swing → deliberate hop along branch → long hang
         const seq = phaseIndex % 3
-        if (seq === 0) { phase = 'hang'; phaseDuration = rand(800, 1400) }
-        else if (seq === 1) { phase = 'hop_branch'; target = { x: clamp(pos.x + rand(-0.35, 0.35), -0.65, 0.65), y: clamp(pos.y + rand(-0.15, 0.15), -0.5, 0.5) }; phaseDuration = rand(250, 450) }
-        else { phase = 'swing'; phaseDuration = rand(600, 1000) }
+        if (seq === 0) { phase = 'hang'; phaseDuration = rand(1400, 2400) }
+        else if (seq === 1) {
+          phase = 'hop_branch'
+          target = { x: clamp(pos.x + rand(-0.22, 0.22), -0.55, 0.55), y: clamp(pos.y + rand(-0.1, 0.1), -0.45, 0.45) }
+          phaseDuration = rand(550, 900)
+        }
+        else { phase = 'swing'; phaseDuration = rand(900, 1500) }
         break
       }
       case 'scratching': {
@@ -450,11 +529,12 @@ const BIRD_BACKGROUNDS = {
   marsh_edge:      ['common_yellowthroat', 'canada_warbler'],
   forest_canopy:   ['red_eyed_vireo', 'blue_headed_vireo', 'yellow_throated_vireo', 'scarlet_tanager',
                     'black_capped_chickadee', 'white_breasted_nuthatch', 'cedar_waxwing', 'blue_jay',
-                    'blackthroated_green_warbler', 'blackburnian_warbler', 'baybreasted_warbler'],
+                    'blackthroated_green_warbler', 'blackburnian_warbler', 'baybreasted_warbler',
+                    'tufted_titmouse'],
   forest_trunk:    ['black_and_white_warbler', 'downy_woodpecker'],
   forest_edge:     ['american_redstart', 'yellow_rumped_warbler', 'rose_breasted_grosbeak',
                     'northern_cardinal', 'american_robin', 'eastern_bluebird',
-                    'magnolia_warbler', 'chestnuside_warbler'],
+                    'magnolia_warbler', 'chestnuside_warbler', 'ruby_throated_hummingbird'],
   tall_trees:      ['baltimore_oriole', 'red_tailed_hawk', 'american_crow'],
   shrubby_field:   ['indigo_bunting', 'american_goldfinch', 'american_kestrel', 'barn_swallow',
                     'prairie_warbler'],
@@ -465,8 +545,6 @@ const BIRD_BACKGROUNDS = {
   open_water:      ['canada_goose'],
   sky:             ['turkey_vulture', 'osprey'],
   urban_edge:      ['house_sparrow', 'european_starling'],
-  ruby_throat:     ['ruby_throated_hummingbird'],
-  tufted_titmouse: ['tufted_titmouse'],
 }
 
 function getBirdBackground(birdId) {
@@ -501,12 +579,12 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const gameActiveRef   = useRef(true)
   const gameTimeRef     = useRef(ENCOUNTER_TIME_MS)
 
-  // Drag state for focus knob
-  const focusKnobRef    = useRef({ dragging: false, startX: 0, startFocus: 35 })
+  // Drag state for focus ring (angle-based)
+  const focusRingDragRef = useRef({ dragging: false, lastAngle: 0 })
 
-  // Lens ref for mouse tracking; focusSliderRef for the horizontal focus slider
+  // Lens ref for mouse tracking; focusRingRef for the rotary focus ring
   const lensRef        = useRef(null)
-  const focusSliderRef = useRef(null)
+  const focusRingRef   = useRef(null)
 
   // ── React state (triggers re-renders) ─────────────────────────────────────
   const [focusPct, setFocusPct]         = useState(0)
@@ -555,8 +633,8 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   useEffect(() => {
     let startTouch = null
     const onStart = (e) => {
-      // Ignore touches on the focus knob
-      if (e.target.closest?.('[data-focus-knob]')) return
+      // Ignore touches on the focus ring
+      if (e.target.closest?.('[data-focus-ring]')) return
       startTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY, ox: viewOffsetRef.current.x, oy: viewOffsetRef.current.y }
     }
     const onMove = (e) => {
@@ -573,36 +651,41 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     }
   }, [])
 
-  // ── Focus slider drag (horizontal) ───────────────────────────────────────
-  const handleFocusPointerDown = useCallback((e) => {
-    e.stopPropagation()
-    // Jump knob to the clicked position on the track
-    const rect = e.currentTarget.getBoundingClientRect()
-    const pct  = clamp((e.clientX - rect.left) / rect.width, 0, 1)
-    const newFocus = Math.round(5 + pct * 145)
-    opticalFocusRef.current = newFocus
-    setOpticalFocusDisplay(newFocus)
-    focusKnobRef.current = { dragging: true, startX: e.clientX, startFocus: newFocus }
+  // ── Focus ring drag (rotary) ──────────────────────────────────────────────
+  const getRingAngle = useCallback((clientX, clientY) => {
+    const rect = focusRingRef.current?.getBoundingClientRect()
+    if (!rect) return 0
+    return Math.atan2(clientY - (rect.top + rect.height / 2),
+                      clientX - (rect.left + rect.width / 2)) * 180 / Math.PI
   }, [])
+
+  const handleRingPointerDown = useCallback((e) => {
+    e.stopPropagation()
+    focusRingDragRef.current = { dragging: true, lastAngle: getRingAngle(e.clientX, e.clientY) }
+  }, [getRingAngle])
 
   useEffect(() => {
     const onMove = (e) => {
-      if (!focusKnobRef.current.dragging) return
-      const dx      = e.clientX - focusKnobRef.current.startX
-      const sliderW = focusSliderRef.current?.getBoundingClientRect().width ?? 300
-      const delta   = (dx / sliderW) * 145   // 145m total range
-      const newFocus = clamp(focusKnobRef.current.startFocus + delta, 5, 150)
+      if (!focusRingDragRef.current.dragging) return
+      const angle = getRingAngle(e.clientX, e.clientY)
+      let delta = angle - focusRingDragRef.current.lastAngle
+      // Wrap around the 180/-180 boundary
+      if (delta > 180) delta -= 360
+      if (delta < -180) delta += 360
+      // ~0.4m per degree → full 360° ≈ 144m (just over the full range)
+      const newFocus = clamp(opticalFocusRef.current + delta * 0.4, 5, 150)
       opticalFocusRef.current = newFocus
       setOpticalFocusDisplay(Math.round(newFocus))
+      focusRingDragRef.current.lastAngle = angle
     }
-    const onUp = () => { focusKnobRef.current.dragging = false }
+    const onUp = () => { focusRingDragRef.current.dragging = false }
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
     return () => {
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerup', onUp)
     }
-  }, [])
+  }, [getRingAngle])
 
   // ── Main game loop ────────────────────────────────────────────────────────
   const startGame = useCallback(async () => {
@@ -728,9 +811,13 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const distanceScaleFactor = clamp((50 / birdDistance) * 0.8 + 0.2, 0.5, 1.4)
   const avatarSize = Math.round(80 * distanceScaleFactor)
 
-  // Focus slider position (0=near/left, 1=far/right on track)
-  const focusKnobPos = clamp((opticalFocusDisplay - 5) / 145, 0, 1)  // 5–150m range
-  const birdTickPos  = clamp((birdDistance - 5) / 145, 0, 1)
+  // Focus ring display angle: spans -135° to +135° across the full 5–150m range
+  const RING_R   = 68   // outer radius of focus ring
+  const RING_W   = 20   // ring groove width (annular band)
+  const RING_MID = RING_R - RING_W / 2   // midpoint of groove (where indicator lives)
+  const distToAngle = (d) => -135 + (clamp(d, 5, 150) - 5) / 145 * 270
+  const indicatorAngle  = distToAngle(opticalFocusDisplay)
+  const birdTargetAngle = distToAngle(birdDistance)
 
   const lensContent = (parallaxX = 0) => (
     <div style={{
@@ -808,57 +895,127 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     </div>
   )
 
-  // ── Horizontal focus slider (below binoculars) ───────────────────────────
-  const focusSliderEl = started && (
-    <div style={{ width: '82%', padding: '10px 0 16px' }}>
-      {/* Label row */}
+  // ── Rotary focus ring (below binoculars) ────────────────────────────────
+  const indicatorColor = opticalGood ? '#3ddc7f' : '#f5a623'
+  const focusRingEl = started && (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px 0 4px' }}>
+      {/* Instruction hint above ring */}
       <div style={{
-        display: 'flex', justifyContent: 'space-between', marginBottom: 6,
-        fontSize: 9, color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace', letterSpacing: 0.5,
+        fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: 0.8,
+        fontFamily: 'monospace', marginBottom: 6, textTransform: 'uppercase',
       }}>
-        <span>NEAR  5m</span>
-        <span style={{ color: opticalGood ? '#3ddc7f' : '#f5a623', fontWeight: 700, fontSize: 10 }}>
-          FOCUS {opticalFocusDisplay}m → {birdDistance}m
-        </span>
-        <span>FAR  150m</span>
+        Turn ring to focus
       </div>
-      {/* Track hit area */}
+      {/* The ring itself */}
       <div
-        ref={focusSliderRef}
-        data-focus-knob="true"
-        onPointerDown={handleFocusPointerDown}
+        ref={focusRingRef}
+        data-focus-ring="true"
+        onPointerDown={handleRingPointerDown}
         style={{
-          position: 'relative', height: 32, cursor: 'pointer', touchAction: 'none', userSelect: 'none',
+          width: RING_R * 2, height: RING_R * 2,
+          cursor: 'grab', touchAction: 'none', userSelect: 'none', position: 'relative',
         }}
       >
-        {/* Track background */}
-        <div style={{
-          position: 'absolute', left: 0, right: 0,
-          top: '50%', height: 5, transform: 'translateY(-50%)',
-          background: 'rgba(255,255,255,0.1)', borderRadius: 3,
-        }}/>
-        {/* Bird distance target tick (white bar showing where to aim) */}
-        <div style={{
-          position: 'absolute',
-          left: `${birdTickPos * 100}%`,
-          top: '50%', transform: 'translate(-50%, -50%)',
-          width: 3, height: 20,
-          background: opticalGood ? 'rgba(61,220,127,0.9)' : 'rgba(255,255,255,0.45)',
-          borderRadius: 2,
-          transition: 'background 0.2s',
-        }}/>
-        {/* Draggable knob */}
-        <div style={{
-          position: 'absolute',
-          left: `${focusKnobPos * 100}%`,
-          top: '50%', transform: 'translate(-50%, -50%)',
-          width: 24, height: 24, borderRadius: '50%',
-          background: opticalGood ? '#3ddc7f' : '#f5a623',
-          border: '2px solid rgba(255,255,255,0.4)',
-          boxShadow: opticalGood ? '0 0 10px rgba(61,220,127,0.7)' : '0 0 8px rgba(245,166,35,0.5)',
-          pointerEvents: 'none',
-          transition: 'background 0.2s, box-shadow 0.2s',
-        }}/>
+        <svg width={RING_R * 2} height={RING_R * 2} style={{ overflow: 'visible' }}>
+          {/* Outer ring body */}
+          <circle cx={RING_R} cy={RING_R} r={RING_R - 1} fill="#141E16" stroke="#263228" strokeWidth="2"/>
+          {/* Rubber grip groove (annular band) */}
+          <circle cx={RING_R} cy={RING_R} r={RING_MID} fill="none" stroke="#0C1410" strokeWidth={RING_W}/>
+          {/* Knurling ridges (24 lines across groove) */}
+          {Array.from({ length: 24 }, (_, i) => {
+            const a = (i * 15) * Math.PI / 180
+            const r1 = RING_R - RING_W + 3, r2 = RING_R - 3
+            return (
+              <line key={i}
+                x1={RING_R + Math.cos(a) * r1} y1={RING_R + Math.sin(a) * r1}
+                x2={RING_R + Math.cos(a) * r2} y2={RING_R + Math.sin(a) * r2}
+                stroke="#1E2E20" strokeWidth="2.5"/>
+            )
+          })}
+          {/* Near / Far arc labels */}
+          {/* NEAR tick at -135° */}
+          {(() => {
+            const a = -135 * Math.PI / 180
+            return <line x1={RING_R + Math.cos(a)*(RING_R-RING_W+1)} y1={RING_R + Math.sin(a)*(RING_R-RING_W+1)}
+                         x2={RING_R + Math.cos(a)*(RING_R-2)}        y2={RING_R + Math.sin(a)*(RING_R-2)}
+                         stroke="rgba(255,255,255,0.2)" strokeWidth="2"/>
+          })()}
+          {/* FAR tick at +135° */}
+          {(() => {
+            const a = 135 * Math.PI / 180
+            return <line x1={RING_R + Math.cos(a)*(RING_R-RING_W+1)} y1={RING_R + Math.sin(a)*(RING_R-RING_W+1)}
+                         x2={RING_R + Math.cos(a)*(RING_R-2)}        y2={RING_R + Math.sin(a)*(RING_R-2)}
+                         stroke="rgba(255,255,255,0.2)" strokeWidth="2"/>
+          })()}
+          {/* Bird distance target marker (white dot at correct focus position) */}
+          {(() => {
+            const a = birdTargetAngle * Math.PI / 180
+            return (
+              <circle
+                cx={RING_R + Math.cos(a) * RING_MID}
+                cy={RING_R + Math.sin(a) * RING_MID}
+                r={5}
+                fill={opticalGood ? 'rgba(61,220,127,0.5)' : 'rgba(255,255,255,0.25)'}
+                stroke={opticalGood ? '#3ddc7f' : 'rgba(255,255,255,0.45)'}
+                strokeWidth="1.5"/>
+            )
+          })()}
+          {/* Current focus indicator (bright rotating dot) */}
+          {(() => {
+            const a = indicatorAngle * Math.PI / 180
+            return (
+              <g>
+                <circle
+                  cx={RING_R + Math.cos(a) * RING_MID}
+                  cy={RING_R + Math.sin(a) * RING_MID}
+                  r={8}
+                  fill={indicatorColor}
+                  style={{ filter: `drop-shadow(0 0 5px ${indicatorColor})` }}/>
+                {/* Grip line from center to indicator */}
+                <line
+                  x1={RING_R} y1={RING_R}
+                  x2={RING_R + Math.cos(a) * (RING_MID - 8)}
+                  y2={RING_R + Math.sin(a) * (RING_MID - 8)}
+                  stroke={indicatorColor} strokeWidth="1.5" opacity="0.35"/>
+              </g>
+            )
+          })()}
+          {/* Inner face — shows distance value */}
+          <circle cx={RING_R} cy={RING_R} r={RING_R - RING_W - 4} fill="#0D1810"/>
+          <text x={RING_R} y={RING_R - 6} textAnchor="middle"
+            fontSize="20" fontWeight="700" fontFamily="monospace"
+            fill={indicatorColor}>
+            {opticalFocusDisplay}m
+          </text>
+          <text x={RING_R} y={RING_R + 10} textAnchor="middle"
+            fontSize="8" fontFamily="monospace" fill="rgba(255,255,255,0.25)" letterSpacing="1">
+            FOCUS
+          </text>
+          {/* Near / Far text labels outside ring */}
+          {(() => {
+            const aN = -135 * Math.PI / 180
+            const aF =  135 * Math.PI / 180
+            const r  = RING_R + 11
+            return (
+              <>
+                <text x={RING_R + Math.cos(aN)*r} y={RING_R + Math.sin(aN)*r + 3}
+                  textAnchor="middle" fontSize="7" fontFamily="monospace"
+                  fill="rgba(255,255,255,0.22)">NEAR</text>
+                <text x={RING_R + Math.cos(aF)*r} y={RING_R + Math.sin(aF)*r + 3}
+                  textAnchor="middle" fontSize="7" fontFamily="monospace"
+                  fill="rgba(255,255,255,0.22)">FAR</text>
+              </>
+            )
+          })()}
+        </svg>
+      </div>
+      {/* Distance label row below ring */}
+      <div style={{
+        marginTop: 5, fontSize: 10, fontFamily: 'monospace',
+        color: opticalGood ? '#3ddc7f' : 'rgba(255,255,255,0.3)',
+        letterSpacing: 0.5,
+      }}>
+        {opticalGood ? '● Focus sharp' : `Bird is at ${birdDistance}m`}
       </div>
     </div>
   )
@@ -940,7 +1097,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
           </div>
           <div style={{ fontSize: 13, color: 'var(--text-dim)', textAlign: 'center', maxWidth: 290, lineHeight: 1.5 }}>
             <strong style={{ color: 'var(--text-secondary)' }}>Mobile:</strong> tilt to pan the view.<br/>
-            <strong style={{ color: 'var(--text-secondary)' }}>Focus bar:</strong> slide the orange knob to match the bird's distance.<br/>
+            <strong style={{ color: 'var(--text-secondary)' }}>Focus ring:</strong> turn the ring below to dial in the distance.<br/>
             Move slowly — sudden movements spook it!
           </div>
           <button className="btn btn-primary btn-lg" onClick={startGame} style={{ marginTop: 8, width: 220 }}>
@@ -964,8 +1121,8 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
               {lensContent(3)}
             </div>
           </div>
-          {/* Horizontal focus slider */}
-          {focusSliderEl}
+          {/* Rotary focus ring */}
+          {focusRingEl}
         </div>
       )}
 
@@ -979,7 +1136,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
             </span>
             <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
             <span style={{ color: opticalGood ? 'var(--accent-green)' : '#f5a623' }}>
-              {opticalGood ? '● Focus sharp' : `◐ Slide focus to ${birdDistance}m`}
+              {opticalGood ? '● Focus sharp' : `◐ Turn ring → ${birdDistance}m`}
             </span>
             <span style={{ marginLeft: 'auto', color: 'var(--text-dim)' }}>{focusPct}%</span>
           </div>
@@ -999,7 +1156,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
           </div>
           <div style={{ marginTop: 8, fontSize: 12, color: 'var(--text-dim)', textAlign: 'center' }}>
             {!spatialFocus && `Track the ${bird.commonName} into the crosshairs`}
-            {spatialFocus && !opticalGood && 'Adjust the focus dial →'}
+            {spatialFocus && !opticalGood && 'Turn the focus ring to sharpen'}
             {spatialFocus && opticalGood && 'Hold steady…'}
           </div>
         </div>
