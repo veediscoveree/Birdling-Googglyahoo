@@ -411,6 +411,56 @@ function makeBehaviorEngine(movementPattern, startPos) {
         else { phase = 'dart_fast'; target = { x: clamp(pos.x + rand(-0.5, 0.5), -0.7, 0.7), y: clamp(pos.y + rand(-0.4, 0.4), -0.6, 0.6) }; phaseDuration = rand(100, 200) }
         break
       }
+      case 'walking': {
+        // Ground birds: slow purposeful steps with pauses, stays in lower frame half
+        const seq = phaseIndex % 4
+        if (seq === 0 || seq === 2) {
+          phase = 'walk_step'
+          target = { x: clamp(pos.x + rand(-0.3, 0.3), -0.7, 0.7), y: clamp(0.15 + rand(0, 0.35), 0.1, 0.7) }
+          phaseDuration = rand(600, 1100)
+        } else {
+          phase = 'pause_ground'
+          phaseDuration = rand(700, 1600)
+        }
+        break
+      }
+      // Gleaning / active-foraging patterns — warbler-style flitting after insects
+      case 'canopy_gleaning':
+      case 'active_gleaning':
+      case 'low_active_gleaning':
+      case 'rapid_gleaning':
+      case 'shrub_gleaning':
+      case 'low_shrub_gleaning':
+      case 'darting': {
+        if (phaseIndex % 3 === 0) {
+          phase = 'dart'
+          target = { x: clamp(pos.x + rand(-0.38, 0.38), -0.7, 0.7), y: clamp(pos.y + rand(-0.28, 0.28), -0.6, 0.6) }
+          phaseDuration = rand(130, 280)
+        } else {
+          phase = 'perch'
+          phaseDuration = rand(450, 1100)
+        }
+        break
+      }
+      // Trunk-creeping patterns — all map to the creeping engine
+      case 'climbing':
+      case 'canopy_creeping':
+      case 'high_canopy_creeping': {
+        const seq = phaseIndex % 4
+        if (seq === 0) { phase = 'creep_up'; target = { x: clamp(pos.x + rand(-0.08, 0.08), -0.5, 0.5), y: clamp(pos.y - rand(0.12, 0.26), -0.7, 0.7) }; phaseDuration = rand(900, 1600) }
+        else if (seq === 1) { phase = 'creep_side'; target = { x: clamp(pos.x + rand(-0.18, 0.18), -0.6, 0.6), y: clamp(pos.y + rand(-0.04, 0.04), -0.7, 0.7) }; phaseDuration = rand(600, 1000) }
+        else if (seq === 2) { phase = 'probe'; target = { x: pos.x, y: pos.y }; phaseDuration = rand(250, 450) }
+        else { phase = 'creep_down'; target = { x: clamp(pos.x + rand(-0.08, 0.08), -0.5, 0.5), y: clamp(pos.y + rand(0.1, 0.22), -0.7, 0.7) }; phaseDuration = rand(700, 1200) }
+        break
+      }
+      case 'understory_foraging': {
+        // Low dense-cover forager: hop briefly, pause, occasionally retreat to cover
+        const seq = phaseIndex % 4
+        if (seq === 0 || seq === 3) { phase = 'pause_ground'; phaseDuration = rand(600, 1300) }
+        else if (seq === 1) { phase = 'hop'; target = { x: clamp(pos.x + rand(-0.22, 0.22), -0.65, 0.65), y: clamp(pos.y + rand(-0.15, 0.15), -0.5, 0.5) }; phaseDuration = rand(180, 340) }
+        else { phase = 'hide'; target = { x: clamp(pos.x + rand(-0.25, 0.25), -0.7, 0.7), y: clamp(pos.y + rand(-0.1, 0.1), -0.5, 0.5) }; phaseDuration = rand(400, 900) }
+        break
+      }
       default: { // perching
         if (phaseIndex % 5 === 0) {
           phase = 'fly_to_branch'
@@ -425,8 +475,10 @@ function makeBehaviorEngine(movementPattern, startPos) {
     }
   }
 
-  // Initialize first phase
-  nextPhase()
+  // Initialize: brief settle so the bird holds still while player pans to find it
+  phase = 'sit_still'
+  phaseDuration = 1600 + Math.random() * 1200   // 1.6–2.8s before first move
+  phaseTimer = 0
 
   return {
     update(dt, totalFrame) {
@@ -515,6 +567,13 @@ function makeBehaviorEngine(movementPattern, startPos) {
           pos.x = lerp(pos.x, pos.x + Math.sin(totalFrame * 0.08) * 0.03, 1)
           pos.y += noise()
           break
+
+        case 'walk_step':
+          // Smooth walk with subtle head-bob
+          pos.x = lerp(pos.x, target.x, 0.035)
+          pos.y = lerp(pos.y, target.y, 0.028)
+          pos.y += Math.sin(totalFrame * 0.18) * 0.003   // walking bob
+          break
       }
 
       return { x: clamp(pos.x, -0.85, 0.85), y: clamp(pos.y, -0.75, 0.75) }
@@ -594,6 +653,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const [birdFled, setBirdFled]         = useState(false)
   const [captureFlash, setCaptureFlash] = useState(false)
   const [viewPos, setViewPos]           = useState({ x: 0, y: 0 })
+  const [bgOffset, setBgOffset]         = useState({ x: 0, y: 0 })
   const [started, setStarted]           = useState(false)
   const [speedWarning, setSpeedWarning] = useState(false)
   const [opticalFocusDisplay, setOpticalFocusDisplay] = useState(35)
@@ -700,7 +760,11 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     }
 
     const movementPattern = bird.captureStats.movementPattern || 'perching'
-    behaviorRef.current = makeBehaviorEngine(movementPattern, { x: 0.3, y: 0.1 })
+    // Start bird off to one side — player must pan to find it
+    const spawnSide = Math.random() > 0.5 ? 1 : -1
+    const spawnX = spawnSide * (0.62 + Math.random() * 0.22)
+    const spawnY = (Math.random() - 0.5) * 0.5
+    behaviorRef.current = makeBehaviorEngine(movementPattern, { x: spawnX, y: spawnY })
 
     const speedThreshold = 0.06 + (10 - bird.captureStats.flightiness) * 0.01
     let lastTime = performance.now()
@@ -743,6 +807,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
       const inViewY = birdPosRef.current.y - viewOffsetRef.current.y
       const spatialDist = Math.sqrt(inViewX * inViewX + inViewY * inViewY)
       setViewPos({ x: clamp(inViewX, -1.3, 1.3), y: clamp(inViewY, -1.3, 1.3) })
+      setBgOffset({ x: viewOffsetRef.current.x, y: viewOffsetRef.current.y })
 
       // ── Optical focus blur ───────────────────────────────────────────────
       const focusDiff = Math.abs(opticalFocusRef.current - birdDistanceRef.current)
@@ -819,7 +884,12 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const indicatorAngle  = distToAngle(opticalFocusDisplay)
   const birdTargetAngle = distToAngle(birdDistance)
 
-  const lensContent = (parallaxX = 0) => (
+  // Background parallax: scene drifts opposite to pan direction — like real optics
+  // Pan right → bg shifts left; pan up → bg shifts up slightly
+  const bgPX = -bgOffset.x * LENS_R * 0.22
+  const bgPY = -bgOffset.y * LENS_R * 0.14
+
+  const lensContent = (eyeOffset = 0) => (
     <div style={{
       width: LENS_R * 2,
       height: LENS_R * 2,
@@ -828,10 +898,10 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
       position: 'relative',
       border: '3px solid #2a3a2a',
     }}>
-      {/* Habitat background */}
+      {/* Habitat background — translates opposite to pan for parallax feel */}
       <svg style={{ position: 'absolute', inset: 0 }} width={LENS_R * 2} height={LENS_R * 2}>
-        <clipPath id={`lensClipBg${parallaxX}`}><circle cx={LENS_R} cy={LENS_R} r={LENS_R - 3}/></clipPath>
-        <g clipPath={`url(#lensClipBg${parallaxX})`}>
+        <clipPath id={`lensClipBg${eyeOffset}`}><circle cx={LENS_R} cy={LENS_R} r={LENS_R - 3}/></clipPath>
+        <g clipPath={`url(#lensClipBg${eyeOffset})`} transform={`translate(${bgPX + eyeOffset * 0.4}, ${bgPY})`}>
           <HabitatBackground type={habitatBg} lensR={LENS_R}/>
         </g>
       </svg>
@@ -1087,6 +1157,23 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
         </div>
       )}
 
+      {/* Directional find-it arrow — shown when bird is well off-screen */}
+      {started && !spatialFocus && Math.sqrt(viewPos.x**2 + viewPos.y**2) > 0.55 && (
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%',
+          transform: `translate(-50%, -50%) rotate(${Math.atan2(viewPos.y, viewPos.x) * 180 / Math.PI}deg)`,
+          width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 25, pointerEvents: 'none', opacity: 0.75,
+          animation: 'fadeIn 0.3s ease',
+        }}>
+          <svg width="44" height="44" viewBox="0 0 44 44">
+            <polygon points="22,4 38,40 22,32 6,40"
+              fill="#f5a623" opacity="0.9"
+              style={{ filter: 'drop-shadow(0 0 6px rgba(245,166,35,0.8))' }}/>
+          </svg>
+        </div>
+      )}
+
       {/* ── Binoculars view ───────────────────────────────────────────── */}
       {!started ? (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column',
@@ -1111,14 +1198,14 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {/* Left lens */}
             <div style={{ position: 'relative', zIndex: 2 }}>
-              {lensContent(-3)}
+              {lensContent(-1)}
             </div>
             {/* Bridge */}
             <div style={{ width: 24, height: 40, background: '#1a2a1c', zIndex: 1,
               border: '2px solid #2a3a2a', boxShadow: 'inset 0 0 8px rgba(0,0,0,0.5)' }}/>
             {/* Right lens */}
             <div style={{ position: 'relative', zIndex: 2 }}>
-              {lensContent(3)}
+              {lensContent(1)}
             </div>
           </div>
           {/* Rotary focus ring */}
