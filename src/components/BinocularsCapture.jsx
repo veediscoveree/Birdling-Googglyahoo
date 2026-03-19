@@ -908,14 +908,14 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
 
       {/* Grid lines */}
       <svg style={{ position: 'absolute', inset: 0 }} width={LENS_R * 2} height={LENS_R * 2}>
-        <clipPath id={`lensClip${parallaxX}`}><circle cx={LENS_R} cy={LENS_R} r={LENS_R - 3}/></clipPath>
-        <g clipPath={`url(#lensClip${parallaxX})`} opacity="0.14">
+        <clipPath id={`lensClip${eyeOffset}`}><circle cx={LENS_R} cy={LENS_R} r={LENS_R - 3}/></clipPath>
+        <g clipPath={`url(#lensClip${eyeOffset})`} opacity="0.14">
           <line x1={LENS_R} y1="0" x2={LENS_R} y2={LENS_R * 2} stroke="#00ff88" strokeWidth="0.8"/>
           <line x1="0" y1={LENS_R} x2={LENS_R * 2} y2={LENS_R} stroke="#00ff88" strokeWidth="0.8"/>
         </g>
         {/* Focus ring */}
         <circle
-          cx={LENS_R + birdX + parallaxX}
+          cx={LENS_R + birdX}
           cy={LENS_R + birdY}
           r={spatialFocus ? 30 : 46}
           fill="none"
@@ -926,16 +926,16 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
         {/* Corner brackets when in spatial focus */}
         {spatialFocus && (
           <g stroke={focusColor} strokeWidth="2.5" fill="none">
-            <path d={`M ${LENS_R + birdX + parallaxX - 26} ${LENS_R + birdY - 26} l 0 -12 l 12 0`}/>
-            <path d={`M ${LENS_R + birdX + parallaxX + 26} ${LENS_R + birdY - 26} l 0 -12 l -12 0`}/>
-            <path d={`M ${LENS_R + birdX + parallaxX - 26} ${LENS_R + birdY + 26} l 0 12 l 12 0`}/>
-            <path d={`M ${LENS_R + birdX + parallaxX + 26} ${LENS_R + birdY + 26} l 0 12 l -12 0`}/>
+            <path d={`M ${LENS_R + birdX - 26} ${LENS_R + birdY - 26} l 0 -12 l 12 0`}/>
+            <path d={`M ${LENS_R + birdX + 26} ${LENS_R + birdY - 26} l 0 -12 l -12 0`}/>
+            <path d={`M ${LENS_R + birdX - 26} ${LENS_R + birdY + 26} l 0 12 l 12 0`}/>
+            <path d={`M ${LENS_R + birdX + 26} ${LENS_R + birdY + 26} l 0 12 l -12 0`}/>
           </g>
         )}
         {/* Distance label */}
         {started && (
           <text
-            x={LENS_R + birdX + parallaxX + 34}
+            x={LENS_R + birdX + 34}
             y={LENS_R + birdY - 32}
             fontSize="10"
             fill={focusColor}
@@ -948,7 +948,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
       {/* Bird avatar */}
       <div style={{
         position: 'absolute',
-        left: LENS_R + birdX + parallaxX - avatarSize / 2,
+        left: LENS_R + birdX - avatarSize / 2,
         top:  LENS_R + birdY - avatarSize / 2 - 5,
         filter: `blur(${totalBlur.toFixed(1)}px)`,
         transition: 'filter 0.1s',
