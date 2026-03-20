@@ -589,7 +589,7 @@ const BIRD_BACKGROUNDS = {
   forest_canopy:   ['red_eyed_vireo', 'blue_headed_vireo', 'yellow_throated_vireo', 'scarlet_tanager',
                     'black_capped_chickadee', 'white_breasted_nuthatch', 'cedar_waxwing', 'blue_jay',
                     'blackthroated_green_warbler', 'blackburnian_warbler', 'baybreasted_warbler',
-                    'tufted_titmouse'],
+                    'chestnuside_warbler', 'tufted_titmouse'],
   forest_trunk:    ['black_and_white_warbler', 'downy_woodpecker'],
   forest_edge:     ['american_redstart', 'yellow_rumped_warbler', 'rose_breasted_grosbeak',
                     'northern_cardinal', 'american_robin', 'eastern_bluebird',
@@ -857,15 +857,27 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   }, [])
 
   // ── Rendering helpers ─────────────────────────────────────────────────────
-  const LENS_R = 95
-  const birdX = viewPos.x * LENS_R * 0.7
-  const birdY = viewPos.y * LENS_R * 0.7
+  const LENS_R = 95   // kept for background scaling compatibility
 
-  // Spatial blur (being out of center)
+  // ── Merged binocular view constants ───────────────────────────────────────
+  // Both eyes merge into one wide coherent field. Black housing rim at the edge.
+  const BIN_W   = 348          // total merged width
+  const BIN_H   = 204          // total merged height
+  const BIN_CY  = BIN_H / 2   // vertical center
+  const LCXPOS  = 106          // left lens center X
+  const RCXPOS  = 242          // right lens center X
+  const BLR     = 105          // each lens radius (slightly larger than LENS_R)
+
+  // Bird is drawn at the center of the merged field
+  const birdMCX = (LCXPOS + RCXPOS) / 2  // = 174
+  const birdX = viewPos.x * BLR * 0.72
+  const birdY = viewPos.y * BLR * 0.72
+
+  // Spatial blur
   const spatialDist = Math.sqrt(viewPos.x ** 2 + viewPos.y ** 2)
   const spatialBlur = spatialFocus ? 0 : Math.min(2, (spatialDist - SPATIAL_FOCUS_R) * 3)
 
-  // Optical blur (focus knob off)
+  // Optical blur
   const focusDiff = Math.abs(opticalFocusDisplay - birdDistance)
   const opticalBlur = Math.min(6, focusDiff * 0.12)
   const totalBlur = spatialBlur + (started ? opticalBlur : 0)
@@ -874,94 +886,127 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
 
   // Distance to size: scale bird avatar size by distance vs typical
   const distanceScaleFactor = clamp((50 / birdDistance) * 0.8 + 0.2, 0.5, 1.4)
-  const avatarSize = Math.round(80 * distanceScaleFactor)
+  const avatarSize = Math.round(96 * distanceScaleFactor)  // larger in merged view
 
   // Focus ring display angle: spans -135° to +135° across the full 5–150m range
-  const RING_R   = 68   // outer radius of focus ring
-  const RING_W   = 20   // ring groove width (annular band)
-  const RING_MID = RING_R - RING_W / 2   // midpoint of groove (where indicator lives)
+  const RING_R   = 68
+  const RING_W   = 20
+  const RING_MID = RING_R - RING_W / 2
   const distToAngle = (d) => -135 + (clamp(d, 5, 150) - 5) / 145 * 270
   const indicatorAngle  = distToAngle(opticalFocusDisplay)
   const birdTargetAngle = distToAngle(birdDistance)
 
-  // Background parallax: scene drifts opposite to pan direction — like real optics
-  // Pan right → bg shifts left; pan up → bg shifts up slightly
-  const bgPX = -bgOffset.x * LENS_R * 0.22
-  const bgPY = -bgOffset.y * LENS_R * 0.14
+  // Background parallax
+  const bgPX = -bgOffset.x * BLR * 0.26
+  const bgPY = -bgOffset.y * BLR * 0.18
 
-  const lensContent = (eyeOffset = 0) => (
+  // Background scaling: scale the habitat scene to fill the merged width
+  const bgScale    = BIN_W / (LENS_R * 2)             // ≈ 1.83
+  const bgScaledH  = LENS_R * 2 * bgScale              // ≈ 348px
+  const bgVOffset  = -(bgScaledH - BIN_H) / 2          // ≈ -72 (center vertically)
+
+  const mergedBinocularsView = () => (
     <div style={{
-      width: LENS_R * 2,
-      height: LENS_R * 2,
-      borderRadius: '50%',
-      overflow: 'hidden',
+      width: BIN_W, height: BIN_H,
       position: 'relative',
-      border: '3px solid #2a3a2a',
+      background: '#020804',
+      borderRadius: 4,
     }}>
-      {/* Habitat background — translates opposite to pan for parallax feel */}
-      <svg style={{ position: 'absolute', inset: 0 }} width={LENS_R * 2} height={LENS_R * 2}>
-        <clipPath id={`lensClipBg${eyeOffset}`}><circle cx={LENS_R} cy={LENS_R} r={LENS_R - 3}/></clipPath>
-        <g clipPath={`url(#lensClipBg${eyeOffset})`} transform={`translate(${bgPX + eyeOffset * 0.4}, ${bgPY})`}>
+      {/* ── Habitat background — scaled to fill merged width ── */}
+      <svg style={{ position: 'absolute', inset: 0, overflow: 'hidden' }} width={BIN_W} height={BIN_H}>
+        <defs>
+          <clipPath id="binBgClip">
+            <circle cx={LCXPOS} cy={BIN_CY} r={BLR - 2}/>
+            <circle cx={RCXPOS} cy={BIN_CY} r={BLR - 2}/>
+          </clipPath>
+        </defs>
+        <g clipPath="url(#binBgClip)"
+           transform={`translate(${bgPX}, ${bgVOffset + bgPY}) scale(${bgScale})`}>
           <HabitatBackground type={habitatBg} lensR={LENS_R}/>
         </g>
       </svg>
 
-      {/* Grid lines */}
-      <svg style={{ position: 'absolute', inset: 0 }} width={LENS_R * 2} height={LENS_R * 2}>
-        <clipPath id={`lensClip${eyeOffset}`}><circle cx={LENS_R} cy={LENS_R} r={LENS_R - 3}/></clipPath>
-        <g clipPath={`url(#lensClip${eyeOffset})`} opacity="0.14">
-          <line x1={LENS_R} y1="0" x2={LENS_R} y2={LENS_R * 2} stroke="#00ff88" strokeWidth="0.8"/>
-          <line x1="0" y1={LENS_R} x2={LENS_R * 2} y2={LENS_R} stroke="#00ff88" strokeWidth="0.8"/>
-        </g>
-        {/* Focus ring */}
-        <circle
-          cx={LENS_R + birdX}
-          cy={LENS_R + birdY}
-          r={spatialFocus ? 30 : 46}
-          fill="none"
-          stroke={focusColor}
-          strokeWidth={spatialFocus ? 2.5 : 1.5}
-          style={{ transition: 'r 0.15s, stroke 0.15s', animation: spatialFocus && opticalGood ? 'pulse 0.8s infinite' : 'none' }}
-        />
-        {/* Corner brackets when in spatial focus */}
-        {spatialFocus && (
-          <g stroke={focusColor} strokeWidth="2.5" fill="none">
-            <path d={`M ${LENS_R + birdX - 26} ${LENS_R + birdY - 26} l 0 -12 l 12 0`}/>
-            <path d={`M ${LENS_R + birdX + 26} ${LENS_R + birdY - 26} l 0 -12 l -12 0`}/>
-            <path d={`M ${LENS_R + birdX - 26} ${LENS_R + birdY + 26} l 0 12 l 12 0`}/>
-            <path d={`M ${LENS_R + birdX + 26} ${LENS_R + birdY + 26} l 0 12 l -12 0`}/>
+      {/* ── Reticle / focus overlay ── */}
+      <svg style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} width={BIN_W} height={BIN_H}>
+        <defs>
+          <clipPath id="binOverlayClip">
+            <circle cx={LCXPOS} cy={BIN_CY} r={BLR - 2}/>
+            <circle cx={RCXPOS} cy={BIN_CY} r={BLR - 2}/>
+          </clipPath>
+        </defs>
+        <g clipPath="url(#binOverlayClip)">
+          {/* Crosshairs at merged center */}
+          <g opacity="0.11">
+            <line x1={birdMCX} y1="0" x2={birdMCX} y2={BIN_H} stroke="#00ff88" strokeWidth="0.8"/>
+            <line x1="0" y1={BIN_CY} x2={BIN_W} y2={BIN_CY} stroke="#00ff88" strokeWidth="0.8"/>
           </g>
-        )}
-        {/* Distance label */}
-        {started && (
-          <text
-            x={LENS_R + birdX + 34}
-            y={LENS_R + birdY - 32}
-            fontSize="10"
-            fill={focusColor}
-            fontFamily="monospace"
-            opacity="0.85"
-          >{birdDistance}m</text>
-        )}
+          {/* Focus ring tracks the bird */}
+          <circle
+            cx={birdMCX + birdX} cy={BIN_CY + birdY}
+            r={spatialFocus ? 34 : 52}
+            fill="none" stroke={focusColor}
+            strokeWidth={spatialFocus ? 2.5 : 1.5}
+            style={{ transition: 'r 0.15s, stroke 0.15s', animation: spatialFocus && opticalGood ? 'pulse 0.8s infinite' : 'none' }}
+          />
+          {/* Corner brackets when spatially focused */}
+          {spatialFocus && (
+            <g stroke={focusColor} strokeWidth="2.5" fill="none">
+              <path d={`M ${birdMCX+birdX-30} ${BIN_CY+birdY-30} l 0 -13 l 13 0`}/>
+              <path d={`M ${birdMCX+birdX+30} ${BIN_CY+birdY-30} l 0 -13 l -13 0`}/>
+              <path d={`M ${birdMCX+birdX-30} ${BIN_CY+birdY+30} l 0 13 l 13 0`}/>
+              <path d={`M ${birdMCX+birdX+30} ${BIN_CY+birdY+30} l 0 13 l -13 0`}/>
+            </g>
+          )}
+          {/* Distance label */}
+          {started && (
+            <text x={birdMCX+birdX+38} y={BIN_CY+birdY-36}
+              fontSize="10" fill={focusColor} fontFamily="monospace" opacity="0.85"
+            >{birdDistance}m</text>
+          )}
+          {/* Per-lens edge vignette */}
+          <radialGradient id="vigL" cx={LCXPOS/BIN_W} cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+            <stop offset="50%" stopColor="transparent"/>
+            <stop offset="100%" stopColor="rgba(0,0,0,0.7)"/>
+          </radialGradient>
+          <radialGradient id="vigR" cx={RCXPOS/BIN_W} cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+            <stop offset="50%" stopColor="transparent"/>
+            <stop offset="100%" stopColor="rgba(0,0,0,0.7)"/>
+          </radialGradient>
+          <circle cx={LCXPOS} cy={BIN_CY} r={BLR - 2} fill="url(#vigL)"/>
+          <circle cx={RCXPOS} cy={BIN_CY} r={BLR - 2} fill="url(#vigR)"/>
+        </g>
       </svg>
 
-      {/* Bird avatar */}
+      {/* ── Bird avatar — centered in merged field ── */}
       <div style={{
         position: 'absolute',
-        left: LENS_R + birdX - avatarSize / 2,
-        top:  LENS_R + birdY - avatarSize / 2 - 5,
+        left: birdMCX + birdX - avatarSize / 2,
+        top:  BIN_CY  + birdY - avatarSize / 2 - 6,
         filter: `blur(${totalBlur.toFixed(1)}px)`,
         transition: 'filter 0.1s',
+        pointerEvents: 'none',
       }}>
         <BirdAvatar birdId={bird.id} size={avatarSize} animated={started}/>
       </div>
 
-      {/* Lens edge vignette */}
-      <div style={{
-        position: 'absolute', inset: 0, borderRadius: '50%',
-        background: 'radial-gradient(circle, transparent 52%, rgba(0,0,0,0.75) 100%)',
-        pointerEvents: 'none',
-      }}/>
+      {/* ── Binocular housing rim — black outside both circles, faint inner rim ── */}
+      <svg style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} width={BIN_W} height={BIN_H}>
+        <defs>
+          <mask id="binHousingMask">
+            <rect width={BIN_W} height={BIN_H} fill="white"/>
+            <circle cx={LCXPOS} cy={BIN_CY} r={BLR - 1} fill="black"/>
+            <circle cx={RCXPOS} cy={BIN_CY} r={BLR - 1} fill="black"/>
+          </mask>
+        </defs>
+        {/* Housing fill — everything outside the two circles */}
+        <rect width={BIN_W} height={BIN_H} fill="#050a06" mask="url(#binHousingMask)"/>
+        {/* Faint inner rim on each lens */}
+        <circle cx={LCXPOS} cy={BIN_CY} r={BLR - 1} fill="none" stroke="#1c2e1e" strokeWidth="3.5"/>
+        <circle cx={RCXPOS} cy={BIN_CY} r={BLR - 1} fill="none" stroke="#1c2e1e" strokeWidth="3.5"/>
+        {/* Subtle center bridge shadow */}
+        <ellipse cx={(LCXPOS+RCXPOS)/2} cy={BIN_CY} rx={20} ry={32}
+          fill="#050a06" opacity="0.55"/>
+      </svg>
     </div>
   )
 
@@ -1194,20 +1239,8 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
       ) : (
         <div ref={lensRef} style={{ flex: 1, display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-          {/* Binoculars body */}
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {/* Left lens */}
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              {lensContent(-1)}
-            </div>
-            {/* Bridge */}
-            <div style={{ width: 24, height: 40, background: '#1a2a1c', zIndex: 1,
-              border: '2px solid #2a3a2a', boxShadow: 'inset 0 0 8px rgba(0,0,0,0.5)' }}/>
-            {/* Right lens */}
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              {lensContent(1)}
-            </div>
-          </div>
+          {/* Merged binocular view */}
+          {mergedBinocularsView()}
           {/* Rotary focus ring */}
           {focusRingEl}
         </div>
