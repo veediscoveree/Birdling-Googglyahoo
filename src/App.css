@@ -329,3 +329,12 @@ body {
 .animate-slideUp { animation: slideUp 0.35s ease; }
 .animate-pulse   { animation: pulse 2s ease-in-out infinite; }
 .animate-float   { animation: birdFloat 2.5s ease-in-out infinite; }
+
+@keyframes titleDrop {
+  from { transform: translateY(-110%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+@keyframes titleCompact {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

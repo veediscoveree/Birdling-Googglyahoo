@@ -100,12 +100,19 @@ export default function RadarScreen({ capturedBirds, score, userLocation, eBirdA
   const [sweepAngle, setSweepAngle] = useState(0)
   const [pingBlips,  setPingBlips]  = useState([])
   const [time,       setTime]       = useState(() => new Date())
+  const [titlePhase, setTitlePhase] = useState('banner') // 'banner' → 'compact'
   const animRef = useRef(null)
 
   // Use real nearby birds for blip positions when available, else curated subset
   const allBlipBirds = (eBirdActive && nearbyBirds.length > 0) ? nearbyBirds : BIRDS
   const visibleIndices = getVisibleBlipIndices(allBlipBirds, eBirdActive ? allBlipBirds.length : 16)
   const blipBirds = allBlipBirds  // keep full list for ping selection
+
+  // Title banner: show full-width banner for 2.8s then shrink to compact
+  useEffect(() => {
+    const t = setTimeout(() => setTitlePhase('compact'), 2800)
+    return () => clearTimeout(t)
+  }, [])
 
   // Radar sweep
   useEffect(() => {
@@ -139,46 +146,91 @@ export default function RadarScreen({ capturedBirds, score, userLocation, eBirdA
   return (
     <div className="screen animate-fadeIn" style={{ background: 'var(--bg-deep)' }}>
 
-      {/* ── Top bar ──────────────────────────────────────────────────────── */}
-      <div style={{
-        padding: '14px 20px 10px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        flexShrink: 0,
-      }}>
-        <div>
+      {/* ── Title banner (Nintendo style: full-width drop → compact) ────────── */}
+      {titlePhase === 'banner' ? (
+        <div style={{
+          width: '100%', padding: '0', overflow: 'hidden', flexShrink: 0,
+          animation: 'titleDrop 0.55s cubic-bezier(0.22,1,0.36,1) forwards',
+        }}>
           <div style={{
-            fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700,
-            color: 'var(--accent-green)', letterSpacing: '-0.5px',
+            width: '100%', background: 'linear-gradient(180deg, #0a1e0c 0%, #061408 100%)',
+            borderBottom: '3px solid var(--accent-green)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            padding: '14px 16px 12px', gap: 4,
           }}>
-            Bird. Here. Now.
-          </div>
-          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 1 }}>
-            {dateStr} · {timeStr} · {season.charAt(0).toUpperCase() + season.slice(1)}
-            {eBirdActive && (
-              <span style={{ color: 'var(--accent-amber)', marginLeft: 6, fontWeight: 600 }}>
-                · eBird live
-              </span>
-            )}
+            {/* Main title — fills full width */}
+            <div style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(28px, 8vw, 44px)',
+              fontWeight: 900,
+              letterSpacing: '-1px',
+              color: 'var(--accent-green)',
+              textShadow: '0 0 24px rgba(0,255,136,0.5), 0 0 8px rgba(0,255,136,0.3)',
+              lineHeight: 1.1,
+              textAlign: 'center',
+              width: '100%',
+            }}>
+              BIRD. HERE. NOW.
+            </div>
+            {/* Sub-tagline */}
+            <div style={{
+              fontSize: 11, letterSpacing: 4, color: 'rgba(0,255,136,0.55)',
+              fontFamily: 'monospace', fontWeight: 600, textTransform: 'uppercase',
+            }}>
+              Real Birding · Virtual Capture
+            </div>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            background: 'rgba(255,215,0,0.12)', border: '1px solid rgba(255,215,0,0.25)',
-            borderRadius: 20, padding: '5px 12px', fontSize: 13,
-            fontWeight: 700, color: 'var(--accent-gold)',
-          }}>
-            ★ {score}
+      ) : (
+        /* ── Compact top bar ──────────────────────────────────────────────── */
+        <div style={{
+          padding: '10px 16px 8px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          flexShrink: 0, width: '100%',
+          borderBottom: '1px solid rgba(0,255,136,0.08)',
+          animation: 'titleCompact 0.4s ease-out forwards',
+        }}>
+          <div>
+            {/* Title spans full width but compact */}
+            <div style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(15px, 4vw, 20px)',
+              fontWeight: 800,
+              color: 'var(--accent-green)',
+              letterSpacing: '-0.3px',
+              textShadow: '0 0 10px rgba(0,255,136,0.3)',
+              whiteSpace: 'nowrap',
+            }}>
+              BIRD. HERE. NOW.
+            </div>
+            <div style={{ fontSize: 10, color: 'var(--text-dim)', marginTop: 1 }}>
+              {dateStr} · {timeStr} · {season.charAt(0).toUpperCase() + season.slice(1)}
+              {eBirdActive && (
+                <span style={{ color: 'var(--accent-amber)', marginLeft: 6, fontWeight: 600 }}>
+                  · eBird live
+                </span>
+              )}
+            </div>
           </div>
-          <button className="btn btn-outline btn-sm" onClick={onViewAviary}
-            style={{ padding: '7px 14px', fontSize: 13 }}>
-            🪶 {capturedBirds.length}
-          </button>
-          <button className="btn btn-outline btn-sm" onClick={onViewLeaderboard}
-            style={{ padding: '7px 12px', fontSize: 13 }}>
-            🏆
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{
+              background: 'rgba(255,215,0,0.12)', border: '1px solid rgba(255,215,0,0.25)',
+              borderRadius: 20, padding: '4px 10px', fontSize: 12,
+              fontWeight: 700, color: 'var(--accent-gold)',
+            }}>
+              ★ {score}
+            </div>
+            <button className="btn btn-outline btn-sm" onClick={onViewAviary}
+              style={{ padding: '6px 12px', fontSize: 12 }}>
+              🪶 {capturedBirds.length}
+            </button>
+            <button className="btn btn-outline btn-sm" onClick={onViewLeaderboard}
+              style={{ padding: '6px 10px', fontSize: 12 }}>
+              🏆
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── Radar ────────────────────────────────────────────────────────── */}
       <div style={{
