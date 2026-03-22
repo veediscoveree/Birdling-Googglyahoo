@@ -493,7 +493,7 @@ export const BIRDS = [
     family: 'Anatidae',
     order: 'Anseriformes',
 
-    sizeCategory: 'medium',
+    sizeCategory: 'large',
     length_cm: [50, 65],
     wingspan_cm: [81, 98],
     weight_g: [720, 1600],
@@ -3809,7 +3809,7 @@ export const getRarityLabel = (rarity) => ({
 
 export const getSizeLabel = (size) => ({
   tiny: 'Tiny (sparrow-sized)',
-  small: 'Small (robin-sized)',
+  small: 'Small (thrush-sized)',
   medium: 'Medium (pigeon-sized)',
   large: 'Large (crow-sized)',
   very_large: 'Very Large (heron-sized)',
