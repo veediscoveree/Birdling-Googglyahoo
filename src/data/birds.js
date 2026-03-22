@@ -1697,7 +1697,7 @@ export const BIRDS = [
       fall:   { presence: 'migrant', commonness: 'common' },
       winter: { presence: 'absent', commonness: 'absent' },
     },
-    captureStats: { difficulty: 8, speed: 9, flightiness: 7, camouflage: 2, sizeScore: 2, movementPattern: 'soaring', flightPattern: 'soaring', behaviorNotes: 'Extremely fast and acrobatic in flight. Rarely lands except at nest. Snatches insects from the air in swooping dives.' },
+    captureStats: { difficulty: 7, speed: 9, flightiness: 6, camouflage: 2, sizeScore: 2, movementPattern: 'aerial_dart', captureBackground: 'open_sky', behaviorNotes: 'Sweeps across the frame in fast arcs. Watch for the brief near-center dip when it chases an insect — that is your capture window.' },
     rarity: 'common', rarityColor: '#4caf50', points: 140,
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The Barn Swallow is the world\'s most widespread swallow, breeding on every continent except Antarctica. Its deeply forked tail (longer streamers signal genetic fitness) and acrobatic insect-catching flight over fields and water make it one of summer\'s most cheerful presences. It has co-evolved with humans for thousands of years, nesting on man-made structures almost exclusively.',

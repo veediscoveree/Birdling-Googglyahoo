@@ -253,6 +253,42 @@ function HabitatBackground({ type, lensR }) {
         </g>
       )
 
+    case 'open_sky':
+      // Barn swallow habitat — wide open sky, low horizon, distant farmland
+      return (
+        <g>
+          {/* Sky — deep blue zenith fading to pale horizon */}
+          <rect x="0" y="0" width={lensR*2} height={lensR*2} fill="#3A78B8"/>
+          <rect x="0" y={lensR*0.8} width={lensR*2} height={lensR*1.2} fill="#6AAAD8" opacity="0.6"/>
+          <rect x="0" y={lensR*1.3} width={lensR*2} height={lensR*0.7} fill="#A0C8E8" opacity="0.7"/>
+          {/* Wispy high cirrus clouds — swallow weather */}
+          <path d={`M 20 ${lensR*0.25} C 50 ${lensR*0.2} 80 ${lensR*0.27} 110 ${lensR*0.22}`}
+            stroke="white" strokeWidth="6" fill="none" opacity="0.35" strokeLinecap="round"/>
+          <path d={`M 100 ${lensR*0.35} C 130 ${lensR*0.3} 160 ${lensR*0.37} 185 ${lensR*0.32}`}
+            stroke="white" strokeWidth="5" fill="none" opacity="0.28" strokeLinecap="round"/>
+          <path d={`M 140 ${lensR*0.18} C 155 ${lensR*0.15} 175 ${lensR*0.2} 190 ${lensR*0.16}`}
+            stroke="white" strokeWidth="4" fill="none" opacity="0.22" strokeLinecap="round"/>
+          {/* Cumulus puff — lower, bright */}
+          <ellipse cx={lensR*0.4} cy={lensR*0.6} rx={45} ry={20} fill="white" opacity="0.82"/>
+          <ellipse cx={lensR*0.28} cy={lensR*0.64} rx={30} ry={14} fill="white" opacity="0.88"/>
+          <ellipse cx={lensR*0.55} cy={lensR*0.58} rx={28} ry={13} fill="white" opacity="0.78"/>
+          {/* Distant fields at the horizon — flat green patchwork */}
+          <rect x="0" y={lensR*1.6} width={lensR*2} height={lensR*0.4} fill="#5A8030"/>
+          <path d={`M 0 ${lensR*1.6} C 40 ${lensR*1.55} 80 ${lensR*1.62} 120 ${lensR*1.58} C 155 ${lensR*1.63} 175 ${lensR*1.57} ${lensR*2} ${lensR*1.61}`}
+            fill="#6A9038" opacity="0.8"/>
+          {/* Barn roofline silhouette — far right, adds depth */}
+          <path d={`M ${lensR*1.55} ${lensR*1.62} L ${lensR*1.55} ${lensR*1.42} L ${lensR*1.65} ${lensR*1.32} L ${lensR*1.75} ${lensR*1.42} L ${lensR*1.75} ${lensR*1.62}`}
+            fill="#2A2018" opacity="0.6"/>
+          {/* Silo next to barn */}
+          <rect x={lensR*1.74} y={lensR*1.35} width={lensR*0.06} height={lensR*0.27} fill="#3A3028" opacity="0.55"/>
+          <ellipse cx={lensR*1.77} cy={lensR*1.35} rx={lensR*0.03} ry={lensR*0.015} fill="#3A3028" opacity="0.55"/>
+          {/* Power line — swallows perch on these */}
+          <line x1={0} y1={lensR*1.52} x2={lensR*2} y2={lensR*1.48} stroke="#1A1810" strokeWidth="1.5" opacity="0.45"/>
+          <line x1={lensR*0.3} y1={lensR*1.52} x2={lensR*0.3} y2={lensR*1.62} stroke="#1A1810" strokeWidth="1.2" opacity="0.4"/>
+          <line x1={lensR*1.1} y1={lensR*1.5} x2={lensR*1.1} y2={lensR*1.62} stroke="#1A1810" strokeWidth="1.2" opacity="0.4"/>
+        </g>
+      )
+
     case 'sky':
       return (
         <g>
@@ -397,14 +433,57 @@ function makeBehaviorEngine(movementPattern, startPos) {
         break
       }
       case 'soaring': {
-        phase = 'soar_circle'
-        phaseDuration = rand(3000, 5000)
+        // Thermal soarer: wide lazy circle → drift through center (capture window) → climb out
+        const seq = phaseIndex % 3
+        if (seq === 0) {
+          phase = 'soar_circle'
+          phaseDuration = rand(2500, 4000)    // outer thermal circle
+        } else if (seq === 1) {
+          phase = 'soar_pass'                  // CAPTURE WINDOW — drifts near center
+          target = { x: rand(-0.12, 0.12), y: rand(-0.1, 0.1) }
+          phaseDuration = rand(1800, 3000)
+        } else {
+          phase = 'soar_circle'
+          phaseDuration = rand(2000, 3500)
+        }
         break
       }
       case 'stalking': {
         phase = 'stalk_slow'
         phaseDuration = rand(2000, 4000)
         target = { x: clamp(pos.x + rand(-0.15, 0.15), -0.5, 0.5), y: clamp(pos.y + rand(-0.1, 0.1), -0.4, 0.4) }
+        break
+      }
+      case 'aerial_dart': {
+        // Barn swallow: fast sweeping arcs across the frame → brief pass near center → bank away
+        // Pattern: wide sweep → tighter sweep → quick near-center pass (capture window) → repeat
+        const seq = phaseIndex % 5
+        if (seq === 0) {
+          // Fast sweep across — goes nearly edge to edge
+          phase = 'dart_fast'
+          target = { x: rand(-0.75, -0.45) * (Math.random()>0.5?1:-1), y: rand(-0.3, 0.3) }
+          phaseDuration = rand(350, 550)
+        } else if (seq === 1) {
+          // Banking turn — curves back through mid-field
+          phase = 'dart'
+          target = { x: clamp(pos.x * -0.6, -0.55, 0.55), y: rand(-0.2, 0.2) }
+          phaseDuration = rand(280, 420)
+        } else if (seq === 2) {
+          // THE CAPTURE WINDOW — swallow dips near center chasing an insect
+          phase = 'dart'
+          target = { x: rand(-0.18, 0.18), y: rand(-0.15, 0.15) }
+          phaseDuration = rand(600, 1000)    // lingers briefly — player's chance to lock on
+        } else if (seq === 3) {
+          // Climbing bank away
+          phase = 'dart_fast'
+          target = { x: clamp(pos.x + rand(-0.4, 0.4), -0.75, 0.75), y: rand(-0.45, -0.1) }
+          phaseDuration = rand(250, 400)
+        } else {
+          // Brief soar — arc across upper half before next sweep
+          phase = 'dart'
+          target = { x: rand(-0.6, 0.6), y: rand(-0.4, -0.15) }
+          phaseDuration = rand(400, 650)
+        }
         break
       }
       case 'hovering': {
@@ -548,11 +627,20 @@ function makeBehaviorEngine(movementPattern, startPos) {
           break
 
         case 'soar_circle': {
-          const angle = totalFrame * 0.018
-          pos.x = Math.sin(angle) * 0.45
-          pos.y = Math.cos(angle) * 0.22
+          // Reduced amplitude (was 0.45/0.22) so bird stays closer to center — catchable
+          const angle = totalFrame * 0.016
+          pos.x = Math.sin(angle) * 0.30
+          pos.y = Math.cos(angle) * 0.14
           break
         }
+
+        case 'soar_pass':
+          // Slow drift through center — the capture window for soaring birds
+          pos.x = lerp(pos.x, target.x, 0.007)
+          pos.y = lerp(pos.y, target.y, 0.005)
+          pos.x += noise() * 0.4
+          pos.y += noise() * 0.3
+          break
 
         case 'stalk_slow':
           pos.x = lerp(pos.x, target.x, 0.006)
@@ -604,8 +692,9 @@ const BIRD_BACKGROUNDS = {
                     'magnolia_warbler', 'chestnuside_warbler', 'ruby_throated_hummingbird',
                     'eastern_phoebe', 'house_wren', 'coopers_hawk', 'sharp_shinned_hawk'],
   tall_trees:      ['baltimore_oriole', 'red_tailed_hawk', 'american_crow'],
-  shrubby_field:   ['indigo_bunting', 'american_goldfinch', 'american_kestrel', 'barn_swallow',
+  shrubby_field:   ['indigo_bunting', 'american_goldfinch', 'american_kestrel',
                     'prairie_warbler', 'eastern_kingbird', 'blue_winged_warbler', 'kirtlands_warbler'],
+  open_sky:        ['barn_swallow'],
   forest_undergrowth: ['eastern_towhee', 'song_sparrow', 'dark_eyed_junco',
                        'blackthroated_blue_warbler', 'nashville_warbler', 'wilsons_warbler',
                        'carolina_wren', 'white_throated_sparrow'],
@@ -668,15 +757,23 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const [started, setStarted]           = useState(false)
   const [speedWarning, setSpeedWarning] = useState(false)
   const [opticalFocusDisplay, setOpticalFocusDisplay] = useState(35)
-  const [viewPhase, setViewPhase]       = useState('raising') // 'raising' → 'searching'
+  const [isLandscape, setIsLandscape]   = useState(() => window.innerWidth > window.innerHeight)
+  // viewPhase drives the housing animation:
+  //   'raising'   → figure-8 housing fully visible, two-circle clip
+  //   'fading'    → figure-8 housing fading out (700ms), clip still two circles
+  //   'searching' → figure-8 gone, oval housing fades in, oval clip active
+  const [viewPhase, setViewPhase]       = useState('raising')
   const birdDistance = birdDistanceRef.current
 
   const habitatBg = getBirdBackground(bird?.id || bird?.captureStats?.captureBackground)
 
-  // ── Binocular view phase: figure-8 on raise → single oval when searching ──
+  // ── Binocular view phase: figure-8 raises → fades → oval appears ──
+  // Delay between 'fading' and 'searching' equals the CSS fade duration (700ms)
+  // so the clip path only switches after the housing is fully gone.
   useEffect(() => {
-    const t = setTimeout(() => setViewPhase('searching'), 1400)
-    return () => clearTimeout(t)
+    const t1 = setTimeout(() => setViewPhase('fading'),    1400)
+    const t2 = setTimeout(() => setViewPhase('searching'), 2100)   // 1400 + 700ms fade
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
   // ── Device orientation (mobile) ──────────────────────────────────────────
@@ -689,6 +786,17 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     }
     window.addEventListener('deviceorientation', handler)
     return () => window.removeEventListener('deviceorientation', handler)
+  }, [])
+
+  // ── Landscape / orientation tracking ─────────────────────────────────────
+  useEffect(() => {
+    const update = () => setIsLandscape(window.innerWidth > window.innerHeight)
+    window.addEventListener('resize', update)
+    window.addEventListener('orientationchange', update)
+    return () => {
+      window.removeEventListener('resize', update)
+      window.removeEventListener('orientationchange', update)
+    }
   }, [])
 
   // ── Mouse control (desktop) ──────────────────────────────────────────────
@@ -880,19 +988,30 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   }, [])
 
   // ── Rendering helpers ─────────────────────────────────────────────────────
-  const LENS_R = 95   // kept for background scaling compatibility
+  const LENS_R = 95   // base habitat background SVG is drawn at lensR=95
 
-  // ── Merged binocular view constants ───────────────────────────────────────
-  // Both eyes merge into one wide coherent field. Black housing rim at the edge.
-  const BIN_W   = 348          // total merged width
-  const BIN_H   = 204          // total merged height
-  const BIN_CY  = BIN_H / 2   // vertical center
-  const LCXPOS  = 106          // left lens center X
-  const RCXPOS  = 242          // right lens center X
-  const BLR     = 105          // each lens radius (slightly larger than LENS_R)
+  // ── Focus ring constants ───────────────────────────────────────────────────
+  const RING_R   = 68
+  const RING_W   = 20
+  const RING_MID = RING_R - RING_W / 2
 
-  // Bird is drawn at the center of the merged field
-  const birdMCX = (LCXPOS + RCXPOS) / 2  // = 174
+  // ── Merged binocular view constants (landscape-aware) ─────────────────────
+  // In landscape: binoculars fill the screen; focus ring moves to a right-side panel.
+  const lsVW = window.innerWidth
+  const lsVH = window.innerHeight
+  const RING_LANE_W = isLandscape ? RING_R * 2 + 28 : 0   // right panel width in landscape
+  const LS_TOP_H    = isLandscape ? 44 : 0                 // slim top-bar overlay height
+  const BIN_W   = isLandscape ? Math.max(320, lsVW - RING_LANE_W - 8) : 348
+  const BIN_H   = isLandscape ? Math.max(180, lsVH - LS_TOP_H - 8)    : 204
+  const BIN_CY  = BIN_H / 2
+  // Lens radii scale with the view height in landscape; capped to avoid over-wide figure-8
+  const BLR     = isLandscape ? Math.round(Math.min(BIN_H / 2 - 4, BIN_W * 0.24)) : 105
+  // Lens centers: symmetric around the horizontal midpoint
+  const LCXPOS  = isLandscape ? Math.round(BIN_W / 2 - BLR * 0.68) : 106
+  const RCXPOS  = isLandscape ? Math.round(BIN_W / 2 + BLR * 0.68) : 242
+
+  // Bird is always drawn at the horizontal center of the merged field
+  const birdMCX = BIN_W / 2
   const birdX = viewPos.x * BLR * 0.72
   const birdY = viewPos.y * BLR * 0.72
 
@@ -907,14 +1026,12 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
 
   const focusColor = (spatialFocus && opticalGood) ? '#3ddc7f' : spatialFocus ? '#f5a623' : '#ffffff40'
 
-  // Distance to size: scale bird avatar size by distance vs typical
+  // Distance to size: bird avatar scales with distance; base size larger in landscape
   const distanceScaleFactor = clamp((50 / birdDistance) * 0.8 + 0.2, 0.5, 1.4)
-  const avatarSize = Math.round(96 * distanceScaleFactor)  // larger in merged view
+  const avatarBaseSize = isLandscape ? 130 : 96
+  const avatarSize = Math.round(avatarBaseSize * distanceScaleFactor)
 
-  // Focus ring display angle: spans -135° to +135° across the full 5–150m range
-  const RING_R   = 68
-  const RING_W   = 20
-  const RING_MID = RING_R - RING_W / 2
+  // Focus ring angle: spans -135° to +135° across 5–150m range
   const distToAngle = (d) => -135 + (clamp(d, 5, 150) - 5) / 145 * 270
   const indicatorAngle  = distToAngle(opticalFocusDisplay)
   const birdTargetAngle = distToAngle(birdDistance)
@@ -923,17 +1040,25 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const bgPX = -bgOffset.x * BLR * 0.26
   const bgPY = -bgOffset.y * BLR * 0.18
 
-  // Background scaling: scale the habitat scene to fill the merged width
-  const bgScale    = BIN_W / (LENS_R * 2)             // ≈ 1.83
-  const bgScaledH  = LENS_R * 2 * bgScale              // ≈ 348px
-  const bgVOffset  = -(bgScaledH - BIN_H) / 2          // ≈ -72 (center vertically)
+  // Background scaling: 40% overscan prevents any edge from entering the clip area.
+  // bgScale maps the LENS_R-sized SVG to fill BIN_W with bleed on all sides.
+  const BG_OVERSCAN = 1.40
+  const bgScale   = (BIN_W / (LENS_R * 2)) * BG_OVERSCAN
+  const bgScaledW = LENS_R * 2 * bgScale
+  const bgScaledH = Math.max(bgScaledW, BIN_H * BG_OVERSCAN)
+  const bgHOffset = -(bgScaledW - BIN_W) / 2
+  const bgVOffset = -(bgScaledH - BIN_H) / 2
 
-  // Oval searching-mode dimensions — single wide field of view
-  const OVL_CX = birdMCX   // 174 — horizontal center of merged field
-  const OVL_CY = BIN_CY    // 102 — vertical center
-  const OVL_RX = 162        // wide enough to fill BIN_W minus thin rim
-  const OVL_RY = 97         // tall enough to fill BIN_H minus thin rim
-  const isSearching = viewPhase === 'searching'
+  // Oval searching-mode: fills the full binoculars frame edge-to-edge
+  const OVL_CX = BIN_W / 2
+  const OVL_CY = BIN_CY
+  const OVL_RX = Math.round(BIN_W / 2 - 5)
+  const OVL_RY = Math.round(BIN_H / 2 - 4)
+
+  // Clip switches only after housing has fully faded
+  const isSearching  = viewPhase === 'searching'
+  const fig8Opacity  = viewPhase === 'raising' ? 1 : 0
+  const ovalOpacity  = viewPhase === 'searching' ? 1 : 0
 
   const mergedBinocularsView = () => (
     <div style={{
@@ -954,7 +1079,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
           </clipPath>
         </defs>
         <g clipPath={isSearching ? 'url(#binBgClipS)' : 'url(#binBgClipR)'}
-           transform={`translate(${bgPX}, ${bgVOffset + bgPY}) scale(${bgScale})`}>
+           transform={`translate(${bgHOffset + bgPX}, ${bgVOffset + bgPY}) scale(${bgScale})`}>
           <HabitatBackground type={habitatBg} lensR={LENS_R}/>
         </g>
       </svg>
@@ -1037,9 +1162,10 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
         <BirdAvatar birdId={bird.id} size={avatarSize} animated={started}/>
       </div>
 
-      {/* ── Figure-8 housing (raising phase) — fades out when searching ── */}
+      {/* ── Figure-8 housing (raising phase) — fades out cleanly ── */}
+      {/* Bridge ellipse is fully opaque so it fades at the same rate as the housing */}
       <svg style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
-                    opacity: isSearching ? 0 : 1, transition: 'opacity 0.7s ease-in-out' }}
+                    opacity: fig8Opacity, transition: 'opacity 0.7s ease-in-out' }}
            width={BIN_W} height={BIN_H}>
         <defs>
           <mask id="binHousingMaskR">
@@ -1051,12 +1177,13 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
         <rect width={BIN_W} height={BIN_H} fill="#050a06" mask="url(#binHousingMaskR)"/>
         <circle cx={LCXPOS} cy={BIN_CY} r={BLR - 1} fill="none" stroke="#1c2e1e" strokeWidth="3.5"/>
         <circle cx={RCXPOS} cy={BIN_CY} r={BLR - 1} fill="none" stroke="#1c2e1e" strokeWidth="3.5"/>
-        <ellipse cx={(LCXPOS+RCXPOS)/2} cy={BIN_CY} rx={20} ry={32} fill="#050a06" opacity="0.55"/>
+        {/* Bridge — fully opaque so it fades uniformly with the housing, leaving no ghost */}
+        <ellipse cx={(LCXPOS+RCXPOS)/2} cy={BIN_CY} rx={20} ry={32} fill="#050a06"/>
       </svg>
 
-      {/* ── Oval housing (searching phase) — fades in, no blind spot ── */}
+      {/* ── Oval housing (searching phase) — fades in after figure-8 is gone ── */}
       <svg style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
-                    opacity: isSearching ? 1 : 0, transition: 'opacity 0.7s ease-in-out' }}
+                    opacity: ovalOpacity, transition: 'opacity 0.7s ease-in-out' }}
            width={BIN_W} height={BIN_H}>
         <defs>
           <mask id="binHousingMaskS">
@@ -1197,15 +1324,69 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   )
 
   // ── Render ─────────────────────────────────────────────────────────────────
+
+  // Shared focus progress bar
+  const focusBar = (
+    <div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 6, fontSize: 11 }}>
+        <span style={{ color: spatialFocus ? 'var(--accent-green)' : 'var(--text-dim)' }}>
+          {spatialFocus ? '● Centered' : '○ Track bird'}
+        </span>
+        <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
+        <span style={{ color: opticalGood ? 'var(--accent-green)' : '#f5a623' }}>
+          {opticalGood ? '● Focus sharp' : `◐ Turn ring → ${birdDistance}m`}
+        </span>
+        <span style={{ marginLeft: 'auto', color: 'var(--text-dim)' }}>{focusPct}%</span>
+      </div>
+      <div style={{ height: 6, background: 'rgba(255,255,255,0.08)', borderRadius: 3, overflow: 'hidden' }}>
+        <div style={{
+          height: '100%', width: `${focusPct}%`,
+          background: (spatialFocus && opticalGood)
+            ? 'linear-gradient(90deg, #2abc65, #3ddc7f)'
+            : spatialFocus
+              ? 'linear-gradient(90deg, #c87010, #f5a623)'
+              : 'linear-gradient(90deg, #2a4a2e, #3a5a3e)',
+          borderRadius: 3,
+          transition: 'width 0.15s, background 0.2s',
+          boxShadow: (spatialFocus && opticalGood) ? '0 0 8px rgba(61,220,127,0.5)' : 'none',
+        }}/>
+      </div>
+      <div style={{ marginTop: 6, fontSize: 11, color: 'var(--text-dim)', textAlign: 'center' }}>
+        {!spatialFocus && `Track the ${bird.commonName} into the crosshairs`}
+        {spatialFocus && !opticalGood && 'Turn the focus ring to sharpen'}
+        {spatialFocus && opticalGood && 'Hold steady…'}
+      </div>
+    </div>
+  )
+
+  // Directional arrow (shared)
+  const findArrow = started && !spatialFocus && Math.sqrt(viewPos.x**2 + viewPos.y**2) > 0.55 && (
+    <div style={{
+      position: 'absolute', top: '50%', left: isLandscape ? `${BIN_W / 2}px` : '50%',
+      transform: `translate(-50%, -50%) rotate(${Math.atan2(viewPos.y, viewPos.x) * 180 / Math.PI}deg)`,
+      width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      zIndex: 25, pointerEvents: 'none', opacity: 0.75,
+      animation: 'fadeIn 0.3s ease',
+    }}>
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <polygon points="22,4 38,40 22,32 6,40"
+          fill="#f5a623" opacity="0.9"
+          style={{ filter: 'drop-shadow(0 0 6px rgba(245,166,35,0.8))' }}/>
+      </svg>
+    </div>
+  )
+
   return (
     <div className="screen" style={{
       background: '#050a06',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '20px 0 24px',
+      alignItems: isLandscape ? 'stretch' : 'center',
+      justifyContent: isLandscape ? 'flex-start' : 'space-between',
+      padding: isLandscape ? 0 : '20px 0 24px',
       userSelect: 'none',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
 
       {/* Capture flash */}
@@ -1224,37 +1405,11 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
         </div>
       )}
 
-      {/* ── Top HUD ──────────────────────────────────────────────────────── */}
-      <div style={{ width: '100%', padding: '0 20px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', letterSpacing: 1 }}>CAPTURING</div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, color: 'var(--text-primary)' }}>
-            {bird.commonName}
-          </div>
-          {started && (
-            <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>
-              ~{birdDistance}m away
-            </div>
-          )}
-        </div>
-        {/* Countdown */}
-        <div style={{
-          background: timeLeft <= 10 ? 'rgba(255,85,85,0.15)' : 'rgba(255,255,255,0.06)',
-          border: `1px solid ${timeLeft <= 10 ? '#ff5555' : 'rgba(255,255,255,0.1)'}`,
-          borderRadius: 20, padding: '5px 14px', fontSize: 16, fontWeight: 700,
-          fontFamily: 'var(--font-mono)',
-          color: timeLeft <= 10 ? '#ff5555' : 'var(--text-primary)',
-          transition: 'all 0.3s',
-        }}>
-          {timeLeft}s
-        </div>
-      </div>
-
       {/* Speed warning */}
       {speedWarning && (
         <div style={{
-          position: 'absolute', top: 60, left: '50%', transform: 'translateX(-50%)',
+          position: 'absolute', top: isLandscape ? LS_TOP_H + 6 : 60,
+          left: '50%', transform: 'translateX(-50%)',
           background: 'rgba(255,165,0,0.15)', border: '1px solid rgba(255,165,0,0.4)',
           borderRadius: 20, padding: '5px 14px', fontSize: 12, color: 'orange',
           fontWeight: 600, zIndex: 20, animation: 'fadeIn 0.2s ease', whiteSpace: 'nowrap',
@@ -1263,84 +1418,162 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
         </div>
       )}
 
-      {/* Directional find-it arrow — shown when bird is well off-screen */}
-      {started && !spatialFocus && Math.sqrt(viewPos.x**2 + viewPos.y**2) > 0.55 && (
-        <div style={{
-          position: 'absolute', top: '50%', left: '50%',
-          transform: `translate(-50%, -50%) rotate(${Math.atan2(viewPos.y, viewPos.x) * 180 / Math.PI}deg)`,
-          width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 25, pointerEvents: 'none', opacity: 0.75,
-          animation: 'fadeIn 0.3s ease',
-        }}>
-          <svg width="44" height="44" viewBox="0 0 44 44">
-            <polygon points="22,4 38,40 22,32 6,40"
-              fill="#f5a623" opacity="0.9"
-              style={{ filter: 'drop-shadow(0 0 6px rgba(245,166,35,0.8))' }}/>
-          </svg>
-        </div>
-      )}
+      {findArrow}
 
-      {/* ── Binoculars view ───────────────────────────────────────────── */}
-      {!started ? (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center', gap: 20 }}>
-          <div style={{ fontSize: 64, animation: 'birdFloat 2s ease-in-out infinite' }}>🔭</div>
-          <div style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 15 }}>
-            Raise your phone and look<br/>through the binoculars
+      {isLandscape ? (
+        /* ════════════════════════════════════════════════════════
+           LANDSCAPE LAYOUT
+           Slim top bar + binoculars (left) + focus ring (right)
+           ════════════════════════════════════════════════════════ */
+        <>
+          {/* Slim top HUD overlay */}
+          <div style={{
+            height: LS_TOP_H, display: 'flex', alignItems: 'center',
+            justifyContent: 'space-between', padding: '0 14px',
+            background: 'rgba(5,10,6,0.90)',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
+            flexShrink: 0,
+          }}>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <div style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: 1, fontFamily: 'var(--font-mono)' }}>CAPTURING</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 14, color: 'var(--text-primary)' }}>
+                {bird.commonName}
+              </div>
+              {started && <div style={{ fontSize: 10, color: 'var(--text-dim)' }}>~{birdDistance}m</div>}
+            </div>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              {started && (
+                <>
+                  <span style={{ fontSize: 10, color: spatialFocus ? 'var(--accent-green)' : 'var(--text-dim)' }}>
+                    {spatialFocus ? '● Centered' : '○ Track'}
+                  </span>
+                  <span style={{ fontSize: 10, color: opticalGood ? 'var(--accent-green)' : '#f5a623' }}>
+                    {opticalGood ? '● Sharp' : '◐ Focus'}
+                  </span>
+                  <span style={{ fontSize: 10, color: 'var(--text-dim)' }}>{focusPct}%</span>
+                </>
+              )}
+              <div style={{
+                background: timeLeft <= 10 ? 'rgba(255,85,85,0.15)' : 'rgba(255,255,255,0.06)',
+                border: `1px solid ${timeLeft <= 10 ? '#ff5555' : 'rgba(255,255,255,0.1)'}`,
+                borderRadius: 16, padding: '2px 10px', fontSize: 14, fontWeight: 700,
+                fontFamily: 'var(--font-mono)',
+                color: timeLeft <= 10 ? '#ff5555' : 'var(--text-primary)',
+              }}>{timeLeft}s</div>
+            </div>
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-dim)', textAlign: 'center', maxWidth: 290, lineHeight: 1.5 }}>
-            <strong style={{ color: 'var(--text-secondary)' }}>Mobile:</strong> tilt to pan the view.<br/>
-            <strong style={{ color: 'var(--text-secondary)' }}>Focus ring:</strong> turn the ring below to dial in the distance.<br/>
-            Move slowly — sudden movements spook it!
-          </div>
-          <button className="btn btn-primary btn-lg" onClick={startGame} style={{ marginTop: 8, width: 220 }}>
-            🔭 Start Tracking
-          </button>
-        </div>
-      ) : (
-        <div ref={lensRef} style={{ flex: 1, display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-          {/* Merged binocular view */}
-          {mergedBinocularsView()}
-          {/* Rotary focus ring */}
-          {focusRingEl}
-        </div>
-      )}
 
-      {/* ── Focus status bar ──────────────────────────────────────────── */}
-      {started && (
-        <div style={{ width: '100%', padding: '8px 20px 0' }}>
-          {/* Two status rows */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 6, fontSize: 11 }}>
-            <span style={{ color: spatialFocus ? 'var(--accent-green)' : 'var(--text-dim)' }}>
-              {spatialFocus ? '● Centered' : '○ Track bird'}
-            </span>
-            <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
-            <span style={{ color: opticalGood ? 'var(--accent-green)' : '#f5a623' }}>
-              {opticalGood ? '● Focus sharp' : `◐ Turn ring → ${birdDistance}m`}
-            </span>
-            <span style={{ marginLeft: 'auto', color: 'var(--text-dim)' }}>{focusPct}%</span>
-          </div>
-          {/* Progress bar */}
-          <div style={{ height: 6, background: 'rgba(255,255,255,0.08)', borderRadius: 3, overflow: 'hidden' }}>
+          {/* Content row: binoculars + focus ring panel */}
+          <div style={{ display: 'flex', flex: 1, alignItems: 'stretch', minHeight: 0 }}>
+            {/* Binoculars view */}
+            {!started ? (
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+                <div style={{ fontSize: 56, animation: 'birdFloat 2s ease-in-out infinite' }}>🔭</div>
+                <div style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+                  Raise your phone and look through the binoculars
+                </div>
+                <button className="btn btn-primary btn-lg" onClick={startGame} style={{ width: 200 }}>
+                  🔭 Start Tracking
+                </button>
+              </div>
+            ) : (
+              <div ref={lensRef} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                {mergedBinocularsView()}
+                {/* Focus status overlaid at bottom of binoculars */}
+                <div style={{
+                  position: 'absolute', bottom: 0, left: 0, right: 0,
+                  padding: '6px 16px 8px',
+                  background: 'linear-gradient(transparent, rgba(5,10,6,0.75))',
+                }}>
+                  {focusBar}
+                </div>
+              </div>
+            )}
+
+            {/* Right panel: focus ring */}
             <div style={{
-              height: '100%', width: `${focusPct}%`,
-              background: (spatialFocus && opticalGood)
-                ? 'linear-gradient(90deg, #2abc65, #3ddc7f)'
-                : spatialFocus
-                  ? 'linear-gradient(90deg, #c87010, #f5a623)'
-                  : 'linear-gradient(90deg, #2a4a2e, #3a5a3e)',
-              borderRadius: 3,
-              transition: 'width 0.15s, background 0.2s',
-              boxShadow: (spatialFocus && opticalGood) ? '0 0 8px rgba(61,220,127,0.5)' : 'none',
-            }}/>
+              width: RING_LANE_W, display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+              borderLeft: '1px solid rgba(255,255,255,0.05)',
+              background: 'rgba(0,0,0,0.25)',
+              flexShrink: 0,
+            }}>
+              {focusRingEl}
+            </div>
           </div>
-          <div style={{ marginTop: 8, fontSize: 12, color: 'var(--text-dim)', textAlign: 'center' }}>
-            {!spatialFocus && `Track the ${bird.commonName} into the crosshairs`}
-            {spatialFocus && !opticalGood && 'Turn the focus ring to sharpen'}
-            {spatialFocus && opticalGood && 'Hold steady…'}
+        </>
+      ) : (
+        /* ════════════════════════════════════════════════════════
+           PORTRAIT LAYOUT
+           ════════════════════════════════════════════════════════ */
+        <>
+          {/* Top HUD */}
+          <div style={{ width: '100%', padding: '0 20px',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ fontSize: 12, color: 'var(--text-dim)', letterSpacing: 1 }}>CAPTURING</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, color: 'var(--text-primary)' }}>
+                {bird.commonName}
+              </div>
+              {started && (
+                <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>
+                  ~{birdDistance}m away
+                </div>
+              )}
+            </div>
+            <div style={{
+              background: timeLeft <= 10 ? 'rgba(255,85,85,0.15)' : 'rgba(255,255,255,0.06)',
+              border: `1px solid ${timeLeft <= 10 ? '#ff5555' : 'rgba(255,255,255,0.1)'}`,
+              borderRadius: 20, padding: '5px 14px', fontSize: 16, fontWeight: 700,
+              fontFamily: 'var(--font-mono)',
+              color: timeLeft <= 10 ? '#ff5555' : 'var(--text-primary)',
+              transition: 'all 0.3s',
+            }}>
+              {timeLeft}s
+            </div>
           </div>
-        </div>
+
+          {/* Binoculars / start screen */}
+          {!started ? (
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', gap: 20 }}>
+              <div style={{ fontSize: 64, animation: 'birdFloat 2s ease-in-out infinite' }}>🔭</div>
+              <div style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 15 }}>
+                Raise your phone and look<br/>through the binoculars
+              </div>
+              <div style={{ fontSize: 13, color: 'var(--text-dim)', textAlign: 'center', maxWidth: 290, lineHeight: 1.5 }}>
+                <strong style={{ color: 'var(--text-secondary)' }}>Mobile:</strong> tilt to pan the view.<br/>
+                <strong style={{ color: 'var(--text-secondary)' }}>Focus ring:</strong> turn the ring below to dial in the distance.<br/>
+                Move slowly — sudden movements spook it!
+              </div>
+              <button className="btn btn-primary btn-lg" onClick={startGame} style={{ marginTop: 8, width: 220 }}>
+                🔭 Start Tracking
+              </button>
+            </div>
+          ) : (
+            <div ref={lensRef} style={{ flex: 1, display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+              {mergedBinocularsView()}
+              {focusRingEl}
+            </div>
+          )}
+
+          {/* Focus status bar */}
+          {started && (
+            <div style={{ width: '100%', padding: '8px 20px 0' }}>
+              {focusBar}
+            </div>
+          )}
+
+          {/* Rotate-for-larger-view hint */}
+          <div style={{
+            marginTop: 10, fontSize: 10, color: 'rgba(255,255,255,0.22)',
+            fontFamily: 'monospace', letterSpacing: 1, textAlign: 'center',
+          }}>
+            ↺ Rotate phone sideways for a larger capture view
+          </div>
+        </>
       )}
     </div>
   )
