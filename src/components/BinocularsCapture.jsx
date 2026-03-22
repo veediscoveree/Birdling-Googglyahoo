@@ -331,13 +331,13 @@ function makeBehaviorEngine(movementPattern, startPos) {
         break
       }
       case 'skulking': {
-        // Yellowthroat: pops to sing briefly, hops away, pauses, repeats
-        // Reduced edge distances so bird stays more visible — skulking feel without impossibility
+        // Yellowthroat: pops into view to sing, ducks back, creeps sideways, repeats
+        // Peek phase is longer and more centered so the bird is actually findable
         const seq = phaseIndex % 4
-        if (seq === 0) { phase = 'hide'; target = { x: rand(0.25, 0.55) * (Math.random()>0.5?1:-1), y: rand(-0.3, 0.3) }; phaseDuration = rand(800, 1500) }
-        else if (seq === 1) { phase = 'peek'; target = { x: rand(-0.15, 0.15), y: clamp(pos.y + rand(-0.15, 0.15), -0.4, 0.4) }; phaseDuration = rand(500, 1000) }
-        else if (seq === 2) { phase = 'scurry'; target = { x: rand(-0.4, -0.1) * (Math.random()>0.5?1:-1), y: rand(-0.3, 0.3) }; phaseDuration = rand(300, 600) }
-        else { phase = 'perch'; phaseDuration = rand(600, 1200) }
+        if (seq === 0) { phase = 'hide'; target = { x: rand(0.18, 0.38) * (Math.random()>0.5?1:-1), y: rand(-0.25, 0.25) }; phaseDuration = rand(600, 1100) }
+        else if (seq === 1) { phase = 'peek'; target = { x: rand(-0.12, 0.12), y: clamp(pos.y + rand(-0.1, 0.1), -0.35, 0.35) }; phaseDuration = rand(1200, 2000) }
+        else if (seq === 2) { phase = 'scurry'; target = { x: rand(-0.28, 0.28), y: rand(-0.25, 0.25) }; phaseDuration = rand(350, 650) }
+        else { phase = 'perch'; phaseDuration = rand(800, 1600) }
         break
       }
       case 'creeping': {
@@ -390,8 +390,10 @@ function makeBehaviorEngine(movementPattern, startPos) {
         break
       }
       case 'swimming': {
+        // Duck glides slowly — set a gentle target so the bird drifts, not teleports
         phase = 'swim_sway'
-        phaseDuration = rand(1500, 2500)
+        target = { x: clamp(pos.x + rand(-0.2, 0.2), -0.35, 0.35), y: clamp(pos.y + rand(-0.1, 0.1), -0.3, 0.3) }
+        phaseDuration = rand(2000, 3500)
         break
       }
       case 'soaring': {
@@ -538,9 +540,11 @@ function makeBehaviorEngine(movementPattern, startPos) {
           break
 
         case 'swim_sway':
-          pos.x = Math.sin(totalFrame * 0.018) * 0.32   // slower, smaller — ducks swim serenely
-          pos.y += noise()
-          pos.y *= 0.98
+          // Gentle drift toward target — duck glides on water, player can track it
+          pos.x = lerp(pos.x, target.x, 0.008)
+          pos.y = lerp(pos.y, target.y, 0.006)
+          pos.x += Math.sin(totalFrame * 0.04) * 0.003  // gentle side-to-side sway
+          pos.y += noise() * 0.5
           break
 
         case 'soar_circle': {
@@ -774,10 +778,15 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     }
 
     const movementPattern = bird.captureStats.movementPattern || 'perching'
-    // Start bird off to one side — player must pan to find it
+    // Spawn distance varies by movement pattern: swimmers/stalkers closer, fliers further
     const spawnSide = Math.random() > 0.5 ? 1 : -1
-    const spawnX = spawnSide * (0.62 + Math.random() * 0.22)
-    const spawnY = (Math.random() - 0.5) * 0.5
+    const spawnRange = (['swimming', 'stalking', 'soaring'].includes(movementPattern))
+      ? [0.30, 0.50]   // large easy birds — closer spawn so they're findable
+      : (movementPattern === 'skulking')
+        ? [0.35, 0.55]  // skulking birds — slightly closer so peek phase is reachable
+        : [0.58, 0.82]  // small agile birds — full challenge spawn distance
+    const spawnX = spawnSide * (spawnRange[0] + Math.random() * (spawnRange[1] - spawnRange[0]))
+    const spawnY = (Math.random() - 0.5) * 0.45
     behaviorRef.current = makeBehaviorEngine(movementPattern, { x: spawnX, y: spawnY })
 
     const speedThreshold = 0.06 + (10 - bird.captureStats.flightiness) * 0.01

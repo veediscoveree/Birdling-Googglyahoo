@@ -24,9 +24,74 @@ function timeAgo(obsDt) {
 }
 
 const SCREEN = {
-  RADAR: 'radar', ENCOUNTER: 'encounter', BINOCULARS: 'binoculars',
-  SUCCESS: 'success', AVIARY: 'aviary', BIRD_DETAIL: 'birdDetail',
-  LEADERBOARD: 'leaderboard', VERIFY: 'verify',
+  RADAR: 'radar', RARITY_ALERT: 'rarityAlert', ENCOUNTER: 'encounter',
+  BINOCULARS: 'binoculars', SUCCESS: 'success', AVIARY: 'aviary',
+  BIRD_DETAIL: 'birdDetail', LEADERBOARD: 'leaderboard', VERIFY: 'verify',
+}
+
+function RarityAlert({ bird, onProceed, onDismiss }) {
+  const alert = bird.vagrantAlert
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, background: '#020804',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      justifyContent: 'center', padding: '24px', zIndex: 100,
+    }}>
+      {/* Pulsing rarity glow */}
+      <div style={{
+        width: 120, height: 120, borderRadius: '50%',
+        background: `radial-gradient(circle, ${bird.rarityColor}44 0%, transparent 70%)`,
+        animation: 'rarityPulse 1.6s ease-in-out infinite',
+        marginBottom: 8,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <div style={{ fontSize: 56 }}>⚡</div>
+      </div>
+
+      <div style={{
+        color: bird.rarityColor, fontSize: 11, fontFamily: 'monospace',
+        letterSpacing: 4, textTransform: 'uppercase', marginBottom: 6,
+      }}>Rare Bird Alert</div>
+
+      <h1 style={{
+        color: '#f5f5f0', fontSize: 'clamp(22px, 6vw, 32px)', fontFamily: 'Georgia, serif',
+        fontWeight: 900, textAlign: 'center', margin: '0 0 4px',
+        letterSpacing: 1,
+      }}>{alert.headline}</h1>
+
+      <div style={{
+        color: bird.rarityColor, fontSize: 13, fontFamily: 'monospace',
+        letterSpacing: 2, textTransform: 'uppercase', marginBottom: 20,
+        textAlign: 'center',
+      }}>{alert.subtitle}</div>
+
+      <p style={{
+        color: '#c0c8b0', fontSize: 14, lineHeight: 1.7,
+        textAlign: 'center', maxWidth: 380, margin: '0 0 32px',
+      }}>{alert.body}</p>
+
+      <div style={{ display: 'flex', gap: 12, flexDirection: 'column', width: '100%', maxWidth: 320 }}>
+        <button onClick={onProceed} style={{
+          background: bird.rarityColor, color: '#fff', border: 'none',
+          borderRadius: 8, padding: '14px 24px', fontSize: 15,
+          fontWeight: 700, fontFamily: 'monospace', letterSpacing: 2,
+          textTransform: 'uppercase', cursor: 'pointer',
+        }}>{alert.cta} →</button>
+        <button onClick={onDismiss} style={{
+          background: 'transparent', color: '#5a6a4a', border: '1px solid #2a3a1a',
+          borderRadius: 8, padding: '10px 24px', fontSize: 13,
+          fontFamily: 'monospace', letterSpacing: 1, cursor: 'pointer',
+        }}>Pass — return to radar</button>
+      </div>
+
+      <style>{`
+        @keyframes rarityPulse {
+          0%, 100% { transform: scale(1); opacity: 0.7; }
+          50% { transform: scale(1.15); opacity: 1; }
+        }
+      `}</style>
+    </div>
+  )
 }
 
 const ENCOUNTER_DELAY_MS = 6000
@@ -95,15 +160,18 @@ export default function App() {
         eBirdLocName:  obs?.locName || null,
         eBirdTimeAgo:  obs?.obsDt   ? timeAgo(obs.obsDt) : null,
       })
-      setScreen(SCREEN.ENCOUNTER)
+      // Rare/vagrant birds get a dramatic rarity alert before the encounter
+      const isVagrant = bird.vagrantAlert || bird.rarity === 'legendary'
+      setScreen(isVagrant ? SCREEN.RARITY_ALERT : SCREEN.ENCOUNTER)
     }, ENCOUNTER_DELAY_MS)
 
     return () => clearTimeout(timer)
   }, [screen, nearbyBirds, eBirdActive])
 
-  const goToRadar       = useCallback(() => setScreen(SCREEN.RADAR), [])
-  const handleStartCapture = useCallback(() => setScreen(SCREEN.BINOCULARS), [])
-  const handleDismiss   = useCallback(() => setScreen(SCREEN.RADAR), [])
+  const goToRadar              = useCallback(() => setScreen(SCREEN.RADAR), [])
+  const handleStartCapture     = useCallback(() => setScreen(SCREEN.BINOCULARS), [])
+  const handleDismiss          = useCallback(() => setScreen(SCREEN.RADAR), [])
+  const handleRarityProceed    = useCallback(() => setScreen(SCREEN.ENCOUNTER), [])
 
   const handleCaptureSuccess = useCallback(() => {
     const isNew = !capturedBirds.includes(currentBird.id)
@@ -161,6 +229,10 @@ export default function App() {
 
   return (
     <div className="app">
+      {screen === SCREEN.RARITY_ALERT && currentBird && (
+        <RarityAlert bird={currentBird}
+          onProceed={handleRarityProceed} onDismiss={handleDismiss}/>
+      )}
       {screen === SCREEN.RADAR && (
         <RadarScreen capturedBirds={capturedBirds} score={score}
           userLocation={userLocation} eBirdActive={eBirdActive}
