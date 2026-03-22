@@ -152,8 +152,17 @@ export default function App() {
 
       setCurrentBird(bird)
       setFunFactIndex(0)  // reset for new bird
+
+      // Minimum encounter distance by size — ensures the bird has room to move
+      // at least 4 body-lengths laterally within the capture view.
+      // Larger birds at close range overflow the oval; keeping them further away
+      // also looks more realistic (ducks are across the pond, herons at the far bank).
+      const minDist = { tiny: 20, small: 30, medium: 45, large: 65, very_large: 90 }
+      const dMin = minDist[bird.sizeCategory] ?? 30
+      const distance = Math.floor(Math.random() * (130 - dMin)) + dMin
+
       setEncounterInfo({
-        distance:      Math.floor(Math.random() * 110) + 20,  // 20–130m, stays within focus slider range (5–150m)
+        distance,
         direction:     DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)],
         habitat:       obs?.locName || HABITATS[Math.floor(Math.random() * HABITATS.length)],
         isEBirdVerified: !!obs,
