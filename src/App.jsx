@@ -238,6 +238,12 @@ export default function App() {
 
   return (
     <div className="app">
+      {/* Version badge — visible in all screens for debugging */}
+      <div style={{
+        position: 'fixed', bottom: 4, right: 6, zIndex: 9999,
+        fontSize: 9, fontFamily: 'monospace', color: 'rgba(61,220,127,0.55)',
+        letterSpacing: 0.5, pointerEvents: 'none',
+      }}>v2.1-landscape</div>
       {screen === SCREEN.RARITY_ALERT && currentBird && (
         <RarityAlert bird={currentBird}
           onProceed={handleRarityProceed} onDismiss={handleDismiss}/>

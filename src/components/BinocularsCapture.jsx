@@ -789,13 +789,15 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   }, [])
 
   // ── Landscape / orientation tracking ─────────────────────────────────────
+  // iOS fires orientationchange before innerWidth/innerHeight update, so defer 150ms.
   useEffect(() => {
     const update = () => setIsLandscape(window.innerWidth > window.innerHeight)
+    const deferredUpdate = () => setTimeout(update, 150)
     window.addEventListener('resize', update)
-    window.addEventListener('orientationchange', update)
+    window.addEventListener('orientationchange', deferredUpdate)
     return () => {
       window.removeEventListener('resize', update)
-      window.removeEventListener('orientationchange', update)
+      window.removeEventListener('orientationchange', deferredUpdate)
     }
   }, [])
 
@@ -1568,10 +1570,14 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
 
           {/* Rotate-for-larger-view hint */}
           <div style={{
-            marginTop: 10, fontSize: 10, color: 'rgba(255,255,255,0.22)',
-            fontFamily: 'monospace', letterSpacing: 1, textAlign: 'center',
+            margin: '10px 16px 0',
+            background: 'rgba(61,220,127,0.08)',
+            border: '1px solid rgba(61,220,127,0.2)',
+            borderRadius: 12, padding: '7px 14px',
+            fontSize: 11, color: 'rgba(61,220,127,0.7)',
+            fontFamily: 'monospace', letterSpacing: 0.8, textAlign: 'center',
           }}>
-            ↺ Rotate phone sideways for a larger capture view
+            ↺ Rotate sideways for a larger view
           </div>
         </>
       )}
