@@ -455,34 +455,34 @@ function makeBehaviorEngine(movementPattern, startPos) {
         break
       }
       case 'aerial_dart': {
-        // Barn swallow: fast sweeping arcs across the frame → brief pass near center → bank away
-        // Pattern: wide sweep → tighter sweep → quick near-center pass (capture window) → repeat
+        // Barn swallow: skims LOW over fields chasing insects — stays in lower half of frame
+        // Pattern: low sweep edge-to-edge → banking turn → near-center capture window → repeat
         const seq = phaseIndex % 5
         if (seq === 0) {
-          // Fast sweep across — goes nearly edge to edge
+          // Low sweep across — stays near ground level (positive Y = lower in frame)
           phase = 'dart_fast'
-          target = { x: rand(-0.75, -0.45) * (Math.random()>0.5?1:-1), y: rand(-0.3, 0.3) }
-          phaseDuration = rand(350, 550)
+          target = { x: rand(-0.75, -0.45) * (Math.random()>0.5?1:-1), y: rand(0.1, 0.45) }
+          phaseDuration = rand(320, 500)
         } else if (seq === 1) {
-          // Banking turn — curves back through mid-field
+          // Banking turn — sweeps back through lower mid-field
           phase = 'dart'
-          target = { x: clamp(pos.x * -0.6, -0.55, 0.55), y: rand(-0.2, 0.2) }
-          phaseDuration = rand(280, 420)
+          target = { x: clamp(pos.x * -0.6, -0.55, 0.55), y: rand(0.0, 0.3) }
+          phaseDuration = rand(260, 400)
         } else if (seq === 2) {
-          // THE CAPTURE WINDOW — swallow dips near center chasing an insect
+          // THE CAPTURE WINDOW — dips close, nearly level, chasing an insect
           phase = 'dart'
-          target = { x: rand(-0.18, 0.18), y: rand(-0.15, 0.15) }
-          phaseDuration = rand(600, 1000)    // lingers briefly — player's chance to lock on
+          target = { x: rand(-0.18, 0.18), y: rand(-0.05, 0.2) }
+          phaseDuration = rand(700, 1100)    // lingers briefly — player's chance to lock on
         } else if (seq === 3) {
-          // Climbing bank away
+          // Brief climb away, then another sweep
           phase = 'dart_fast'
-          target = { x: clamp(pos.x + rand(-0.4, 0.4), -0.75, 0.75), y: rand(-0.45, -0.1) }
+          target = { x: clamp(pos.x + rand(-0.4, 0.4), -0.75, 0.75), y: rand(-0.05, 0.35) }
           phaseDuration = rand(250, 400)
         } else {
-          // Brief soar — arc across upper half before next sweep
+          // Another low pass — undulating flight back across
           phase = 'dart'
-          target = { x: rand(-0.6, 0.6), y: rand(-0.4, -0.15) }
-          phaseDuration = rand(400, 650)
+          target = { x: rand(-0.6, 0.6), y: rand(0.05, 0.35) }
+          phaseDuration = rand(380, 600)
         }
         break
       }
@@ -541,6 +541,61 @@ function makeBehaviorEngine(movementPattern, startPos) {
         if (seq === 0 || seq === 3) { phase = 'pause_ground'; phaseDuration = rand(600, 1300) }
         else if (seq === 1) { phase = 'hop'; target = { x: clamp(pos.x + rand(-0.22, 0.22), -0.65, 0.65), y: clamp(pos.y + rand(-0.15, 0.15), -0.5, 0.5) }; phaseDuration = rand(180, 340) }
         else { phase = 'hide'; target = { x: clamp(pos.x + rand(-0.25, 0.25), -0.7, 0.7), y: clamp(pos.y + rand(-0.1, 0.1), -0.5, 0.5) }; phaseDuration = rand(400, 900) }
+        break
+      }
+      case 'sallying_perch': {
+        // Kingbird / flycatcher: sit exposed on perch → burst dart after insect → loop back
+        const seq = phaseIndex % 4
+        if (seq === 0) {
+          // Perched in the open — upright, conspicuous
+          phase = 'sit_still'
+          phaseDuration = rand(900, 1800)
+        } else if (seq === 1) {
+          // Fast aerial sally — shoots out to catch insect
+          phase = 'dart_fast'
+          target = { x: clamp(pos.x + rand(-0.5, 0.5), -0.7, 0.7), y: clamp(pos.y + rand(-0.45, 0.2), -0.65, 0.55) }
+          phaseDuration = rand(280, 450)
+        } else if (seq === 2) {
+          // THE CAPTURE WINDOW — hangs in open sky near center, briefly
+          phase = 'dart'
+          target = { x: rand(-0.14, 0.14), y: rand(-0.18, 0.12) }
+          phaseDuration = rand(700, 1300)
+        } else {
+          // Returns to perch
+          phase = 'return'
+          phaseDuration = rand(200, 350)
+        }
+        break
+      }
+      case 'fast_low_ambush': {
+        // Sharp-shinned Hawk: accipiter flap-flap-glide through scene — small, fast, acrobatic
+        const seq = phaseIndex % 5
+        if (seq === 0) {
+          // Explosive entry burst from cover — shoots in from one side
+          phase = 'dart_fast'
+          target = { x: rand(0.38, 0.65) * (Math.random() > 0.5 ? 1 : -1), y: rand(-0.3, 0.3) }
+          phaseDuration = rand(220, 380)
+        } else if (seq === 1) {
+          // THE CAPTURE WINDOW — crosses center in a direct pass, briefly trackable
+          phase = 'dart'
+          target = { x: rand(-0.13, 0.13), y: rand(-0.2, 0.2) }
+          phaseDuration = rand(450, 750)
+        } else if (seq === 2) {
+          // Pumps wings, banks sharply upward / outward
+          phase = 'dart_fast'
+          target = { x: clamp(pos.x + rand(-0.45, 0.45), -0.72, 0.72), y: rand(-0.5, -0.05) }
+          phaseDuration = rand(280, 450)
+        } else if (seq === 3) {
+          // Glide phase — brief drift before next flap burst
+          phase = 'dart'
+          target = { x: clamp(pos.x + rand(-0.4, 0.4), -0.65, 0.65), y: rand(-0.1, 0.45) }
+          phaseDuration = rand(550, 1000)
+        } else {
+          // Tight banking pivot — acrobatic reversal of direction
+          phase = 'dart_fast'
+          target = { x: clamp(pos.x * -0.85, -0.7, 0.7), y: rand(-0.3, 0.3) }
+          phaseDuration = rand(180, 320)
+        }
         break
       }
       default: { // perching
@@ -694,13 +749,13 @@ const BIRD_BACKGROUNDS = {
   tall_trees:      ['baltimore_oriole', 'red_tailed_hawk', 'american_crow'],
   shrubby_field:   ['indigo_bunting', 'american_goldfinch', 'american_kestrel',
                     'prairie_warbler', 'eastern_kingbird', 'blue_winged_warbler', 'kirtlands_warbler'],
-  open_sky:        ['barn_swallow'],
+  open_sky:        [],
   forest_undergrowth: ['eastern_towhee', 'song_sparrow', 'dark_eyed_junco',
                        'blackthroated_blue_warbler', 'nashville_warbler', 'wilsons_warbler',
                        'carolina_wren', 'white_throated_sparrow'],
   forest_floor:    ['wood_thrush', 'hermit_thrush', 'veery', 'ovenbird', 'barred_owl',
                     'varied_thrush'],
-  open_field:      ['mourning_dove', 'red_winged_blackbird', 'common_grackle', 'house_finch'],
+  open_field:      ['mourning_dove', 'red_winged_blackbird', 'common_grackle', 'house_finch', 'barn_swallow'],
   open_water:      ['canada_goose'],
   sky:             ['turkey_vulture', 'osprey'],
   urban_edge:      ['house_sparrow', 'european_starling'],
@@ -758,6 +813,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const [speedWarning, setSpeedWarning] = useState(false)
   const [opticalFocusDisplay, setOpticalFocusDisplay] = useState(35)
   const [isLandscape, setIsLandscape]   = useState(() => window.innerWidth > window.innerHeight)
+  const isLandscapeRef = useRef(window.innerWidth > window.innerHeight)
   // viewPhase drives the housing animation:
   //   'raising'   → figure-8 housing fully visible, two-circle clip
   //   'fading'    → figure-8 housing fading out (700ms), clip still two circles
@@ -791,7 +847,11 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   // ── Landscape / orientation tracking ─────────────────────────────────────
   // iOS fires orientationchange before innerWidth/innerHeight update, so defer 150ms.
   useEffect(() => {
-    const update = () => setIsLandscape(window.innerWidth > window.innerHeight)
+    const update = () => {
+      const ls = window.innerWidth > window.innerHeight
+      setIsLandscape(ls)
+      isLandscapeRef.current = ls
+    }
     const deferredUpdate = () => setTimeout(update, 150)
     window.addEventListener('resize', update)
     window.addEventListener('orientationchange', deferredUpdate)
@@ -827,8 +887,10 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     }
     const onMove = (e) => {
       if (!startTouch || !gameActiveRef.current) return
-      const dx = (e.touches[0].clientX - startTouch.x) / 120
-      const dy = (e.touches[0].clientY - startTouch.y) / 120
+      // Scale sensitivity with screen size so drag distance feels consistent in both orientations
+      const sens = isLandscapeRef.current ? 160 : 120
+      const dx = (e.touches[0].clientX - startTouch.x) / sens
+      const dy = (e.touches[0].clientY - startTouch.y) / sens
       viewOffsetRef.current = { x: clamp(startTouch.ox + dx, -1, 1), y: clamp(startTouch.oy + dy, -1, 1) }
     }
     window.addEventListener('touchstart', onStart, { passive: true })
@@ -912,9 +974,14 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
       // ── Momentum-based tilt aiming (mobile) ─────────────────────────────
       if (hasTiltRef.current) {
         const { beta, gamma } = orientRef.current
-        // Dead zones
-        const tiltX = Math.abs(gamma) > 3 ? gamma : 0
-        const tiltY = Math.abs(beta - 45) > 3 ? (beta - 45) : 0
+        // Raw tilt values with dead zones
+        const rawGamma = Math.abs(gamma) > 3 ? gamma : 0          // portrait: left/right roll
+        const rawBeta  = Math.abs(beta - 45) > 3 ? (beta - 45) : 0 // portrait: forward/back pitch
+        // In landscape (rotated 90° clockwise) axes swap:
+        //   portrait γ (left/right) → landscape up/down (Y axis on screen)
+        //   portrait β (forward/back) → landscape left/right (X axis on screen)
+        const tiltX = isLandscapeRef.current ? -rawBeta  : rawGamma
+        const tiltY = isLandscapeRef.current ? -rawGamma : rawBeta
         // Tilt angle → velocity contribution
         const sensitivity = 0.0018
         viewOffsetRef.current.x = clamp(viewOffsetRef.current.x + tiltX * sensitivity * dt / 16, -1, 1)
@@ -1470,10 +1537,13 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
             {/* Binoculars view */}
             {!started ? (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center', gap: 16 }}>
-                <div style={{ fontSize: 56, animation: 'birdFloat 2s ease-in-out infinite' }}>🔭</div>
-                <div style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
-                  Raise your phone and look through the binoculars
+                alignItems: 'center', justifyContent: 'center', gap: 14 }}>
+                <div style={{ fontSize: 48, animation: 'birdFloat 2s ease-in-out infinite' }}>🔭</div>
+                <div style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.5, maxWidth: 320, padding: '0 16px' }}>
+                  <strong style={{ color: 'var(--text-primary)' }}>{bird.commonName}</strong><br/>
+                  Tilt the phone to pan the view.<br/>
+                  Turn the ring on the right to focus.<br/>
+                  <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>Move slowly — sudden moves spook it!</span>
                 </div>
                 <button className="btn btn-primary btn-lg" onClick={startGame} style={{ width: 200 }}>
                   🔭 Start Tracking

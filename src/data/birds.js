@@ -102,7 +102,7 @@ export const BIRDS = [
 
     // ── Content ────────────────────────────────────────────────
     description: 'One of North America\'s most beloved birds and a year-round resident across the East. The male\'s blazing red plumage against winter snow has made him a cultural icon. Females are no less striking — warm brown with a red crest and a bill that can crack open the toughest sunflower seeds. Listen any morning for their ringing whistle from a shrubby perch.',
-    funFact: 'Female cardinals also sing — a behavior rare among North American songbirds. A mated pair will sometimes exchange songs in a "duet" back and forth.',
+    funFacts: ['Female cardinals also sing — a behavior rare among North American songbirds. A mated pair will sometimes exchange songs in a "duet" back and forth.', 'Male cardinals will sometimes feed females bill-to-bill during courtship — a behavior called "mate feeding" that continues through the breeding season.'],
     eBirdCode: 'norcar',
     merlinId: 'Northern_Cardinal',
   },
@@ -196,7 +196,7 @@ export const BIRDS = [
     verificationMethods: 1,
 
     description: 'The herald of spring across North America. Robins are among the first birds to sing before dawn and among the last to fall silent at dusk. Their earthworm-hunting technique — running, stopping, tilting the head — is one of the most familiar sights in any suburban yard. Despite their familiarity, robins in winter congregate in massive roosts that can number in the thousands.',
-    funFact: 'A robin doesn\'t actually hear earthworms through the ground — it sees them. That sideways head-tilt is tilting one eye toward the soil to get a better look.',
+    funFacts: ['A robin doesn\'t actually hear earthworms through the ground — it sees them. That sideways head-tilt is tilting one eye toward the soil to get a better look.', 'American Robins can raise up to three broods in a single breeding season — the female starts building a new nest while the male still feeds the first brood.'],
     eBirdCode: 'amerob',
     merlinId: 'American_Robin',
   },
@@ -290,7 +290,7 @@ export const BIRDS = [
     verificationMethods: 1,
 
     description: 'Bold, intelligent, and impossible to ignore — the Blue Jay is a corvid in every sense. They are accomplished mimics (their hawk imitation can clear a feeder), dedicated parents, and critical partners in oak forest expansion: they cache thousands of acorns each fall, many of which they never retrieve, planting the oaks of the future. Love them or hate them, a yard without Blue Jays is a quieter place.',
-    funFact: 'A Blue Jay can carry multiple acorns at once — up to 5 in its throat pouch, bill, and esophagus. One study estimated a single jay moved 4,500 acorns in a single fall.',
+    funFacts: ['A Blue Jay can carry multiple acorns at once — up to 5 in its throat pouch, bill, and esophagus. One study estimated a single jay moved 4,500 acorns in a single fall.', 'Blue Jays are brilliant mimics — they frequently copy Red-tailed Hawk calls, apparently to alert other jays or to scatter birds from feeders so they can feed in peace.'],
     eBirdCode: 'blujay',
     merlinId: 'Blue_Jay',
   },
@@ -384,7 +384,7 @@ export const BIRDS = [
     verificationMethods: 1,
 
     description: 'Possibly the most cheerful bird in North America. Chickadees stay through the harshest winters, traveling in small flocks through frozen forests, finding insects in bark crevices that no other bird can reach. They have a sophisticated social system and can lower their body temperature at night to conserve energy — a feat called "regulated hypothermia." Their alarm calls carry so much information about a predator\'s size, speed, and danger level that other species have learned to listen.',
-    funFact: 'Every autumn, a chickadee\'s hippocampus (the memory center of the brain) actually grows larger to handle thousands of new food cache locations. It shrinks again in spring.',
+    funFacts: ['Every autumn, a chickadee\'s hippocampus (the memory center of the brain) actually grows larger to handle thousands of new food cache locations. It shrinks again in spring.', 'Chickadees on the edge of a sleeping flock keep one eye open, watching for predators — a form of sentinel behavior that keeps the whole group safer.'],
     eBirdCode: 'bkcchi',
     merlinId: 'Black-capped_Chickadee',
   },
@@ -478,7 +478,7 @@ export const BIRDS = [
     verificationMethods: 1,
 
     description: 'New Jersey\'s state bird and a frequent visitor to nyjer seed feeders. The male in breeding plumage is one of the most vivid birds in North America — a flying lemon with a black beret. Goldfinches are unusual songbirds in that they wait until July or August to nest, timing their breeding to peak thistle-seed abundance. They weave spider silk into their nests, which stretches as the nestlings grow.',
-    funFact: 'Goldfinch nests are so tightly woven they can hold water. If it rains during an early cold snap, the young have been known to drown — one reason late breeding evolved.',
+    funFacts: ['Goldfinch nests are so tightly woven they can hold water. If it rains during an early cold snap, the young have been known to drown — one reason late breeding evolved.', 'American Goldfinches are one of the strictest vegetarians in North America — they feed almost exclusively on seeds and will pick individual insects off seeds if one gets in the way.'],
     eBirdCode: 'amegfi',
     merlinId: 'American_Goldfinch',
   },
@@ -572,7 +572,7 @@ export const BIRDS = [
     verificationMethods: 1,
 
     description: 'The world\'s most familiar duck and the ancestor of almost every domestic duck breed. Mallards are found on every continent except Antarctica and have adapted perfectly to city parks, drainage ditches, and golf course ponds. Watch for the courtship displays in winter — groups of males circle females with elaborate head-pumping, wing-flap, and whistle sequences that look choreographed.',
-    funFact: 'Mallards can sleep with one eye open and half their brain awake — a phenomenon called unihemispheric slow-wave sleep. Ducks at the edge of a flock keep the "outer eye" open, watching for predators.',
+    funFacts: ['Mallards can sleep with one eye open and half their brain awake — a phenomenon called unihemispheric slow-wave sleep. Ducks at the edge of a flock keep the "outer eye" open, watching for predators.', 'A Mallard hen will feign a broken wing to lead predators away from her ducklings — one of the most effective distraction displays in the bird world.'],
     eBirdCode: 'mallar3',
     merlinId: 'Mallard',
   },
@@ -666,7 +666,7 @@ export const BIRDS = [
     verificationMethods: 2,
 
     description: 'The most common large hawk in North America — and the one you\'ve probably heard in every action movie, even when the scene shows a Bald Eagle. Look for them perched on highway poles, soaring over open fields, or circling on thermals over suburban neighborhoods. Pairs return to the same territory year after year, adding sticks to an ever-growing nest that can eventually weigh hundreds of pounds.',
-    funFact: 'Red-tailed Hawks can see ultraviolet light, which makes rodent urine trails glow — a built-in tracking system that leads them directly to vole runways.',
+    funFacts: ['Red-tailed Hawks can see ultraviolet light, which makes rodent urine trails glow — a built-in tracking system that leads them directly to vole runways.', 'The iconic "eagle scream" used in nearly every movie and TV show featuring a bald eagle is actually the Red-tailed Hawk\'s call — bald eagles make a far less impressive chittering sound.'],
     eBirdCode: 'rethaw',
     merlinId: 'Red-tailed_Hawk',
   },
@@ -760,7 +760,7 @@ export const BIRDS = [
     verificationMethods: 2,
 
     description: 'Standing four feet tall with a six-foot wingspan, the Great Blue Heron is a living dinosaur. They are consummate hunters — that statue-still pose in the shallows is pure predatory patience, followed by a strike too fast to see. They eat fish, frogs, voles, small birds, even snakes. Colonial nesters called "heronries" can host hundreds of pairs, their giant stick nests filling the tops of tall trees like a fairy-tale forest.',
-    funFact: 'A heron\'s neck can strike with such speed and force that biologists call it a "biological spear gun." The S-curve of the neck stores elastic energy like a spring, releasing it in a strike faster than the eye can follow.',
+    funFacts: ['A heron\'s neck can strike with such speed and force that biologists call it a "biological spear gun." The S-curve of the neck stores elastic energy like a spring, releasing it in a strike faster than the eye can follow.', 'Great Blue Herons often hunt by standing completely motionless for minutes at a time, then striking in less than a second — patience refined to an evolutionary art.'],
     eBirdCode: 'greher',
     merlinId: 'Great_Blue_Heron',
   },
@@ -813,7 +813,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 80,
     verificationThreshold: 0.60, verificationMethods: 1,
     description: 'One of North America\'s most abundant birds, the Mourning Dove is a year-round fixture from suburban yards to open farmland. Its mournful cooing is one of the most recognizable sounds in the American soundscape. Despite its gentle look, it is a prolific breeder — pairs can raise up to six broods per year. It swallows seeds whole and stores them in its crop, returning to a perch to digest.',
-    funFact: 'Mourning Doves can drink by sucking water like a straw, without lifting their heads — a trick shared by very few birds.',
+    funFacts: ['Mourning Doves can drink by sucking water like a straw, without lifting their heads — a trick shared by very few birds.', 'A Mourning Dove\'s crop produces "crop milk" — a protein-rich secretion fed to nestlings that is chemically similar to mammal milk, made by both parents.'],
     eBirdCode: 'moudov', merlinId: 'Mourning_Dove',
   },
 
@@ -865,7 +865,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 100,
     verificationThreshold: 0.65, verificationMethods: 1,
     description: 'The American Crow is one of North America\'s most intelligent animals, period. They use tools, recognize individual human faces, hold grudges for years, and conduct what appear to be "funerals" for dead flockmates. Winter roosts can number in the millions. Their notorious wariness — shaped by centuries of persecution — makes them challenging to approach, despite being everywhere.',
-    funFact: 'Crows remember and recognize individual human faces, and will "scold" a person who has previously threatened them — even training their young to do the same.',
+    funFacts: ['Crows remember and recognize individual human faces, and will "scold" a person who has previously threatened them — even training their young to do the same.', 'American Crows use tools — they\'ve been documented dropping walnuts on crosswalk lines so cars crack them, then waiting for the light to retrieve the meat safely.'],
     eBirdCode: 'amecro', merlinId: 'American_Crow',
   },
 
@@ -917,7 +917,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 90,
     verificationThreshold: 0.65, verificationMethods: 1,
     description: 'The Song Sparrow\'s voice fills wetland edges and shrubby yards across the continent. It is one of the most extensively studied birds in North America — researchers have tracked individual birds\' song dialects, territorial behavior, and evolution for decades. Despite its plain brown looks, the complexity of its song is extraordinary: a male sings dozens of distinct song types and improvises combinations constantly.',
-    funFact: 'Song Sparrows have regional dialects — birds in different areas sing noticeably different versions of the song, similar to regional accents in human speech.',
+    funFacts: ['Song Sparrows have regional dialects — birds in different areas sing noticeably different versions of the song, similar to regional accents in human speech.', 'A male Song Sparrow learns his song partly from his father and partly from neighboring males — he then "crystallizes" his personal version early in his first spring and sings it for life.'],
     eBirdCode: 'sonspa', merlinId: 'Song_Sparrow',
   },
 
@@ -969,7 +969,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 110,
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The Downy is North America\'s smallest woodpecker and its most familiar. Its small size lets it forage on slender weed stalks, sunflower heads, and tiny branches that larger woodpeckers ignore. In winter it commonly joins mixed-species flocks with chickadees and nuthatches, lending its sharp "pik!" call to the chorus. At suet feeders it is almost always present.',
-    funFact: 'The Downy Woodpecker\'s tongue wraps around the back of its skull when retracted — a special skull anatomy that acts as a shock absorber when hammering.',
+    funFacts: ['The Downy Woodpecker\'s tongue wraps around the back of its skull when retracted — a special skull anatomy that acts as a shock absorber when hammering.', 'Female and male Downy Woodpeckers forage differently — males prefer smaller upper branches, females the larger lower branches — so a mated pair can share a tree without competing.'],
     eBirdCode: 'dowwoo', merlinId: 'Downy_Woodpecker',
   },
 
@@ -1021,7 +1021,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 110,
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The White-breasted Nuthatch is the only bird that routinely walks headfirst down tree trunks, giving it a unique vantage to spot insects that upward-climbing birds miss. Its nasal "yank yank" call is a staple of woodland soundscapes across the continent. It stuffs seeds and nuts into bark crevices, hammering them open — hence the name "nuthatch" from "nuthack."',
-    funFact: 'White-breasted Nuthatches smear insects around the entrance of their nest hole — possibly to deter squirrels and other predators with the odor.',
+    funFacts: ['White-breasted Nuthatches smear insects around the entrance of their nest hole — possibly to deter squirrels and other predators with the odor.', 'Nuthatches are one of the few birds that routinely travel down tree trunks headfirst — a feeding strategy that lets them find insects woodpeckers miss by going up.'],
     eBirdCode: 'wbnu', merlinId: 'White-breasted_Nuthatch',
   },
 
@@ -1073,7 +1073,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 90,
     verificationThreshold: 0.65, verificationMethods: 1,
     description: 'The Dark-eyed Junco is nicknamed "snowbird" — its arrival at feeders signals the start of winter. They breed in boreal forests and mountainsides, then flood south and downslope to spend winter in suburban yards. Flocks scratch methodically through leaf litter and beneath feeders, and the flash of white outer tail feathers as they flush is one of winter birding\'s most familiar sights.',
-    funFact: 'The Dark-eyed Junco is actually not one species but a "superspecies" — the Slate-colored, Oregon, Pink-sided, Gray-headed, and White-winged forms were once considered separate species and still look strikingly different.',
+    funFacts: ['The Dark-eyed Junco is actually not one species but a "superspecies" — the Slate-colored, Oregon, Pink-sided, Gray-headed, and White-winged forms were once considered separate species and still look strikingly different.', 'Dark-eyed Juncos breed in the mountains and boreal north, but winter at lower elevations and latitudes — so many birders see them only in winter, earning the nickname "snowbirds."'],
     eBirdCode: 'daejun', merlinId: 'Dark-eyed_Junco',
   },
 
@@ -1125,7 +1125,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 90,
     verificationThreshold: 0.65, verificationMethods: 1,
     description: 'Originally native to the western US, the House Finch was released in New York in the 1940s after a failed pet-trade scheme. The eastern population exploded and the two populations reconnected across the continent. Today it is one of the most abundant birds in North America and a fixture at feeders. Males famously vary in color from pale yellow to deep red depending on their diet during molt.',
-    funFact: 'The redness of a male House Finch\'s plumage depends entirely on diet — birds with access to red berries and fruits become brilliantly red, while those eating less colorful food turn yellow-orange.',
+    funFacts: ['The redness of a male House Finch\'s plumage depends entirely on diet — birds with access to red berries and fruits become brilliantly red, while those eating less colorful food turn yellow-orange.', 'House Finches were originally a western bird; a group was illegally sold as "Hollywood Finches" in New York in the 1940s, released when the law closed in, and are now established across the entire eastern US.'],
     eBirdCode: 'houfin', merlinId: 'House_Finch',
   },
 
@@ -1179,7 +1179,7 @@ export const BIRDS = [
     invasiveNote: 'Introduced to New York City in 1851, the House Sparrow now numbers over 500 million worldwide. It aggressively evicts native cavity-nesting birds — bluebirds, Tree Swallows, Carolina Wrens — from nest boxes and natural cavities. Releasing it back into the wild rather than logging it in your aviary is the right call.',
     verificationThreshold: 0.55, verificationMethods: 1,
     description: 'Introduced to New York in 1851, the House Sparrow has colonized every corner of North America where humans live. It\'s among the world\'s most abundant birds. Though often overlooked, its success is a study in adaptability — it has evolved measurably in the 170 years since introduction, with different US populations already diverging in body size and bill shape in response to local climates.',
-    funFact: 'Male House Sparrows with larger black bibs are dominant and get first access to food and mates — female sparrows prefer males with bigger bibs.',
+    funFacts: ['Male House Sparrows with larger black bibs are dominant and get first access to food and mates — female sparrows prefer males with bigger bibs.', 'House Sparrows were introduced to Brooklyn, NY in 1851 from England and have spread to every corner of North America — one of the most successful (and controversial) introductions in history.'],
     eBirdCode: 'houspa', merlinId: 'House_Sparrow',
   },
 
@@ -1233,7 +1233,7 @@ export const BIRDS = [
     invasiveNote: 'Released in Central Park in 1890 by Eugene Schieffelin, who wanted to introduce every bird mentioned by Shakespeare. The result: 200 million starlings across North America. Starlings evict woodpeckers, Purple Martins, and bluebirds from nest cavities — sometimes killing the occupants. Spectacular murmurations cannot undo the ecological damage.',
     verificationThreshold: 0.60, verificationMethods: 1,
     description: 'Introduced from Europe in the 1890s when Shakespeare enthusiasts released 60 birds in Central Park, the European Starling has become one of North America\'s most abundant birds with over 200 million individuals. Their winter murmurations — swirling flocks of thousands moving in perfect synchrony — are among the most spectacular wildlife sights on earth.',
-    funFact: 'A murmuration of starlings can contain a million birds and move as a single fluid organism. Each bird tracks its seven nearest neighbors, and the information wave travels through the flock faster than any individual can process.',
+    funFacts: ['A murmuration of starlings can contain a million birds and move as a single fluid organism. Each bird tracks its seven nearest neighbors, and the information wave travels through the flock faster than any individual can process.', 'European Starlings were introduced to Central Park in 1890 by a Shakespeare enthusiast who wanted to establish every bird mentioned in Shakespeare\'s works in North America. Today there are over 200 million in North America.'],
     eBirdCode: 'eursta', merlinId: 'European_Starling',
   },
 
@@ -1285,7 +1285,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 100,
     verificationThreshold: 0.65, verificationMethods: 1,
     description: 'The Red-winged Blackbird may be the most numerous bird in North America — population estimates approach 250 million. The male\'s "conk-a-ree" from a cattail perch is the defining sound of spring wetlands. Males are fiercely territorial and regularly dive-bomb hawks, crows, and humans who approach nests.',
-    funFact: 'A male Red-winged Blackbird may have up to 15 females nesting in his territory simultaneously — one of the most polygynous birds in North America.',
+    funFacts: ['A male Red-winged Blackbird may have up to 15 females nesting in his territory simultaneously — one of the most polygynous birds in North America.', 'Red-winged Blackbirds are one of the most numerous birds in North America, with an estimated 130–190 million individuals — yet their population has declined significantly due to agricultural changes.'],
     eBirdCode: 'rewbla', merlinId: 'Red-winged_Blackbird',
   },
 
@@ -1337,7 +1337,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 120,
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The Canada Goose\'s seasonal V-formations overhead are one of the iconic signals of autumn in North America. Once genuinely migratory, many urban populations have gone resident year-round, thriving on parks, golf courses, and manicured lawns. Mated pairs bond for life, and both parents vigorously defend chicks — triggering many a suburban standoff.',
-    funFact: 'Geese fly in V-formation because each bird\'s wingtip vortex creates an uplift for the bird behind. The lead goose works hardest — so the formation rotates leadership to share the effort.',
+    funFacts: ['Geese fly in V-formation because each bird\'s wingtip vortex creates an uplift for the bird behind. The lead goose works hardest — so the formation rotates leadership to share the effort.', 'Canada Geese mate for life and grieve visibly when a partner dies — remaining near the body and sometimes not joining the flock migration for weeks afterward.'],
     eBirdCode: 'cangoo', merlinId: 'Canada_Goose',
   },
 
@@ -1389,7 +1389,7 @@ export const BIRDS = [
     rarity: 'uncommon', rarityColor: '#2196f3', points: 200,
     verificationThreshold: 0.75, verificationMethods: 1,
     description: 'The Osprey is a specialist fish hunter found on every continent except Antarctica. It is one of the great conservation success stories — DDT nearly wiped it out, but after the ban it has fully recovered across North America. Watching an Osprey stall in a hover, then fold its wings and plunge 30 feet into water feet-first to seize a fish is one of nature\'s great spectacles.',
-    funFact: 'Ospreys have reversible outer toes and barbed pads on the feet specifically to grip slippery fish — and they always rotate their catch to face forward in flight for aerodynamics.',
+    funFacts: ['Ospreys have reversible outer toes and barbed pads on the feet specifically to grip slippery fish — and they always rotate their catch to face forward in flight for aerodynamics.', 'Ospreys dive feet-first and can submerge completely to catch fish — then use their dense, oiled plumage to shake off water like a dog before flying away.'],
     eBirdCode: 'osprey', merlinId: 'Osprey',
   },
 
@@ -1441,7 +1441,7 @@ export const BIRDS = [
     rarity: 'uncommon', rarityColor: '#2196f3', points: 180,
     verificationThreshold: 0.75, verificationMethods: 1,
     description: 'The Eastern Bluebird is a symbol of happiness and spring across the eastern US. It nearly vanished in the 20th century as competition with introduced House Sparrows and European Starlings for nest cavities sent populations plummeting. A massive citizen-science effort to install nest boxes reversed the decline — millions of boxes now line trails, roadsides, and farmland, and the species has fully recovered.',
-    funFact: 'The Eastern Bluebird\'s color isn\'t from pigment — the feathers contain no blue dye. The blue is produced by the microscopic structure of the feather barbs scattering light, similar to how the sky is blue.',
+    funFacts: ['The Eastern Bluebird\'s color isn\'t from pigment — the feathers contain no blue dye. The blue is produced by the microscopic structure of the feather barbs scattering light, similar to how the sky is blue.', 'Eastern Bluebird populations crashed in the mid-20th century due to competition from introduced starlings and sparrows for nest cavities — the "Bluebird Trail" movement, placing nest boxes along rural roads, helped bring them back.'],
     eBirdCode: 'easblu', merlinId: 'Eastern_Bluebird',
   },
 
@@ -1493,7 +1493,7 @@ export const BIRDS = [
     rarity: 'uncommon', rarityColor: '#2196f3', points: 250,
     verificationThreshold: 0.80, verificationMethods: 1,
     description: 'The only hummingbird that breeds in the eastern US, the Ruby-throated is a marvel of miniaturized engineering. Its heart beats over 1,200 times per minute in flight. It crosses the Gulf of Mexico non-stop — 800 miles over open water — twice a year on migration, fueled by fat reserves that double its body weight before departure. A single nest, the size of half a walnut, is made of plant fibers bound with spider silk.',
-    funFact: 'A Ruby-throated Hummingbird in migration can double its body weight in fat reserves — then burn it all off crossing the Gulf of Mexico in an 18-20 hour non-stop flight.',
+    funFacts: ['A Ruby-throated Hummingbird in migration can double its body weight in fat reserves — then burn it all off crossing the Gulf of Mexico in an 18-20 hour non-stop flight.', 'A hummingbird\'s heart beats up to 1,260 times per minute in flight — and they enter torpor at night, lowering their body temperature by 50°F to save energy while sleeping.'],
     eBirdCode: 'rthhum', merlinId: 'Ruby-throated_Hummingbird',
   },
 
@@ -1545,7 +1545,7 @@ export const BIRDS = [
     rarity: 'uncommon', rarityColor: '#2196f3', points: 200,
     verificationThreshold: 0.75, verificationMethods: 1,
     description: 'Cedar Waxwings are wandering nomads, following fruit crops across the continent rather than fixed territories. They are famous for their elegant appearance and for passing berries beak-to-beak down a perched line of birds — a social display of fruit-sharing. They have been observed getting drunk on fermented berries, stumbling around until they sober up.',
-    funFact: 'Cedar Waxwings sometimes pass berries beak-to-beak down a row of perched birds — apparently a courtship or social bonding behavior. They also get intoxicated on fermented fruits and have been found unable to fly.',
+    funFacts: ['Cedar Waxwings sometimes pass berries beak-to-beak down a row of perched birds — apparently a courtship or social bonding behavior. They also get intoxicated on fermented fruits and have been found unable to fly.', 'The red waxy tips on Cedar Waxwing wing feathers are actually extensions of the feather shafts — like tiny red beads — and older birds have more of them, making age visible at a glance.'],
     eBirdCode: 'cedwax', merlinId: 'Cedar_Waxwing',
   },
 
@@ -1597,7 +1597,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 130,
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The Turkey Vulture is nature\'s sanitation crew, and arguably one of the most important birds in the ecosystem. It locates carrion primarily by smell — extraordinarily rare among birds — using one of the most highly developed olfactory systems in the animal kingdom. Its stomach acid is powerful enough to destroy anthrax, botulism, and cholera, preventing these diseases from spreading through the environment.',
-    funFact: 'Turkey Vultures are one of the only birds that find food primarily by smell. They have a greatly enlarged olfactory lobe in the brain and can detect a dead animal hidden under forest canopy from a mile away.',
+    funFacts: ['Turkey Vultures are one of the only birds that find food primarily by smell. They have a greatly enlarged olfactory lobe in the brain and can detect a dead animal hidden under forest canopy from a mile away.', 'Turkey Vultures practice "urohidrosis" — they urinate on their own legs to cool down. The evaporating liquid lowers their temperature, similar to sweating, and the uric acid may also kill bacteria from standing on carcasses.'],
     eBirdCode: 'turvul', merlinId: 'Turkey_Vulture',
   },
 
@@ -1649,7 +1649,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 100,
     verificationThreshold: 0.65, verificationMethods: 1,
     description: 'The Common Grackle is a brash, iridescent opportunist — as comfortable raiding a trash can as hunting crayfish in a stream. The purple-blue gloss on the head and bronze body shimmer dramatically in sunlight. Winter flocks mixed with blackbirds and starlings can number in the millions, creating spectacular aerial displays at roost sites.',
-    funFact: 'Grackles sometimes practice "anting" — allowing ants to crawl through their feathers and spray formic acid, which may kill feather parasites.',
+    funFacts: ['Grackles sometimes practice "anting" — allowing ants to crawl through their feathers and spray formic acid, which may kill feather parasites.', 'Common Grackles have a keel on the roof of their bill, forming a ridge they use to saw open acorns — one of very few birds with a built-in acorn-cracking tool.'],
     eBirdCode: 'comgra', merlinId: 'Common_Grackle',
   },
 
@@ -1697,11 +1697,11 @@ export const BIRDS = [
       fall:   { presence: 'migrant', commonness: 'common' },
       winter: { presence: 'absent', commonness: 'absent' },
     },
-    captureStats: { difficulty: 7, speed: 9, flightiness: 6, camouflage: 2, sizeScore: 2, movementPattern: 'aerial_dart', captureBackground: 'open_sky', behaviorNotes: 'Sweeps across the frame in fast arcs. Watch for the brief near-center dip when it chases an insect — that is your capture window.' },
+    captureStats: { difficulty: 5, speed: 8, flightiness: 4, camouflage: 2, sizeScore: 3, movementPattern: 'aerial_dart', captureBackground: 'open_field', behaviorNotes: 'Skims low over fields chasing insects. Sweeps back and forth — time your lock when it arcs near the center.' },
     rarity: 'common', rarityColor: '#4caf50', points: 140,
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The Barn Swallow is the world\'s most widespread swallow, breeding on every continent except Antarctica. Its deeply forked tail (longer streamers signal genetic fitness) and acrobatic insect-catching flight over fields and water make it one of summer\'s most cheerful presences. It has co-evolved with humans for thousands of years, nesting on man-made structures almost exclusively.',
-    funFact: 'Female Barn Swallows prefer males with longer, more symmetrical tail streamers — the streamers are an honest signal of parasite resistance and genetic health.',
+    funFacts: ['Female Barn Swallows prefer males with longer, more symmetrical tail streamers — the streamers are an honest signal of parasite resistance and genetic health.', 'Barn Swallows are the most widespread swallow on Earth, breeding on every continent except Antarctica — they\'ve followed human settlement, nesting almost exclusively in and on human-built structures.'],
     eBirdCode: 'barswa', merlinId: 'Barn_Swallow',
   },
 
@@ -1753,7 +1753,7 @@ export const BIRDS = [
     rarity: 'uncommon', rarityColor: '#2196f3', points: 220,
     verificationThreshold: 0.80, verificationMethods: 1,
     description: 'North America\'s smallest and most colorful falcon, the American Kestrel is a tiny powerhouse — roughly the size of a robin yet a fierce predator of insects, mice, and small birds. It hovers into the wind on rapid wingbeats scanning the ground below. Kestrels can see ultraviolet light, which lets them track vole urine trails invisible to human eyes.',
-    funFact: 'American Kestrels can see ultraviolet light, which lets them track the urine trails of voles (which fluoresce in UV) like a glowing road map leading directly to prey.',
+    funFacts: ['American Kestrels can see ultraviolet light, which lets them track the urine trails of voles (which fluoresce in UV) like a glowing road map leading directly to prey.', 'American Kestrels cache food for later — they\'ve been documented hiding dozens of prey items in bark crevices and under clumps of grass, forming a living pantry for lean times.'],
     eBirdCode: 'amekes', merlinId: 'American_Kestrel',
   },
 
@@ -1812,7 +1812,7 @@ export const BIRDS = [
     rarity: 'rare', rarityColor: '#9c27b0', points: 250,
     verificationThreshold: 0.75, verificationMethods: 1,
     description: 'A jewel of the swamp. The Prothonotary Warbler is named for the gold-robed papal secretaries (protonotaries) of the Catholic Church — its plumage really is that intense. Uniquely among eastern warblers, it nests in tree cavities over standing water: old woodpecker holes in stumps and snags rising from flooded bottomlands. Its song echoes across cypress swamps like ringing gold.',
-    funFact: 'The Prothonotary Warbler will readily use nest boxes — one of the easiest warblers to attract to a man-made cavity. Alger Hiss\'s lawyers famously challenged whether a Prothonotary Warbler sighting was credible testimony in his 1948 espionage trial.',
+    funFacts: ['The Prothonotary Warbler will readily use nest boxes — one of the easiest warblers to attract to a man-made cavity. Alger Hiss\'s lawyers famously challenged whether a Prothonotary Warbler sighting was credible testimony in his 1948 espionage trial.', 'Prothonotary Warblers are one of only two eastern warblers that nest in tree cavities — their brilliant golden color gives them their name, "prothonotary" being the golden-robed clerk of a Catholic church.'],
     eBirdCode: 'prowat', merlinId: 'Prothonotary_Warbler',
   },
 
@@ -1867,7 +1867,7 @@ export const BIRDS = [
     rarity: 'uncommon', rarityColor: '#2196f3', points: 170,
     verificationThreshold: 0.75, verificationMethods: 1,
     description: 'The American Redstart is a bird of perpetual motion — it rarely sits still for more than a second before fanning its tail, drooping its wings, or darting after an insect. This behavior isn\'t restless energy; it\'s a strategy. Fanning the tail flushes insects hidden in foliage that the redstart then snatches mid-air. The bird is running a trap.',
-    funFact: 'In Central America, redstarts are called "candelita" — the little candle — for the way the orange tail patches flicker like a flame in the forest understory.',
+    funFacts: ['In Central America, redstarts are called "candelita" — the little candle — for the way the orange tail patches flicker like a flame in the forest understory.', 'American Redstarts are "flash-and-dash" hunters — they fan their tail and wings to startle insects into flight, then catch them in midair. The bright patches are literally bait.'],
     eBirdCode: 'amered', merlinId: 'American_Redstart',
   },
 
@@ -1922,7 +1922,7 @@ export const BIRDS = [
     rarity: 'common', rarityColor: '#4caf50', points: 130,
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'One of the most widespread warblers in North America, the Common Yellowthroat inhabits any patch of rank vegetation with water nearby — cattail marshes, wet meadows, overgrown fields, roadside ditches. The "witchety-witchety" song is everywhere in spring. The bird itself is harder to pin down: it skulks through tangles and rarely perches in the open for long.',
-    funFact: 'The Common Yellowthroat is one of the most polygynous warblers — males routinely maintain two breeding females simultaneously, sometimes three, each tending their own nest in adjacent territories.',
+    funFacts: ['The Common Yellowthroat is one of the most polygynous warblers — males routinely maintain two breeding females simultaneously, sometimes three, each tending their own nest in adjacent territories.', 'The Common Yellowthroat\'s "witchety-witchety-witchety" is one of the most recognizable sounds of wetland edge — males learn it partly from their fathers and partly from neighbors, creating local dialects.'],
     eBirdCode: 'comyel', merlinId: 'Common_Yellowthroat',
   },
 
@@ -1977,7 +1977,7 @@ export const BIRDS = [
     rarity: 'uncommon', rarityColor: '#2196f3', points: 155,
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The Black-and-white Warbler is a taxonomic outlier among warblers: it forages almost exclusively on tree bark rather than in foliage, working along trunks and major limbs like a nuthatch or creeper. Its long hind claw is an adaptation to bark-clinging. The crisp black-and-white pattern is unmistakable, and it arrives early — often in late March when few other warblers have returned.',
-    funFact: 'The Black-and-white Warbler is the oldest known wild warbler ever recorded: a banded individual in Wisconsin was recaptured 11 years later, remarkable longevity for a tiny long-distance migrant.',
+    funFacts: ['The Black-and-white Warbler is the oldest known wild warbler ever recorded: a banded individual in Wisconsin was recaptured 11 years later, remarkable longevity for a tiny long-distance migrant.', 'Unlike most warblers, the Black-and-white Warbler arrives very early in spring — it can forage by creeping on bark even before leaves open, giving it weeks of head start over leaf-gleaning competitors.'],
     eBirdCode: 'bawwar', merlinId: 'Black-and-white_Warbler',
   },
 
@@ -2152,7 +2152,7 @@ export const BIRDS = [
     rarity: 'uncommon', rarityColor: '#2196f3', points: 155,
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The most visually striking eastern vireo, with a genuine blue-gray head that earns its name. The bold white spectacles — connected eye ring and supercilium — make it look perpetually alert. It\'s an early spring migrant, often appearing in late April before the leaves have fully opened, and it favors hemlock and mixed forest. Its song is slower and more musical than the Red-eyed Vireo\'s.',
-    funFact: 'The Blue-headed Vireo was once lumped with two western species (Cassin\'s Vireo and Plumbeous Vireo) as a single species called "Solitary Vireo." Careful analysis of song and genetics separated them again in 1997.',
+    funFacts: ['The Blue-headed Vireo was once lumped with two western species (Cassin\'s Vireo and Plumbeous Vireo) as a single species called "Solitary Vireo." Careful analysis of song and genetics separated them again in 1997.', 'Blue-headed Vireos are remarkably bold: they continue sitting on the nest even when a researcher approaches within arm\'s reach, making them one of the easiest nesting songbirds to observe closely.'],
     eBirdCode: 'blhvir', merlinId: 'Blue-headed_Vireo',
   },
 
@@ -2207,7 +2207,7 @@ export const BIRDS = [
     rarity: 'uncommon', rarityColor: '#2196f3', points: 165,
     verificationThreshold: 0.72, verificationMethods: 1,
     description: 'The Yellow-throated Vireo is the showiest vireo: the brilliant yellow throat, yellow spectacles, and bold white wing bars make it stand out even in dense canopy. It favors larger, more open deciduous forest than other vireos and is somewhat less common — a quality sighting on any spring morning. Its song has a distinctive low, burry quality that is slower and more forceful than other vireos.',
-    funFact: 'Yellow-throated Vireos build one of the most architecturally elaborate nests of any North American bird — a deep cup woven with bark strips, plant fibers, and spider silk, decorated on the outside with lichens, hung from a branch fork.',
+    funFacts: ['Yellow-throated Vireos build one of the most architecturally elaborate nests of any North American bird — a deep cup woven with bark strips, plant fibers, and spider silk, decorated on the outside with lichens, hung from a branch fork.', 'Yellow-throated Vireos have a slow, deliberate song that continues all day — even through the hottest midday hours when most birds have fallen silent — earning them a reputation as the most persistent singers in the canopy.'],
     eBirdCode: 'yetvir', merlinId: 'Yellow-throated_Vireo',
   },
 

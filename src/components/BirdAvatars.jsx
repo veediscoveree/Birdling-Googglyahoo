@@ -690,81 +690,87 @@ export function CommonYellowthroatAvatar({ size = 120, animated = false, style =
 
 // ── Black-and-white Warbler ──────────────────────────────────────────────────
 export function BlackAndWhiteWarblerAvatar({ size = 120, animated = false, style = {} }) {
+  // Creeping motion along trunk — the defining behavior; up, sideways, probe, back down
   const [frame, setFrame] = useState(0)
   useEffect(() => {
     if (!animated) return
-    const id = setInterval(() => setFrame(f => (f + 1) % 8), 340)
+    const id = setInterval(() => setFrame(f => (f + 1) % 8), 360)
     return () => clearInterval(id)
   }, [animated])
-  const creepX = animated ? [0,1,3,4,3,1,0,-1][frame] : 0
-  const creepY = animated ? [0,-2,-3,-2,0,2,2,0][frame] : 0
+  const creepX = animated ? [0, 1, 3, 4, 3, 1, 0, -1][frame] : 0
+  const creepY = animated ? [0, -2, -4, -3, 0, 2, 3, 1][frame] : 0
 
   return (
     <svg viewBox="0 0 120 132" width={size} height={size} style={style} aria-label="Black-and-white Warbler">
       <defs>
-        <clipPath id="bwBodyClip3"><ellipse cx="61" cy="84" rx="23" ry="18"/></clipPath>
-        <clipPath id="bwHeadClip3"><circle cx="44" cy="58" r="18"/></clipPath>
-        <clipPath id="bwWingClip3"><path d="M 42 66 C 57 58 82 60 88 73 C 82 81 58 83 42 77 Z"/></clipPath>
+        <clipPath id="bwBodyClipV2"><path d="M 36 74 C 52 63 84 63 92 77 C 86 90 58 93 36 88 Z"/></clipPath>
+        <clipPath id="bwHeadClipV2"><ellipse cx="40" cy="58" rx="18" ry="17"/></clipPath>
       </defs>
       <g transform={`translate(${creepX}, ${creepY})`}>
-        {/* Tail — black with crisp white outer edges */}
-        <path d="M 73 91 C 84 97 95 110 93 119 C 84 110 74 100 71 93" fill="#111"/>
-        <path d="M 71 93 C 80 104 82 116 79 121 C 76 116 74 104 72 95" fill="#111"/>
-        <path d="M 75 92 C 83 100 88 112 86 120" stroke="#E8E8E8" strokeWidth="2.5" fill="none" opacity="0.7"/>
+        {/* Tail — black with crisp white-edged outer feathers */}
+        <path d="M 72 88 C 83 93 95 106 92 115 C 83 107 73 97 70 90" fill="#111"/>
+        <path d="M 70 90 C 78 101 79 113 76 118 C 73 113 71 101 69 92" fill="#111"/>
+        {/* White outer tail edges — fine detail lines */}
+        <path d="M 73 91 C 81 99 86 111 83 116" stroke="#E0E0E0" strokeWidth="2.5" fill="none" opacity="0.75"/>
+        <path d="M 69 92 C 66 102 65 113 66 118" stroke="#E0E0E0" strokeWidth="1.8" fill="none" opacity="0.55"/>
 
-        {/* Body — white underparts base */}
-        <ellipse cx="61" cy="84" rx="23" ry="18" fill="#E8E8E8"/>
+        {/* BODY — organic warbler shape, not just an ellipse */}
+        {/* White underparts with clean soft belly */}
+        <path d="M 35 83 C 40 76 60 72 84 76 C 90 85 78 96 56 97 C 38 97 30 91 35 83 Z" fill="#E8E8E8"/>
 
-        {/* Bold black breast-side streaks — the "creeper" look */}
-        <g clipPath="url(#bwBodyClip3)">
-          <path d="M 39 84 L 42 100" stroke="#111" strokeWidth="3.5" strokeLinecap="round"/>
-          <path d="M 46 82 L 49 99" stroke="#111" strokeWidth="3.2" strokeLinecap="round"/>
-          <path d="M 53 81 L 55 97" stroke="#111" strokeWidth="2.8" strokeLinecap="round"/>
-          <path d="M 60 81 L 61 96" stroke="#111" strokeWidth="2.4" strokeLinecap="round"/>
-          <path d="M 67 82 L 68 95" stroke="#111" strokeWidth="2" strokeLinecap="round"/>
-          <path d="M 77 83 L 78 95" stroke="#111" strokeWidth="1.8" strokeLinecap="round"/>
+        {/* BOLD VERTICAL BLACK BREAST STREAKS — the creeper look, distinctive field mark */}
+        <g clipPath="url(#bwBodyClipV2)">
+          <line x1="39" y1="78" x2="43" y2="95" stroke="#111" strokeWidth="4" strokeLinecap="round"/>
+          <line x1="48" y1="75" x2="51" y2="93" stroke="#111" strokeWidth="3.5" strokeLinecap="round"/>
+          <line x1="57" y1="73" x2="59" y2="90" stroke="#111" strokeWidth="3" strokeLinecap="round"/>
+          <line x1="65" y1="73" x2="66" y2="89" stroke="#111" strokeWidth="2.5" strokeLinecap="round"/>
+          <line x1="73" y1="75" x2="74" y2="88" stroke="#111" strokeWidth="2.2" strokeLinecap="round"/>
+          <line x1="80" y1="77" x2="81" y2="88" stroke="#111" strokeWidth="1.8" strokeLinecap="round"/>
         </g>
 
-        {/* Black back and wings */}
-        <path d="M 42 66 C 57 58 82 60 88 73 C 82 81 58 83 42 77 Z" fill="#111"/>
-        {/* Two bold WHITE wing bars on black wing */}
-        <g clipPath="url(#bwWingClip3)">
-          <path d="M 48 65 C 62 59 80 61 86 68" stroke="#E8E8E8" strokeWidth="4" fill="none" strokeLinecap="round"/>
-          <path d="M 46 74 C 60 68 80 70 86 76" stroke="#E8E8E8" strokeWidth="3" fill="none" strokeLinecap="round"/>
-          {/* White-edged tertials */}
-          <path d="M 53 61 C 57 64 57 74 53 76" stroke="#E8E8E8" strokeWidth="1.5" fill="none" opacity="0.6"/>
-          <path d="M 62 59 C 66 63 66 73 62 75" stroke="#E8E8E8" strokeWidth="1.5" fill="none" opacity="0.6"/>
-          <path d="M 71 60 C 75 64 75 73 71 75" stroke="#E8E8E8" strokeWidth="1.2" fill="none" opacity="0.5"/>
+        {/* BLACK BACK — bold, covering upper body */}
+        <path d="M 38 70 C 54 61 82 61 90 74 C 84 83 58 87 39 83 Z" fill="#111"/>
+
+        {/* TWO BOLD WHITE WING BARS — crisp, wide horizontal bands */}
+        <g clipPath="url(#bwBodyClipV2)">
+          <path d="M 43 68 C 59 62 81 63 89 71" stroke="#E8E8E8" strokeWidth="5" fill="none" strokeLinecap="round"/>
+          <path d="M 41 77 C 58 71 80 72 89 79" stroke="#E8E8E8" strokeWidth="4" fill="none" strokeLinecap="round"/>
+          {/* Fine feather edge lines on tertials — the fine-detail touch */}
+          <path d="M 49 64 C 53 67 53 79 49 81" stroke="#D0D0D0" strokeWidth="1.4" fill="none" opacity="0.65"/>
+          <path d="M 59 62 C 63 66 63 78 59 80" stroke="#D0D0D0" strokeWidth="1.3" fill="none" opacity="0.58"/>
+          <path d="M 69 62 C 73 66 73 77 69 79" stroke="#D0D0D0" strokeWidth="1.2" fill="none" opacity="0.5"/>
+          <path d="M 78 63 C 82 67 82 76 78 78" stroke="#D0D0D0" strokeWidth="1" fill="none" opacity="0.42"/>
         </g>
 
-        {/* HEAD — black, then white stripes painted over */}
-        <circle cx="44" cy="58" r="18" fill="#111"/>
-        <g clipPath="url(#bwHeadClip3)">
-          {/* BOLD white median crown stripe — the #1 ID mark */}
-          <path d="M 26 54 C 32 46 44 42 54 44 C 56 47 56 52 52 55 C 46 57 34 57 26 55 Z" fill="#E8E8E8"/>
-          {/* Bold white supercilium */}
-          <path d="M 26 58 C 32 55 43 54 52 56 C 54 58 53 62 50 62 C 42 63 30 61 26 59 Z" fill="#E8E8E8"/>
-          {/* White submoustachial */}
-          <path d="M 26 65 C 31 62 40 62 46 64 C 46 68 40 70 30 68 Z" fill="#E8E8E8"/>
-          {/* Black auricular / cheek patch between supercilium and submoustachial */}
-          <path d="M 42 60 C 47 57 54 57 56 61 C 56 66 51 68 46 67 C 42 65 40 63 42 60 Z" fill="#111"/>
-          {/* Black throat bib (male) */}
-          <path d="M 26 68 C 29 65 38 65 45 68 C 45 77 36 78 27 75 Z" fill="#111"/>
+        {/* HEAD — all black base, then white stripes define the face pattern */}
+        <ellipse cx="40" cy="58" rx="18" ry="17" fill="#111"/>
+        <g clipPath="url(#bwHeadClipV2)">
+          {/* BOLD WHITE MEDIAN CROWN STRIPE — the defining B&W Warbler mark */}
+          {/* Wide, bright, runs nose-to-nape */}
+          <path d="M 24 54 C 28 45 40 40 52 43 C 54 47 53 53 49 55 C 42 56 30 56 24 54 Z" fill="#E8E8E8"/>
+          {/* Wide white SUPERCILIUM — eye stripe from bill to nape */}
+          <path d="M 24 58 C 29 55 41 54 52 56 C 54 59 53 63 50 64 C 41 65 28 62 24 59 Z" fill="#E8E8E8"/>
+          {/* White submoustachial stripe below cheek */}
+          <path d="M 23 66 C 28 63 38 62 45 64 C 45 68 38 70 27 69 Z" fill="#D8D8D8" opacity="0.9"/>
+          {/* Black auricular patch — bold dark cheek between the two white stripes */}
+          <path d="M 40 59 C 45 56 53 56 55 61 C 55 66 49 68 44 67 C 39 65 37 63 40 59 Z" fill="#111"/>
+          {/* Black throat bib (male) — bold, connects to breast streaking */}
+          <path d="M 23 69 C 27 64 38 63 44 67 C 44 77 34 79 24 76 Z" fill="#111"/>
         </g>
 
-        {/* Bill — thin, pale horn, very visible on striped head */}
-        <path d="M 26 59 L 11 61 L 26 64 Z" fill="#D0C898"/>
-        <line x1="11" y1="61" x2="26" y2="61" stroke="#9A9068" strokeWidth="0.8"/>
+        {/* Bill — thin warbler bill, pale horn color, visible against striped face */}
+        <path d="M 23 59 L 8 61 L 23 64 Z" fill="#C8C080"/>
+        <line x1="8" y1="61" x2="23" y2="61" stroke="#9A9060" strokeWidth="0.9"/>
 
-        {/* Eye — dark, on the white supercilium band */}
-        <circle cx="42" cy="57" r="3.8" fill="#111"/>
-        <circle cx="41" cy="56" r="1.5" fill="white" opacity="0.85"/>
+        {/* Eye — dark, sits in the white supercilium band, adding expression */}
+        <circle cx="38" cy="57" r="4" fill="#111"/>
+        <circle cx="37" cy="56" r="1.6" fill="white" opacity="0.88"/>
 
-        {/* Feet — strong for trunk clinging */}
-        <path d="M 50 102 L 46 116" stroke="#7A6040" strokeWidth="2.2" strokeLinecap="round"/>
-        <path d="M 64 102 L 68 116" stroke="#7A6040" strokeWidth="2.2" strokeLinecap="round"/>
-        <path d="M 46 116 L 39 119 M 46 116 L 46 121 M 46 116 L 52 119" stroke="#7A6040" strokeWidth="1.6" strokeLinecap="round"/>
-        <path d="M 68 116 L 61 119 M 68 116 L 68 121 M 68 116 L 74 119" stroke="#7A6040" strokeWidth="1.6" strokeLinecap="round"/>
+        {/* FEET — strong-gripped for tree-trunk clinging; four toes with back claw */}
+        <path d="M 48 101 L 44 115" stroke="#7A6540" strokeWidth="2.4" strokeLinecap="round"/>
+        <path d="M 63 101 L 67 115" stroke="#7A6540" strokeWidth="2.4" strokeLinecap="round"/>
+        <path d="M 44 115 L 36 118 M 44 115 L 44 121 M 44 115 L 51 118 M 44 115 L 41 122" stroke="#7A6540" strokeWidth="1.7" strokeLinecap="round"/>
+        <path d="M 67 115 L 59 118 M 67 115 L 67 121 M 67 115 L 74 118 M 67 115 L 64 122" stroke="#7A6540" strokeWidth="1.7" strokeLinecap="round"/>
       </g>
     </svg>
   )
@@ -1938,61 +1944,66 @@ export function CommonGrackleAvatar({ size = 120, animated = false, style = {} }
 // ── Barn Swallow ──────────────────────────────────────────────────────────────
 export function BarnSwallowAvatar({ size = 120, animated = false, style = {} }) {
   const [frame, setFrame] = useState(0)
-  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f+1)%8), 200); return () => clearInterval(id) }, [animated])
-  // Wing beat cycle — the body rises/falls with wingbeat
-  const wbd = animated ? [0, 5, 9, 11, 9, 5, 0, -3][frame] : 0
-  const bodyY = animated ? [0, -2, -4, -3, 0, 2, 1, 0][frame] : 0
+  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f+1)%8), 180); return () => clearInterval(id) }, [animated])
+  // Rapid wingbeat — low sweep over fields, body stays level
+  const wbd = animated ? [0, 4, 8, 10, 8, 4, 0, -2][frame] : 0
+  const bodyY = animated ? [0, -1, -2, -2, 0, 1, 1, 0][frame] : 0
   return (
-    <svg viewBox="0 0 150 110" width={size} height={size} style={style} aria-label="Barn Swallow">
-      {/* Mirror horizontally so bird faces RIGHT — natural forward-motion direction */}
-      <g transform={`translate(150, ${bodyY}) scale(-1, 1)`}>
-        {/* DEEPLY FORKED TAIL — the whole point, very long outer streamers */}
-        {/* Outer tail streamers (longest, steel-blue) */}
-        <path d="M 67 72 C 62 82 54 96 44 108 C 52 104 62 90 66 76" fill="#1C2E7A"/>
-        <path d="M 82 72 C 87 82 95 96 105 108 C 97 104 87 90 83 76" fill="#1C2E7A"/>
-        {/* Inner tail feathers (shorter, rufous-buff) */}
-        <path d="M 68 73 C 67 80 67 88 66 94 C 70 90 72 82 72 76" fill="#C87848"/>
-        <path d="M 81 73 C 82 80 82 88 83 94 C 79 90 77 82 77 76" fill="#C87848"/>
+    <svg viewBox="0 0 140 96" width={size} height={size} style={style} aria-label="Barn Swallow">
+      <g transform={`translate(0, ${bodyY})`}>
+        {/* DEEPLY FORKED TAIL — long outer streamers, the key field mark */}
+        <path d="M 68 66 C 64 74 57 86 49 96" stroke="#1C2E7A" strokeWidth="2.8" fill="none" strokeLinecap="round"/>
+        <path d="M 75 66 C 79 74 86 86 94 96" stroke="#1C2E7A" strokeWidth="2.8" fill="none" strokeLinecap="round"/>
+        {/* Inner tail feathers — buff/rufous, shorter */}
+        <path d="M 69 67 C 68 73 68 80 67 87" stroke="#C07840" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+        <path d="M 74 67 C 75 73 75 80 76 87" stroke="#C07840" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
         {/* Tail base */}
-        <path d="M 66 70 C 68 74 71 76 75 77 C 79 76 81 74 83 70" fill="#1C2E7A"/>
+        <path d="M 64 64 C 67 68 71 69 72 69 C 73 69 76 68 79 64" stroke="#1C2E7A" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
 
-        {/* Wings — long, pointed, swept — steel blue/iridescent */}
-        {/* Left wing — tip sweeps up then down with wingbeat */}
-        <path d={`M 15 ${46 - wbd*0.4} C 35 ${40 - wbd*0.6} 55 46 70 58`}
-          stroke="#1C2E7A" strokeWidth="20" strokeLinecap="round" fill="none"/>
-        <path d={`M 15 ${46 - wbd*0.4} C 35 ${42 - wbd*0.6} 55 48 70 58`}
-          stroke="#2A3E96" strokeWidth="12" strokeLinecap="round" fill="none"/>
-        {/* Right wing */}
-        <path d={`M 135 ${46 - wbd*0.4} C 115 ${40 - wbd*0.6} 95 46 80 58`}
-          stroke="#1C2E7A" strokeWidth="20" strokeLinecap="round" fill="none"/>
-        <path d={`M 135 ${46 - wbd*0.4} C 115 ${42 - wbd*0.6} 95 48 80 58`}
-          stroke="#2A3E96" strokeWidth="12" strokeLinecap="round" fill="none"/>
+        {/* LEFT WING — narrow, pointed, swept scythe shape */}
+        {/* Main wing panel */}
+        <path d={`M 66 51 C 50 ${45-wbd*0.5} 30 ${41-wbd*0.7} 12 ${45-wbd*0.8}`}
+          stroke="#1C2E7A" strokeWidth="10" strokeLinecap="round" fill="none"/>
+        {/* Secondary coverts — lighter iridescent blue highlight */}
+        <path d={`M 66 52 C 52 ${47-wbd*0.5} 36 ${44-wbd*0.7} 20 ${47-wbd*0.8}`}
+          stroke="#2A3E96" strokeWidth="5" strokeLinecap="round" fill="none"/>
+        {/* Primary feather tips — individual finger-like primaries */}
+        <path d={`M 14 ${45-wbd*0.8} C 9 ${43-wbd} 5 ${45-wbd*1.1} 7 ${49-wbd*0.9}`}
+          stroke="#162068" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+        <path d={`M 16 ${46-wbd*0.8} C 12 ${42-wbd} 7 ${43-wbd*1.1} 8 ${47-wbd*0.9}`}
+          stroke="#162068" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+        <path d={`M 18 ${46-wbd*0.8} C 14 ${43-wbd} 10 ${43-wbd*1.1} 10 ${47-wbd*0.9}`}
+          stroke="#162068" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
 
-        {/* Body — sleek, tapered — steel blue above, rufous-cinnamon below */}
-        <ellipse cx="75" cy="62" rx="16" ry="9" fill="#C87848"/>
-        {/* Steel-blue back panel over body */}
-        <ellipse cx="75" cy="58" rx="14" ry="7" fill="#1C2E7A"/>
+        {/* RIGHT WING */}
+        <path d={`M 77 51 C 93 ${45-wbd*0.5} 113 ${41-wbd*0.7} 131 ${45-wbd*0.8}`}
+          stroke="#1C2E7A" strokeWidth="10" strokeLinecap="round" fill="none"/>
+        <path d={`M 77 52 C 91 ${47-wbd*0.5} 107 ${44-wbd*0.7} 123 ${47-wbd*0.8}`}
+          stroke="#2A3E96" strokeWidth="5" strokeLinecap="round" fill="none"/>
+        <path d={`M 129 ${45-wbd*0.8} C 134 ${43-wbd} 138 ${45-wbd*1.1} 136 ${49-wbd*0.9}`}
+          stroke="#162068" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+        <path d={`M 127 ${46-wbd*0.8} C 131 ${42-wbd} 136 ${43-wbd*1.1} 135 ${47-wbd*0.9}`}
+          stroke="#162068" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+        <path d={`M 125 ${46-wbd*0.8} C 129 ${43-wbd} 133 ${43-wbd*1.1} 133 ${47-wbd*0.9}`}
+          stroke="#162068" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
 
-        {/* Head — round, steel-blue */}
-        <circle cx="63" cy="50" r="13" fill="#1C2E7A"/>
+        {/* Body — sleek torpedo, cinnamon below */}
+        <path d="M 62 50 C 64 44 78 44 82 50 C 85 56 82 66 78 68 C 74 70 68 70 64 68 C 60 65 59 56 62 50 Z" fill="#C87848"/>
+        {/* Steel-blue back */}
+        <path d="M 63 49 C 65 43 75 43 81 49 C 84 54 81 62 77 64 C 73 62 68 62 64 63 C 60 59 61 52 63 49 Z" fill="#1C2E7A"/>
 
-        {/* RUFOUS FOREHEAD — chestnut-red forehead patch, a bold mark */}
-        <path d="M 52 46 C 54 38 62 34 68 36 C 70 38 68 44 64 46 C 60 46 55 47 52 47 Z" fill="#B05030"/>
+        {/* Head — compact, steel-blue */}
+        <circle cx="65" cy="44" r="10" fill="#1C2E7A"/>
+        {/* Chestnut forehead patch */}
+        <path d="M 56 40 C 58 34 64 31 70 34 C 72 37 70 41 66 42 C 62 42 57 42 56 41 Z" fill="#B04828"/>
+        {/* Rufous throat */}
+        <ellipse cx="62" cy="51" rx="7" ry="5" fill="#C87848"/>
 
-        {/* RUFOUS THROAT — cinnamon-orange chin and throat */}
-        <ellipse cx="58" cy="56" rx="9" ry="7" fill="#C87848"/>
-
-        {/* Creamy-buff belly/breast hint */}
-        <ellipse cx="72" cy="65" rx="8" ry="5" fill="#E8C8A0" opacity="0.5"/>
-
-        {/* Bill — tiny flat wide gape, faces FORWARD (right, toward nose) */}
-        <path d="M 52 49 L 62 50.5 L 59 53 Z" fill="#C8B878"/>
-
-        {/* Eye — small, dark */}
-        <circle cx="59" cy="47" r="3" fill="#0E0E0E"/>
-        <circle cx="58.5" cy="46.5" r="1.1" fill="white" opacity="0.75"/>
-
-        {/* No legs shown — in flight */}
+        {/* Bill — tiny flat wide gape */}
+        <path d="M 55 43 L 63 44 L 61 47 Z" fill="#C8B878"/>
+        {/* Eye */}
+        <circle cx="61" cy="41" r="2.5" fill="#0E0E0E"/>
+        <circle cx="60.5" cy="40.5" r="0.9" fill="white" opacity="0.8"/>
       </g>
     </svg>
   )
@@ -2048,66 +2059,77 @@ export function BlackthroatedGreenWarblerAvatar({ size = 120, animated = false, 
   const [frame, setFrame] = useState(0)
   useEffect(() => {
     if (!animated) return
-    const id = setInterval(() => setFrame(f => (f + 1) % 6), 370)
+    const id = setInterval(() => setFrame(f => (f + 1) % 8), 350)
     return () => clearInterval(id)
   }, [animated])
-  const bobY = animated ? [0, -3, -5, -3, 0, 2][frame] : 0
+  // Slight bob + tail flick — warbler foraging
+  const bobY = animated ? [0,-2,-4,-3,-1,0,1,0][frame] : 0
+  const tailFlick = animated ? [0,1,3,2,0,-1,-2,-1][frame] : 0
 
   return (
     <svg viewBox="0 0 120 132" width={size} height={size} style={style} aria-label="Black-throated Green Warbler">
       <defs>
-        <clipPath id="btgHeadClip3"><circle cx="44" cy="57" r="18"/></clipPath>
-        <clipPath id="btgBodyClip3"><ellipse cx="60" cy="84" rx="22" ry="17"/></clipPath>
+        <clipPath id="btgBodyClipV2">
+          <path d="M 34 75 C 40 66 62 63 85 68 C 92 78 80 98 55 99 C 36 99 28 89 34 75 Z"/>
+        </clipPath>
+        <clipPath id="btgHeadClipV2">
+          <path d="M 24 55 C 26 39 40 31 55 34 C 66 37 70 48 65 58 C 58 66 38 67 28 60 C 24 57 24 56 24 55 Z"/>
+        </clipPath>
       </defs>
       <g transform={`translate(0, ${bobY})`}>
-        {/* Tail — olive */}
-        <path d="M 72 90 C 83 95 92 108 90 117 C 82 108 73 98 71 92" fill="#3A5A18"/>
-        <path d="M 70 92 C 76 102 77 114 73 120 C 69 112 67 100 68 94" fill="#3A5A18"/>
+        {/* Tail — olive-green, with flick animation */}
+        <path d={`M 72 88 C 84 ${92+tailFlick} 93 ${106+tailFlick} 91 ${116+tailFlick} C 83 ${107+tailFlick} 74 ${96+tailFlick} 72 90`} fill="#3A5A18"/>
+        <path d={`M 69 90 C 74 ${102+tailFlick} 75 ${114+tailFlick} 72 ${120+tailFlick} C 67 ${112+tailFlick} 66 ${100+tailFlick} 67 93`} fill="#3A5A18"/>
 
-        {/* Body — white underparts, olive back */}
-        <ellipse cx="59" cy="85" rx="22" ry="17" fill="#F2F2EC"/>
+        {/* Body — organic shape, white underparts */}
+        <path d="M 34 75 C 40 66 62 63 85 68 C 92 78 80 98 55 99 C 36 99 28 89 34 75 Z" fill="#F4F2EA"/>
 
-        {/* Bold BLACK FLANK STREAKS — one of the top ID marks */}
-        <g clipPath="url(#btgBodyClip3)">
-          <path d="M 38 78 C 36 87 36 100 42 106 C 47 104 50 91 48 78 Z" fill="#111"/>
-          <path d="M 80 80 C 83 89 82 99 76 105 C 72 103 72 90 73 80 Z" fill="#111"/>
-          {/* Extra breast streaks */}
-          <path d="M 50 82 L 52 94" stroke="#333" strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
-          <path d="M 57 81 L 58 92" stroke="#333" strokeWidth="1.8" strokeLinecap="round" opacity="0.4"/>
+        {/* Black flank streaks + fine breast streaks — clipped to body */}
+        <g clipPath="url(#btgBodyClipV2)">
+          <path d="M 37 71 C 34 82 34 96 40 103 C 46 101 49 88 47 73 Z" fill="#111"/>
+          <path d="M 82 73 C 86 83 85 95 79 103 C 74 101 74 89 74 74 Z" fill="#111"/>
+          <line x1="54" y1="78" x2="55" y2="90" stroke="#2A2A2A" strokeWidth="1.8" strokeLinecap="round" opacity="0.55"/>
+          <line x1="60" y1="77" x2="61" y2="88" stroke="#2A2A2A" strokeWidth="1.5" strokeLinecap="round" opacity="0.45"/>
+          <line x1="66" y1="77" x2="66" y2="87" stroke="#2A2A2A" strokeWidth="1.3" strokeLinecap="round" opacity="0.4"/>
         </g>
 
-        {/* Olive-green back and wings */}
-        <path d="M 43 72 C 58 65 79 66 85 75 C 79 82 59 84 43 80 Z" fill="#4A7028"/>
-        {/* Two clean white wingbars */}
-        <path d="M 47 71 C 62 65 78 66 84 73" stroke="#F0F0E8" strokeWidth="3.8" fill="none" strokeLinecap="round"/>
-        <path d="M 45 79 C 61 73 78 74 84 80" stroke="#F0F0E8" strokeWidth="2.8" fill="none" strokeLinecap="round"/>
+        {/* Olive-green back — organic wing shape with feather edge detail */}
+        <path d="M 40 72 C 56 62 78 62 87 72 C 82 82 62 84 42 80 Z" fill="#4A7028"/>
+        <path d="M 44 72 C 60 63 80 64 87 72" stroke="#3A5820" strokeWidth="1.4" fill="none" opacity="0.5"/>
+        <path d="M 43 77 C 58 70 79 71 86 77" stroke="#3A5820" strokeWidth="1.1" fill="none" opacity="0.4"/>
+        {/* Tertial edge lines */}
+        <path d="M 66 69 L 68 79" stroke="#2E4816" strokeWidth="1.2" opacity="0.5" strokeLinecap="round"/>
+        <path d="M 72 69 L 73 79" stroke="#2E4816" strokeWidth="1.0" opacity="0.45" strokeLinecap="round"/>
+        {/* Two crisp white wingbars */}
+        <path d="M 46 71 C 62 64 80 65 86 72" stroke="#F0F0E6" strokeWidth="3.8" fill="none" strokeLinecap="round"/>
+        <path d="M 44 79 C 61 72 80 73 86 79" stroke="#F0F0E6" strokeWidth="2.8" fill="none" strokeLinecap="round"/>
 
-        {/* HEAD — VIVID YELLOW. This is what makes BTG unmistakable. */}
-        <circle cx="44" cy="57" r="18" fill="#FFE030"/>
-        <g clipPath="url(#btgHeadClip3)">
-          {/* Olive-green CAP — sharp-edged, ends well above eye */}
-          <path d="M 28 51 C 30 37 45 30 57 35 C 61 39 60 49 54 52 C 46 53 34 53 28 52 Z" fill="#4A7028"/>
-          {/* Olive NAPE behind cap */}
-          <path d="M 54 51 C 63 51 70 57 71 65 C 63 62 55 57 54 52 Z" fill="#4A7028"/>
-          {/* Olive ear patch — SMALL, sits BELOW and BEHIND the eye only */}
-          <ellipse cx="54" cy="66" rx="7" ry="6" fill="#4A7028" opacity="0.85"/>
-          {/* BLACK THROAT BIB — the star of the show: bold jet black triangle */}
-          <path d="M 28 62 C 30 56 40 52 52 54 C 56 58 55 74 46 77 C 35 77 26 71 28 63 Z" fill="#111"/>
+        {/* HEAD — organic path, vivid yellow face */}
+        <path d="M 24 55 C 26 39 40 31 55 34 C 66 37 70 48 65 58 C 58 66 38 67 28 60 C 24 57 24 56 24 55 Z" fill="#FFE030"/>
+        <g clipPath="url(#btgHeadClipV2)">
+          {/* Olive-green cap — sharp edge, ends just above eye */}
+          <path d="M 26 51 C 28 35 42 28 56 31 C 64 33 67 42 62 50 C 54 48 38 50 26 52 Z" fill="#4A7028"/>
+          {/* Olive nape */}
+          <path d="M 60 48 C 70 48 76 55 74 64 C 66 60 58 54 60 49 Z" fill="#4A7028"/>
+          {/* Small olive ear patch behind/below eye */}
+          <path d="M 56 58 C 62 56 68 60 68 66 C 63 66 57 63 56 58 Z" fill="#4A7028" opacity="0.8"/>
+          {/* BLACK THROAT BIB — bold triangular, the defining field mark */}
+          <path d="M 26 60 C 27 53 38 49 55 50 C 60 54 59 70 50 76 C 38 77 25 70 26 61 Z" fill="#111"/>
         </g>
 
-        {/* Bill — olive-dark, short, visible on yellow */}
-        <path d="M 26 58 L 12 60 L 26 63 Z" fill="#7A8050"/>
-        <line x1="12" y1="60" x2="26" y2="60" stroke="#505830" strokeWidth="0.8"/>
+        {/* Bill — pointed warbler bill, olive-dark */}
+        <path d="M 24 55 L 9 57 L 24 60 Z" fill="#5A6030"/>
+        <line x1="9" y1="57" x2="24" y2="57.5" stroke="#3A4020" strokeWidth="0.8"/>
 
-        {/* Eye — dark on yellow, ABOVE the black bib */}
-        <circle cx="42" cy="53" r="4" fill="#111"/>
-        <circle cx="41" cy="52" r="1.5" fill="white" opacity="0.9"/>
+        {/* Eye — dark, sits on yellow above the black bib */}
+        <circle cx="39" cy="51" r="3.8" fill="#111"/>
+        <circle cx="38" cy="50" r="1.4" fill="white" opacity="0.9"/>
 
-        {/* Legs */}
-        <path d="M 50 101 L 47 115" stroke="#8B7040" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M 63 101 L 66 115" stroke="#8B7040" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M 47 115 L 40 118 M 47 115 L 47 120 M 47 115 L 52 118" stroke="#8B7040" strokeWidth="1.5" strokeLinecap="round"/>
-        <path d="M 66 115 L 59 118 M 66 115 L 66 120 M 66 115 L 71 118" stroke="#8B7040" strokeWidth="1.5" strokeLinecap="round"/>
+        {/* Legs — pale olive-horn */}
+        <path d="M 50 98 L 47 113" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M 64 98 L 67 113" stroke="#8B7040" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M 47 113 L 40 116 M 47 113 L 47 118 M 47 113 L 52 116" stroke="#8B7040" strokeWidth="1.4" strokeLinecap="round"/>
+        <path d="M 67 113 L 60 116 M 67 113 L 67 118 M 67 113 L 72 116" stroke="#8B7040" strokeWidth="1.4" strokeLinecap="round"/>
       </g>
     </svg>
   )
@@ -2790,30 +2812,61 @@ export function GreatCrestedFlycatcherAvatar({ size = 120, animated = false, sty
 }
 
 export function EasternKingbirdAvatar({ size = 120, animated = false, style = {} }) {
+  // Flycatcher tail-pump animation — characteristic behavior of perching flycatchers
   const [frame, setFrame] = useState(0)
-  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 6), 600); return () => clearInterval(id) }, [animated])
-  const lean = animated ? [0,2,4,2,0,-2][frame] : 0
+  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 8), 480); return () => clearInterval(id) }, [animated])
+  const tailDip = animated ? [0, -1, -3, -5, -4, -2, -1, 0][frame] : 0
   return (
-    <svg viewBox="0 0 120 130" width={size} height={size} style={style} aria-label="Eastern Kingbird">
-      <g transform={`rotate(${lean}, 58, 80)`}>
-        <path d="M 70 88 C 84 90 100 94 104 104 C 92 102 80 96 68 90" fill="#1A1A1A"/>
-        <path d="M 68 90 C 76 102 76 116 72 122 C 68 114 65 102 66 92" fill="#1A1A1A"/>
-        <path d="M 76 110 C 86 112 100 114 104 118 C 96 116 84 112 74 108 Z" fill="#F5F5F5"/>
-        <path d="M 73 114 C 73 118 72 122 70 124 C 69 120 69 116 70 112 Z" fill="#F5F5F5"/>
-        <ellipse cx="56" cy="88" rx="21" ry="16" fill="#F5F5F5"/>
-        <ellipse cx="62" cy="78" rx="19" ry="12" fill="#1A1A1A"/>
-        <path d="M 50 72 C 64 66 82 68 86 78 C 80 90 62 92 50 88 Z" fill="#111111"/>
-        <circle cx="43" cy="60" r="16" fill="#111111"/>
-        <ellipse cx="46" cy="50" rx="5" ry="2" fill="#E07000" opacity="0.5"/>
-        <path d="M 27 60 L 12 62 L 27 66 Z" fill="#1A1A1A"/>
-        <line x1="12" y1="62" x2="27" y2="62" stroke="#000" strokeWidth="1"/>
-        <circle cx="41" cy="57" r="3.8" fill="#111"/>
-        <circle cx="40" cy="56" r="1.3" fill="white" opacity="0.7"/>
-        <path d="M 48 102 L 44 116" stroke="#333" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M 62 102 L 66 116" stroke="#333" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M 44 116 L 38 119 M 44 116 L 44 121 M 44 116 L 49 119" stroke="#333" strokeWidth="1.5" strokeLinecap="round"/>
-        <path d="M 66 116 L 60 119 M 66 116 L 66 121 M 66 116 L 71 119" stroke="#333" strokeWidth="1.5" strokeLinecap="round"/>
+    <svg viewBox="0 0 120 132" width={size} height={size} style={style} aria-label="Eastern Kingbird">
+      <defs>
+        <clipPath id="ekBodyClip"><ellipse cx="55" cy="87" rx="23" ry="18"/></clipPath>
+        <clipPath id="ekWingClip"><path d="M 38 74 C 54 64 82 65 90 77 C 83 88 57 90 38 86 Z"/></clipPath>
+      </defs>
+
+      {/* TAIL — spreading fan of slate-black feathers with THE crisp white terminal band */}
+      <g transform={`translate(0, ${tailDip})`}>
+        <path d="M 67 90 C 79 90 96 94 102 107 C 91 105 77 98 65 92" fill="#242424"/>
+        <path d="M 65 91 C 72 103 73 116 70 123 C 66 115 63 102 62 93" fill="#242424"/>
+        <path d="M 62 93 C 58 105 57 117 59 124 C 63 117 66 104 67 94" fill="#1C1C1C"/>
+        {/* THE WHITE TERMINAL TAIL BAND — the most diagnostic Eastern Kingbird mark */}
+        <path d="M 60 120 C 67 123 80 124 102 121" stroke="#F0F0F0" strokeWidth="5.5" fill="none" strokeLinecap="round"/>
+        <path d="M 60 117 C 67 120 80 121 102 118" stroke="white" strokeWidth="2" fill="none" opacity="0.45"/>
       </g>
+
+      {/* Body — brilliant white belly. Large white area, clean edge against dark back */}
+      <ellipse cx="54" cy="87" rx="23" ry="18" fill="#F6F6F6"/>
+
+      {/* Back / upper body — organic slate-black shape, flat-backed flycatcher profile */}
+      <path d="M 34 82 C 37 68 54 61 74 63 C 88 65 92 74 88 82 C 78 89 54 91 36 86 Z" fill="#262626"/>
+
+      {/* WING — folded, slate-black, slightly darker than back */}
+      <path d="M 42 70 C 58 62 84 63 90 75 C 83 87 56 89 41 85 Z" fill="#1C1C1C"/>
+      {/* Subtle pale feather edges — adds texture without blobs */}
+      <path d="M 47 70 C 63 63 83 65 89 73" stroke="#3A3A3A" strokeWidth="1.5" fill="none" opacity="0.7"/>
+      <path d="M 45 78 C 61 72 81 72 89 79" stroke="#3A3A3A" strokeWidth="1.2" fill="none" opacity="0.55"/>
+      <path d="M 44 84 C 58 79 78 79 88 84" stroke="#3A3A3A" strokeWidth="1" fill="none" opacity="0.4"/>
+
+      {/* HEAD — large, flat-topped, all slate-black. Classic flycatcher large-head silhouette */}
+      <path d="M 24 66 C 22 55 26 42 38 37 C 51 33 63 39 66 52 C 68 61 64 72 56 76 C 45 80 26 76 24 66 Z" fill="#1E1E1E"/>
+
+      {/* Concealed orange-red crown patch — barely visible, just a warm tinge at crown */}
+      <path d="M 37 40 C 42 35 52 33 58 38 C 56 42 47 43 38 41 Z" fill="#C05000" opacity="0.28"/>
+
+      {/* BILL — broad-based, flat-topped flycatcher bill. Wide at gape, slight hook at tip */}
+      <path d="M 23 66 L 8 63 L 22 60 Z" fill="#232323"/>
+      <path d="M 23 66 L 8 66 L 8 63" fill="none" stroke="#141414" strokeWidth="0.9"/>
+      {/* Bill hook */}
+      <path d="M 8 63 C 7 63 6 64 7 65" stroke="#141414" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+
+      {/* Eye — barely visible on the dark head. Small white catchlight. */}
+      <circle cx="41" cy="59" r="4.5" fill="#0C0C0C"/>
+      <circle cx="40" cy="58" r="1.6" fill="white" opacity="0.6"/>
+
+      {/* Legs — dark, slender */}
+      <path d="M 47 104 L 43 117" stroke="#1E1E1E" strokeWidth="2.2" strokeLinecap="round"/>
+      <path d="M 61 104 L 65 117" stroke="#1E1E1E" strokeWidth="2.2" strokeLinecap="round"/>
+      <path d="M 43 117 L 36 120 M 43 117 L 43 122 M 43 117 L 49 120" stroke="#1E1E1E" strokeWidth="1.6" strokeLinecap="round"/>
+      <path d="M 65 117 L 58 120 M 65 117 L 65 122 M 65 117 L 71 120" stroke="#1E1E1E" strokeWidth="1.6" strokeLinecap="round"/>
     </svg>
   )
 }
@@ -2929,74 +2982,141 @@ export function WoodDuckAvatar({ size = 120, animated = false, style = {} }) {
 // ── Hawks ─────────────────────────────────────────────────────────────────────
 export function CoopersHawkAvatar({ size = 120, animated = false, style = {} }) {
   const [frame, setFrame] = useState(0)
-  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 6), 600); return () => clearInterval(id) }, [animated])
-  const headTilt = animated ? [0,4,8,4,0,-4][frame] : 0
+  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 8), 600); return () => clearInterval(id) }, [animated])
+  const headTurn = animated ? [0,3,7,10,7,3,0,-3][frame] : 0
   return (
     <svg viewBox="0 0 120 130" width={size} height={size} style={style} aria-label="Cooper's Hawk">
+      <defs>
+        <clipPath id="coopBodyClip">
+          <path d="M 32 80 C 38 68 58 62 78 65 C 90 70 92 82 84 91 C 72 98 40 98 32 88 Z"/>
+        </clipPath>
+      </defs>
       <g>
-        {/* Rounded tail with dark bands */}
-        <path d="M 70 86 C 84 88 102 92 108 104 C 96 102 80 96 68 90" fill="#7A7A7A"/>
-        <path d="M 68 90 C 78 102 80 116 76 124 C 70 116 66 102 66 92" fill="#7A7A7A"/>
-        <line x1="70" y1="104" x2="108" y2="108" stroke="#2A2A2A" strokeWidth="2" opacity="0.5"/>
-        <line x1="70" y1="112" x2="104" y2="116" stroke="#2A2A2A" strokeWidth="2" opacity="0.5"/>
-        {/* Body */}
-        <ellipse cx="58" cy="86" rx="22" ry="16" fill="#F0E8D8"/>
-        {/* Orange barring on white breast */}
-        {[76,80,84,88,92].map(y => <path key={y} d={`M 38 ${y} C 48 ${y-2} 58 ${y-1} 70 ${y}`} stroke="#C07030" strokeWidth="2.5" fill="none" opacity="0.7"/>)}
-        {/* Blue-gray back */}
-        <ellipse cx="62" cy="78" rx="20" ry="12" fill="#6A7A8A"/>
-        {/* Wings */}
-        <path d="M 50 72 C 64 66 84 68 88 78 C 82 90 64 92 50 88 Z" fill="#5A6A7A"/>
-        {/* Head — dark cap, paler nape */}
-        <g transform={`rotate(${headTilt}, 42, 60)`}>
-          <circle cx="42" cy="60" r="17" fill="#8A9AAA"/>
-          {/* Dark cap */}
-          <ellipse cx="42" cy="52" rx="15" ry="10" fill="#2A3040"/>
-          {/* Red eye — adult */}
-          <circle cx="40" cy="58" r="4.5" fill="#CC4000"/>
-          <circle cx="39" cy="57" r="1.6" fill="white" opacity="0.6"/>
-          {/* Hooked bill */}
-          <path d="M 26 60 L 12 58 C 14 64 20 66 26 65 Z" fill="#D0C080"/>
-          <path d="M 26 60 L 12 58 L 13 62 L 26 63" fill="#B0A060" opacity="0.5"/>
+        {/* ROUNDED TAIL — key ID mark that separates Cooper's from Sharp-shinned */}
+        <path d="M 68 88 C 80 88 100 90 106 102 C 94 101 78 96 66 90" fill="#8A8A98"/>
+        <path d="M 66 90 C 72 103 72 117 68 125 C 63 117 60 103 60 92" fill="#8A8A98"/>
+        {/* Rounded tail tip — curves gently, NOT square */}
+        <path d="M 60 125 C 64 129 74 128 78 125 C 84 118 90 110 100 106" stroke="#9898A8" strokeWidth="3" fill="none" strokeLinecap="round"/>
+        {/* Tail bands */}
+        <path d="M 61 104 C 76 104 95 105 105 106" stroke="#3A3A48" strokeWidth="2.5" fill="none" opacity="0.6"/>
+        <path d="M 61 112 C 75 112 93 113 103 114" stroke="#3A3A48" strokeWidth="2.2" fill="none" opacity="0.6"/>
+        <path d="M 61 120 C 74 120 91 121 100 122" stroke="#3A3A48" strokeWidth="2" fill="none" opacity="0.5"/>
+
+        {/* Body — organic shape, warm white underparts */}
+        <path d="M 32 80 C 38 68 58 62 78 65 C 90 70 92 82 84 91 C 72 98 40 98 32 88 Z" fill="#F0E8D8"/>
+
+        {/* Rufous barring on breast — clipped to body */}
+        <g clipPath="url(#coopBodyClip)">
+          {[74,79,84,89,94].map((y, i) => (
+            <path key={y}
+              d={`M ${32+i} ${y} C ${44+i} ${y-1} ${60} ${y} ${82-i} ${y}`}
+              stroke="#C06828" strokeWidth="2.8" fill="none" strokeLinecap="round" opacity="0.72"/>
+          ))}
         </g>
-        <path d="M 48 100 L 44 114" stroke="#D0B060" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M 62 100 L 66 114" stroke="#D0B060" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M 44 114 L 38 117 M 44 114 L 44 119 M 44 114 L 49 117" stroke="#D0B060" strokeWidth="1.5" strokeLinecap="round"/>
-        <path d="M 66 114 L 60 117 M 66 114 L 66 119 M 66 114 L 71 117" stroke="#D0B060" strokeWidth="1.5" strokeLinecap="round"/>
+
+        {/* Blue-gray back — warmer and richer than Sharp-shinned */}
+        <path d="M 30 80 C 34 66 52 60 72 62 C 88 65 92 76 88 84 C 76 90 46 90 32 85 Z" fill="#6A7A9A"/>
+        {/* Wing with feather edge detail */}
+        <path d="M 40 68 C 56 60 82 62 88 74 C 82 88 58 90 42 86 Z" fill="#5C6A88"/>
+        <path d="M 44 68 C 60 61 82 63 88 72" stroke="#4A5878" strokeWidth="1.8" fill="none" opacity="0.5"/>
+        <path d="M 43 76 C 58 70 80 72 87 78" stroke="#4A5878" strokeWidth="1.4" fill="none" opacity="0.4"/>
+
+        {/* HEAD — organic path, larger and rounder than Sharp-shinned */}
+        <g transform={`rotate(${headTurn}, 42, 59)`}>
+          <path d="M 25 58 C 26 43 37 35 50 37 C 62 39 68 50 64 62 C 58 70 35 70 27 62 C 25 60 25 59 25 58 Z" fill="#8A9AB0"/>
+          {/* Dark blackish cap — strong contrast with pale nape (key Cooper's mark) */}
+          <path d="M 26 54 C 28 40 38 34 52 36 C 60 38 63 47 58 54 C 50 51 34 52 26 55 Z" fill="#2A3040"/>
+          {/* Pale nape — lighter than cap, diagnostic Cooper's feature */}
+          <path d="M 58 54 C 68 54 76 60 75 68 C 68 65 60 58 58 55 Z" fill="#B0BCCC"/>
+          {/* RED-ORANGE EYE — adult Cooper's has fiery orange-red eye */}
+          <circle cx="39" cy="58" r="5.5" fill="#DD4400"/>
+          <circle cx="39" cy="58" r="3.5" fill="#220800"/>
+          <circle cx="38" cy="57" r="1.5" fill="white" opacity="0.6"/>
+          {/* HOOKED RAPTOR BILL — straight upper mandible + downward hook at tip */}
+          <path d="M 25 58 L 13 56 L 25 54 Z" fill="#D0C080"/>
+          <path d="M 13 56 C 11 56 10 58 12 60" stroke="#B8A050" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+          <ellipse cx="19" cy="56" rx="4" ry="2.2" fill="#D8C850" opacity="0.65"/>
+        </g>
+
+        {/* Long yellow legs */}
+        <path d="M 48 96 L 44 112" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 64 96 L 68 112" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 44 112 L 37 115 M 44 112 L 44 117 M 44 112 L 49 115" stroke="#D0B060" strokeWidth="1.6" strokeLinecap="round"/>
+        <path d="M 68 112 L 61 115 M 68 112 L 68 117 M 68 112 L 73 115" stroke="#D0B060" strokeWidth="1.6" strokeLinecap="round"/>
       </g>
     </svg>
   )
 }
 
 export function SharpShinnedHawkAvatar({ size = 120, animated = false, style = {} }) {
+  // Head-swivel + alert posture — accipiter scanning for prey
   const [frame, setFrame] = useState(0)
-  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 6), 550); return () => clearInterval(id) }, [animated])
-  const headTilt = animated ? [0,5,8,5,0,-3][frame] : 0
+  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 8), 620); return () => clearInterval(id) }, [animated])
+  const headTurn = animated ? [0, 3, 7, 10, 7, 3, 0, -4][frame] : 0
   return (
-    <svg viewBox="0 0 120 130" width={size} height={size} style={style} aria-label="Sharp-shinned Hawk">
+    <svg viewBox="0 0 120 132" width={size} height={size} style={style} aria-label="Sharp-shinned Hawk">
+      <defs>
+        <clipPath id="sshBodyClip"><ellipse cx="55" cy="86" rx="21" ry="16"/></clipPath>
+      </defs>
       <g>
-        {/* Square-tipped tail — key difference from Cooper's */}
-        <path d="M 68 88 C 82 88 100 90 106 100 C 94 100 78 96 66 90" fill="#7A7A7A"/>
-        <path d="M 66 90 C 74 102 74 114 70 120 C 66 112 64 100 64 92" fill="#7A7A7A"/>
-        {/* Square tip (flat end) */}
-        <line x1="66" y1="120" x2="106" y2="120" stroke="#7A7A7A" strokeWidth="3"/>
-        <line x1="70" y1="104" x2="106" y2="108" stroke="#2A2A2A" strokeWidth="2" opacity="0.5"/>
-        <line x1="70" y1="112" x2="104" y2="116" stroke="#2A2A2A" strokeWidth="2" opacity="0.5"/>
-        <ellipse cx="56" cy="86" rx="20" ry="15" fill="#F0E8D8"/>
-        {[76,80,84,88,92].map(y => <path key={y} d={`M 38 ${y} C 48 ${y-2} 56 ${y-1} 68 ${y}`} stroke="#C07030" strokeWidth="2" fill="none" opacity="0.7"/>)}
-        <ellipse cx="60" cy="78" rx="18" ry="11" fill="#6A7A8A"/>
-        <path d="M 48 72 C 62 66 82 68 86 78 C 80 90 62 92 48 88 Z" fill="#5A6A7A"/>
-        <g transform={`rotate(${headTilt}, 40, 60)`}>
-          <circle cx="40" cy="60" r="15" fill="#8A9AAA"/>
-          <ellipse cx="40" cy="52" rx="13" ry="9" fill="#2A3040"/>
-          <circle cx="38" cy="58" r="4" fill="#CC4000"/>
-          <circle cx="37" cy="57" r="1.4" fill="white" opacity="0.6"/>
-          <path d="M 25 60 L 11 58 C 13 64 18 65 25 64 Z" fill="#D0C080"/>
+        {/* TAIL — long, banded, with the distinctive SQUARE tip (vs Cooper's rounded) */}
+        <path d="M 66 88 C 79 88 98 90 104 102 C 93 102 77 97 64 91" fill="#7A8090"/>
+        <path d="M 64 90 C 70 103 70 116 67 123 C 63 114 61 101 61 92" fill="#7A8090"/>
+        {/* SQUARE tail tip — the #1 field mark separating it from Cooper's Hawk */}
+        <path d="M 61 123 L 104 123" stroke="#8090A0" strokeWidth="3.5" strokeLinecap="square"/>
+        {/* Dark tail bands */}
+        <path d="M 62 103 C 77 103 96 104 104 105" stroke="#3A4050" strokeWidth="2.5" fill="none" opacity="0.6"/>
+        <path d="M 62 111 C 76 111 94 112 102 113" stroke="#3A4050" strokeWidth="2.2" fill="none" opacity="0.6"/>
+        <path d="M 62 119 C 75 119 93 120 102 121" stroke="#3A4050" strokeWidth="2" fill="none" opacity="0.6"/>
+
+        {/* Body — white with warm rufous wash */}
+        <ellipse cx="54" cy="86" rx="22" ry="16" fill="#F2EAE0"/>
+
+        {/* RUFOUS BARRING on breast — horizontal warm orange bars, thinner and more feather-like */}
+        <g clipPath="url(#sshBodyClip)">
+          {[77, 82, 87, 92, 97].map((y, i) => (
+            <path key={y}
+              d={`M ${34+i} ${y} C ${44+i} ${y-1} ${56} ${y} ${74-i} ${y}`}
+              stroke="#B86830" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.78"/>
+          ))}
         </g>
-        <path d="M 46 100 L 42 114" stroke="#D0B060" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M 60 100 L 64 114" stroke="#D0B060" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M 42 114 L 36 117 M 42 114 L 42 119 M 42 114 L 47 117" stroke="#D0B060" strokeWidth="1.4" strokeLinecap="round"/>
-        <path d="M 64 114 L 58 117 M 64 114 L 64 119 M 64 114 L 69 117" stroke="#D0B060" strokeWidth="1.4" strokeLinecap="round"/>
+
+        {/* Blue-gray back — rich slate-blue, not gray */}
+        <path d="M 33 81 C 36 68 54 61 72 63 C 86 66 90 75 86 83 C 76 89 50 89 35 85 Z" fill="#6878A0"/>
+
+        {/* Wing — slightly darker blue-gray with feather edge detail */}
+        <path d="M 43 69 C 58 62 82 63 88 75 C 82 88 60 90 44 86 Z" fill="#5A6890"/>
+        <path d="M 47 69 C 62 63 82 65 88 73" stroke="#4A5880" strokeWidth="1.8" fill="none" opacity="0.55"/>
+        <path d="M 45 77 C 60 72 80 73 87 79" stroke="#4A5880" strokeWidth="1.4" fill="none" opacity="0.45"/>
+
+        {/* HEAD — small, rounded. Dark cap. The head barely projects past the wings. */}
+        <g transform={`rotate(${headTurn}, 40, 60)`}>
+          <circle cx="40" cy="60" r="16" fill="#8A9AB0"/>
+          {/* Dark slate-blue cap */}
+          <path d="M 27 57 C 28 46 37 40 48 42 C 55 44 57 51 52 57 C 45 55 33 55 27 57 Z" fill="#28303E"/>
+          {/* YELLOW-ORANGE EYE — fierce intensity, a key feature of accipiters */}
+          <circle cx="38" cy="59" r="5" fill="#E09000"/>
+          <circle cx="38" cy="59" r="3.2" fill="#180800"/>
+          <circle cx="37" cy="58" r="1.3" fill="white" opacity="0.65"/>
+          {/* Yellow eyebrow (supraorbital ridge) */}
+          <path d="M 30 55 C 35 53 42 53 47 55" stroke="#D0A000" strokeWidth="1.5" fill="none" opacity="0.6"/>
+          {/* BILL — small, sharp, properly hooked. NOT a half-moon curve. */}
+          {/* Upper mandible: short, down-curved at tip */}
+          <path d="M 24 59 L 14 57 L 24 55 Z" fill="#787878"/>
+          {/* The hook — sharp downward point at bill tip */}
+          <path d="M 14 57 C 12 57 11 59 13 61" stroke="#585858" strokeWidth="1.6" fill="none" strokeLinecap="round"/>
+          {/* Lower mandible */}
+          <path d="M 24 59 L 14 61 C 16 62 21 62 24 60 Z" fill="#909090"/>
+          {/* Yellow cere at base */}
+          <ellipse cx="23" cy="57" rx="3.5" ry="2.5" fill="#C8A000" opacity="0.75"/>
+        </g>
+
+        {/* LONG, SLENDER LEGS — the "sharp shins." Yellow with large talons */}
+        <path d="M 45 101 L 41 115" stroke="#C8A030" strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M 59 101 L 63 115" stroke="#C8A030" strokeWidth="2.5" strokeLinecap="round"/>
+        {/* Four talons each foot — long and hooked for gripping prey */}
+        <path d="M 41 115 L 34 119 M 41 115 L 40 121 M 41 115 L 47 119 M 41 115 L 37 123" stroke="#C8A030" strokeWidth="1.6" strokeLinecap="round"/>
+        <path d="M 63 115 L 56 119 M 63 115 L 62 121 M 63 115 L 69 119 M 63 115 L 59 123" stroke="#C8A030" strokeWidth="1.6" strokeLinecap="round"/>
       </g>
     </svg>
   )

@@ -49,6 +49,24 @@ const TagList = ({ items }) => (
 export default function BirdDetail({ bird, captured, onBack }) {
   const [tab, setTab] = useState(captured ? 'photos' : 'appearance')
 
+  // Normalize appearance data — new birds use flat arrays/strings; old birds use nested objects
+  const malePlumage = (() => {
+    const p = bird.appearance?.plumageDescription
+    return typeof p === 'string' ? p : (p?.male || '')
+  })()
+  const femalePlumage = (() => {
+    const p = bird.appearance?.plumageDescription
+    return typeof p === 'string' ? null : (p?.female || null)
+  })()
+  const juvPlumage = (() => {
+    const p = bird.appearance?.plumageDescription
+    return typeof p === 'string' ? null : (p?.juvenile || null)
+  })()
+  const fieldMarks = (() => {
+    const dm = bird.appearance?.distinctiveMarkings
+    return Array.isArray(dm) ? dm : (dm?.male || [])
+  })()
+
   const tabs = [
     ...(captured ? [{ id: 'photos',    label: '📷 Photos' }] : []),
     { id: 'appearance', label: 'Appearance' },
@@ -130,26 +148,32 @@ export default function BirdDetail({ bird, captured, onBack }) {
           {/* ── Appearance tab ───────────────────────────────────────────── */}
           {tab === 'appearance' && (
             <div className="animate-fadeIn">
-              <Section title="Male Plumage">
+              <Section title="Plumage">
                 <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65 }}>
-                  {captured ? bird.appearance.plumageDescription.male : '🔒 Capture to unlock.'}
+                  {captured ? (malePlumage || 'No description available.') : '🔒 Capture to unlock.'}
                 </div>
               </Section>
               {captured && <>
-                <Section title="Female Plumage">
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{bird.appearance.plumageDescription.female}</div>
-                </Section>
-                <Section title="Juvenile">
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{bird.appearance.plumageDescription.juvenile}</div>
-                </Section>
+                {femalePlumage && (
+                  <Section title="Female Plumage">
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{femalePlumage}</div>
+                  </Section>
+                )}
+                {juvPlumage && (
+                  <Section title="Juvenile">
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{juvPlumage}</div>
+                  </Section>
+                )}
+                {fieldMarks.length > 0 && (
                 <Section title="Key Field Marks">
-                  {bird.appearance.distinctiveMarkings.male.map((mark, i) => (
+                  {fieldMarks.map((mark, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '5px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                       <span style={{ color: bird.appearance.uiColor, fontSize: 10, marginTop: 2 }}>●</span>
-                      <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{mark}</span>
+                      <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{String(mark).replace(/_/g, ' ')}</span>
                     </div>
                   ))}
                 </Section>
+                )}
                 <Section title="Measurements">
                   <Row label="Length" value={`${bird.length_cm[0]}–${bird.length_cm[1]} cm`}/>
                   <Row label="Wingspan" value={`${bird.wingspan_cm[0]}–${bird.wingspan_cm[1]} cm`}/>
