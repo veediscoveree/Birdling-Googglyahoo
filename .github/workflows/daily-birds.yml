@@ -1,0 +1,54 @@
+name: Daily Species Addition
+
+# Runs at 10:00 AM ET (15:00 UTC) every day
+on:
+  schedule:
+    - cron: '0 15 * * *'
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: 'Number of species to add (default 20)'
+        required: false
+        default: '20'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  add-species:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Check if there are species left to add
+        id: check
+        run: |
+          SPECIES_COUNT=$(node -e "const {BIRDS} = require('./src/data/birds.js'); console.log(BIRDS.length)" 2>/dev/null || echo "0")
+          echo "current_count=$SPECIES_COUNT" >> $GITHUB_OUTPUT
+          echo "Current species count: $SPECIES_COUNT"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Add daily species batch
+        run: |
+          echo "Species addition workflow triggered."
+          echo "Current count: ${{ steps.check.outputs.current_count }}"
+          echo "To add new species: open a PR that adds entries to src/data/birds.js and avatar functions to src/components/BirdAvatars.jsx"
+          echo "This workflow serves as the daily trigger point for expansion sessions."
+
+      - name: Create expansion issue if needed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          COUNT=${{ steps.check.outputs.current_count }}
+          echo "Daily bird expansion checkpoint: $DATE, $COUNT species in game"

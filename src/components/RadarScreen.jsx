@@ -8,11 +8,52 @@ import { BIRDS, getCurrentSeason } from '../data/birds'
 const COMPASS = ['N','NE','E','SE','S','SW','W','NW']
 const HABITATS = ['Park Trail','Open Field','Waterfront','Woodland Edge','Backyard','Meadow']
 
-// Stable pseudo-random radar positions for each bird
-const BLIP_POS = BIRDS.map((_, i) => ({
-  x: 30 + (i * 47 + 13) % 60,
-  y: 25 + (i * 61 +  7) % 55,
-}))
+// ── Dynamic radar blip layout ─────────────────────────────────────────────────
+// Positions are seeded by bird index but distributed organically —
+// clustered into habitat "hotspot" zones rather than a uniform grid.
+// Distances vary (inner ring = close, outer ring = far).
+
+function seededRand(seed) {
+  // Simple deterministic pseudo-random from seed
+  const x = Math.sin(seed + 1) * 43758.5453
+  return x - Math.floor(x)
+}
+
+// 6 habitat hotspot zones (angle in degrees, radius fraction 0..1)
+const HOTSPOTS = [
+  { angle: 30,  rMin: 0.25, rMax: 0.6  },  // NNE — forest canopy birds
+  { angle: 100, rMin: 0.4,  rMax: 0.85 },  // ESE — open field, shrubby
+  { angle: 165, rMin: 0.15, rMax: 0.55 },  // SSE — wetland/water
+  { angle: 220, rMin: 0.3,  rMax: 0.75 },  // SW  — forest floor/undergrowth
+  { angle: 295, rMin: 0.2,  rMax: 0.7  },  // WNW — forest edge
+  { angle: 345, rMin: 0.35, rMax: 0.9  },  // N   — aerial/sky birds
+]
+
+const BLIP_POS = BIRDS.map((_, i) => {
+  const zone = HOTSPOTS[i % HOTSPOTS.length]
+  // Spread birds within each zone with deterministic jitter
+  const angleJitter = (seededRand(i * 7 + 3) - 0.5) * 55  // ±27° spread within zone
+  const angleDeg = zone.angle + angleJitter
+  const angleRad = angleDeg * Math.PI / 180
+  const r = zone.rMin + seededRand(i * 13 + 7) * (zone.rMax - zone.rMin)
+  // Convert polar → the 0..100 coordinate space used by radar renderer
+  return {
+    x: 50 + Math.cos(angleRad) * r * 48,
+    y: 50 + Math.sin(angleRad) * r * 48,
+  }
+})
+
+// For display, show only a curated subset of blips at once (feels real, not overwhelming)
+// Rotate which birds show based on current minute to feel alive
+function getVisibleBlipIndices(birds, count = 16) {
+  const now = Math.floor(Date.now() / 45000)  // rotates every 45s
+  const offset = (now * 7) % birds.length
+  const result = []
+  for (let i = 0; i < Math.min(count, birds.length); i++) {
+    result.push((offset + i * 3) % birds.length)
+  }
+  return result
+}
 
 // ── Time-ago helper ───────────────────────────────────────────────────────────
 function timeAgo(obsDt) {
@@ -59,10 +100,19 @@ export default function RadarScreen({ capturedBirds, score, userLocation, eBirdA
   const [sweepAngle, setSweepAngle] = useState(0)
   const [pingBlips,  setPingBlips]  = useState([])
   const [time,       setTime]       = useState(() => new Date())
+  const [titlePhase, setTitlePhase] = useState('banner') // 'banner' → 'compact'
   const animRef = useRef(null)
 
-  // Use real nearby birds for blip positions when available, else full list
-  const blipBirds = (eBirdActive && nearbyBirds.length > 0) ? nearbyBirds : BIRDS
+  // Use real nearby birds for blip positions when available, else curated subset
+  const allBlipBirds = (eBirdActive && nearbyBirds.length > 0) ? nearbyBirds : BIRDS
+  const visibleIndices = getVisibleBlipIndices(allBlipBirds, eBirdActive ? allBlipBirds.length : 16)
+  const blipBirds = allBlipBirds  // keep full list for ping selection
+
+  // Title banner: show full-width banner for 2.8s then shrink to compact
+  useEffect(() => {
+    const t = setTimeout(() => setTitlePhase('compact'), 2800)
+    return () => clearTimeout(t)
+  }, [])
 
   // Radar sweep
   useEffect(() => {
@@ -96,46 +146,91 @@ export default function RadarScreen({ capturedBirds, score, userLocation, eBirdA
   return (
     <div className="screen animate-fadeIn" style={{ background: 'var(--bg-deep)' }}>
 
-      {/* ── Top bar ──────────────────────────────────────────────────────── */}
-      <div style={{
-        padding: '14px 20px 10px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        flexShrink: 0,
-      }}>
-        <div>
+      {/* ── Title banner (Nintendo style: full-width drop → compact) ────────── */}
+      {titlePhase === 'banner' ? (
+        <div style={{
+          width: '100%', padding: '0', overflow: 'hidden', flexShrink: 0,
+          animation: 'titleDrop 0.55s cubic-bezier(0.22,1,0.36,1) forwards',
+        }}>
           <div style={{
-            fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700,
-            color: 'var(--accent-green)', letterSpacing: '-0.5px',
+            width: '100%', background: 'linear-gradient(180deg, #0a1e0c 0%, #061408 100%)',
+            borderBottom: '3px solid var(--accent-green)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            padding: '14px 16px 12px', gap: 4,
           }}>
-            Bird. Here. Now.
-          </div>
-          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 1 }}>
-            {dateStr} · {timeStr} · {season.charAt(0).toUpperCase() + season.slice(1)}
-            {eBirdActive && (
-              <span style={{ color: 'var(--accent-amber)', marginLeft: 6, fontWeight: 600 }}>
-                · eBird live
-              </span>
-            )}
+            {/* Main title — fills full width */}
+            <div style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(28px, 8vw, 44px)',
+              fontWeight: 900,
+              letterSpacing: '-1px',
+              color: 'var(--accent-green)',
+              textShadow: '0 0 24px rgba(0,255,136,0.5), 0 0 8px rgba(0,255,136,0.3)',
+              lineHeight: 1.1,
+              textAlign: 'center',
+              width: '100%',
+            }}>
+              BIRD. HERE. NOW.
+            </div>
+            {/* Sub-tagline */}
+            <div style={{
+              fontSize: 11, letterSpacing: 4, color: 'rgba(0,255,136,0.55)',
+              fontFamily: 'monospace', fontWeight: 600, textTransform: 'uppercase',
+            }}>
+              Real Birding · Virtual Capture
+            </div>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            background: 'rgba(255,215,0,0.12)', border: '1px solid rgba(255,215,0,0.25)',
-            borderRadius: 20, padding: '5px 12px', fontSize: 13,
-            fontWeight: 700, color: 'var(--accent-gold)',
-          }}>
-            ★ {score}
+      ) : (
+        /* ── Compact top bar ──────────────────────────────────────────────── */
+        <div style={{
+          padding: '10px 16px 8px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          flexShrink: 0, width: '100%',
+          borderBottom: '1px solid rgba(0,255,136,0.08)',
+          animation: 'titleCompact 0.4s ease-out forwards',
+        }}>
+          <div>
+            {/* Title spans full width but compact */}
+            <div style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(15px, 4vw, 20px)',
+              fontWeight: 800,
+              color: 'var(--accent-green)',
+              letterSpacing: '-0.3px',
+              textShadow: '0 0 10px rgba(0,255,136,0.3)',
+              whiteSpace: 'nowrap',
+            }}>
+              BIRD. HERE. NOW.
+            </div>
+            <div style={{ fontSize: 10, color: 'var(--text-dim)', marginTop: 1 }}>
+              {dateStr} · {timeStr} · {season.charAt(0).toUpperCase() + season.slice(1)}
+              {eBirdActive && (
+                <span style={{ color: 'var(--accent-amber)', marginLeft: 6, fontWeight: 600 }}>
+                  · eBird live
+                </span>
+              )}
+            </div>
           </div>
-          <button className="btn btn-outline btn-sm" onClick={onViewAviary}
-            style={{ padding: '7px 14px', fontSize: 13 }}>
-            🪶 {capturedBirds.length}
-          </button>
-          <button className="btn btn-outline btn-sm" onClick={onViewLeaderboard}
-            style={{ padding: '7px 12px', fontSize: 13 }}>
-            🏆
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{
+              background: 'rgba(255,215,0,0.12)', border: '1px solid rgba(255,215,0,0.25)',
+              borderRadius: 20, padding: '4px 10px', fontSize: 12,
+              fontWeight: 700, color: 'var(--accent-gold)',
+            }}>
+              ★ {score}
+            </div>
+            <button className="btn btn-outline btn-sm" onClick={onViewAviary}
+              style={{ padding: '6px 12px', fontSize: 12 }}>
+              🪶 {capturedBirds.length}
+            </button>
+            <button className="btn btn-outline btn-sm" onClick={onViewLeaderboard}
+              style={{ padding: '6px 10px', fontSize: 12 }}>
+              🏆
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── Radar ────────────────────────────────────────────────────────── */}
       <div style={{
@@ -185,18 +280,26 @@ export default function RadarScreen({ capturedBirds, score, userLocation, eBirdA
               <line x1="130" y1="130" x2="130" y2="6" stroke="#00ff88" strokeWidth="1.5" opacity="0.8"/>
             </g>
 
-            {/* Bird blips — real nearby or fallback */}
-            {blipBirds.map((bird, i) => {
-              const pos = BLIP_POS[i % BLIP_POS.length]
+            {/* Bird blips — curated organic subset, not all birds at once */}
+            {visibleIndices.map((birdIdx) => {
+              const bird = allBlipBirds[birdIdx]
+              if (!bird) return null
+              const pos = BLIP_POS[birdIdx % BLIP_POS.length]
               const cx = (pos.x / 100) * 250 + 5
               const cy = (pos.y / 100) * 250 + 5
               const captured = capturedBirds.includes(bird.id)
               const color = captured ? '#ffd700' : (bird.appearance?.uiColor || '#00ff88')
+              // Closer birds (inner ring) have slightly larger blips
+              const distFromCenter = Math.sqrt((pos.x-50)**2 + (pos.y-50)**2) / 50
+              const r = captured ? 4.5 : (distFromCenter < 0.4 ? 3.5 : 2.5)
               return (
                 <g key={bird.id}>
-                  <circle cx={cx} cy={cy} r={captured ? 4 : 3} fill={color} opacity={0.9}/>
-                  {bird.rarity !== 'common' && (
-                    <circle cx={cx} cy={cy} r={6} fill="none" stroke={color} strokeWidth="1" opacity="0.5"/>
+                  <circle cx={cx} cy={cy} r={r} fill={color} opacity={captured ? 1 : 0.82}/>
+                  {(bird.rarity === 'rare' || bird.rarity === 'very_rare') && (
+                    <circle cx={cx} cy={cy} r={r + 3.5} fill="none" stroke={color} strokeWidth="1" opacity="0.45"/>
+                  )}
+                  {captured && (
+                    <circle cx={cx} cy={cy} r={r + 4} fill="none" stroke="#ffd700" strokeWidth="1.2" opacity="0.5"/>
                   )}
                 </g>
               )
