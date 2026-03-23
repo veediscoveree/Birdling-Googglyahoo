@@ -1133,7 +1133,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     <div style={{
       width: BIN_W, height: BIN_H,
       position: 'relative',
-      background: '#020804',
+      background: '#020810',
       borderRadius: 4,
     }}>
       {/* ── Habitat background — clip changes with phase ── */}
@@ -1447,7 +1447,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
 
   return (
     <div className="screen" style={{
-      background: '#050a06',
+      background: '#050a18',
       display: 'flex',
       flexDirection: 'column',
       alignItems: isLandscape ? 'stretch' : 'center',

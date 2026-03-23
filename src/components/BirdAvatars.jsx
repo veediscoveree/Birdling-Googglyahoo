@@ -3032,10 +3032,18 @@ export function CoopersHawkAvatar({ size = 120, animated = false, style = {} }) 
           <circle cx="39" cy="58" r="5.5" fill="#DD4400"/>
           <circle cx="39" cy="58" r="3.5" fill="#220800"/>
           <circle cx="38" cy="57" r="1.5" fill="white" opacity="0.6"/>
-          {/* HOOKED RAPTOR BILL — straight upper mandible + downward hook at tip */}
-          <path d="M 25 58 L 13 56 L 25 54 Z" fill="#D0C080"/>
-          <path d="M 13 56 C 11 56 10 58 12 60" stroke="#B8A050" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-          <ellipse cx="19" cy="56" rx="4" ry="2.2" fill="#D8C850" opacity="0.65"/>
+          {/* ── ACCIPITER BILL — built structure by structure ── */}
+          {/* Cere: waxy yellow-green patch at bill base (sits on face, not floating) */}
+          <ellipse cx="26" cy="56" rx="4" ry="3" fill="#98B830" opacity="0.95"/>
+          {/* Upper mandible: culmen arches from cere to tip, HOOKS DOWN — closed filled shape */}
+          <path d="M 28 54 C 21 52 14 53 11 56 C 10 59 12 62 15 62
+                   C 14 60 13 58 14 57 C 17 56 23 55 28 56 Z" fill="#CEC060"/>
+          {/* Lower mandible: shorter wedge, meets hook at tip — closed filled shape */}
+          <path d="M 28 58 C 22 58 16 58 14 60 C 14 63 16 63 16 62 L 28 61 Z" fill="#BCB050"/>
+          {/* Tomia: the cutting edge where mandibles meet — subtle gape line */}
+          <path d="M 28 57 C 21 57 15 58 12 60" stroke="#7A6020" strokeWidth="0.9" fill="none" opacity="0.5"/>
+          {/* Nostril slit in upper mandible near base */}
+          <path d="M 24 54 L 19 55" stroke="#7A6820" strokeWidth="1" fill="none" opacity="0.45"/>
         </g>
 
         {/* Long yellow legs */}
