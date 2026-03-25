@@ -1,0 +1,17 @@
+{
+  "name": "vdiscovery-processor",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node src/worker.js",
+    "dev":   "node --watch src/worker.js"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.12.0",
+    "bullmq":                 "^5.1.5",
+    "franc":                  "^6.2.0",
+    "minio":                  "^7.1.3",
+    "node-fetch":             "^3.3.2",
+    "pg":                     "^8.11.3"
+  }
+}
