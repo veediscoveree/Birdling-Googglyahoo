@@ -2982,149 +2982,318 @@ export function WoodDuckAvatar({ size = 120, animated = false, style = {} }) {
 // ── Hawks ─────────────────────────────────────────────────────────────────────
 export function CoopersHawkAvatar({ size = 120, animated = false, style = {} }) {
   const [frame, setFrame] = useState(0)
-  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 8), 600); return () => clearInterval(id) }, [animated])
-  const headTurn = animated ? [0,3,7,10,7,3,0,-3][frame] : 0
+  useEffect(() => {
+    if (!animated) return
+    const id = setInterval(() => setFrame(f => (f + 1) % 12), 400)
+    return () => clearInterval(id)
+  }, [animated])
+  // Low pursuit flap-glide: subtle rock through glide, brief power stroke
+  const wingY   = animated ? [0,-2,-4,-6,-4,-2,0,3,5,3,1,0][frame] : 0
+  const bodyDip = animated ? [0,0,1,1,0,0,-1,-1,-1,0,0,0][frame] : 0
+  const tailSpr = animated ? [0,0,0,1,1,0,0,2,2,1,0,0][frame] : 0
+
   return (
-    <svg viewBox="0 0 120 130" width={size} height={size} style={style} aria-label="Cooper's Hawk">
+    <svg viewBox="0 0 160 110" width={size} height={size} style={style} aria-label="Cooper's Hawk — low pursuit soar">
       <defs>
-        <clipPath id="coopBodyClip">
-          <path d="M 32 80 C 38 68 58 62 78 65 C 90 70 92 82 84 91 C 72 98 40 98 32 88 Z"/>
+        <clipPath id="coopSoarBody">
+          <ellipse cx="84" cy="57" rx="24" ry="11"/>
+        </clipPath>
+        <clipPath id="coopSoarLWing">
+          <path d="M 80 55 C 58 42 28 30 8 44 L 8 58 C 28 52 58 50 80 57 Z"/>
+        </clipPath>
+        <clipPath id="coopSoarRWing">
+          <path d="M 88 55 C 110 42 140 30 152 44 L 152 58 C 132 52 110 50 88 57 Z"/>
         </clipPath>
       </defs>
-      <g>
-        {/* ROUNDED TAIL — key ID mark that separates Cooper's from Sharp-shinned */}
-        <path d="M 68 88 C 80 88 100 90 106 102 C 94 101 78 96 66 90" fill="#8A8A98"/>
-        <path d="M 66 90 C 72 103 72 117 68 125 C 63 117 60 103 60 92" fill="#8A8A98"/>
-        {/* Rounded tail tip — curves gently, NOT square */}
-        <path d="M 60 125 C 64 129 74 128 78 125 C 84 118 90 110 100 106" stroke="#9898A8" strokeWidth="3" fill="none" strokeLinecap="round"/>
-        {/* Tail bands */}
-        <path d="M 61 104 C 76 104 95 105 105 106" stroke="#3A3A48" strokeWidth="2.5" fill="none" opacity="0.6"/>
-        <path d="M 61 112 C 75 112 93 113 103 114" stroke="#3A3A48" strokeWidth="2.2" fill="none" opacity="0.6"/>
-        <path d="M 61 120 C 74 120 91 121 100 122" stroke="#3A3A48" strokeWidth="2" fill="none" opacity="0.5"/>
 
-        {/* Body — organic shape, warm white underparts */}
-        <path d="M 32 80 C 38 68 58 62 78 65 C 90 70 92 82 84 91 C 72 98 40 98 32 88 Z" fill="#F0E8D8"/>
+      <g transform={`translate(0,${bodyDip})`}>
 
-        {/* Rufous barring on breast — clipped to body */}
-        <g clipPath="url(#coopBodyClip)">
-          {[74,79,84,89,94].map((y, i) => (
+        {/* TAIL — Cooper's ROUNDED tail fan, left side (bird faces right) */}
+        <g transform={`translate(0,${tailSpr * 0.4})`}>
+          <path d="M 63 53 C 46 46 24 46 13 53 C 19 60 40 67 61 64 Z" fill="#8A8898"/>
+          <path d="M 61 53 C 47 48 27 48 15 53" fill="#9898A8" opacity="0.6"/>
+          {/* Rounded tip — gentle curve, NOT square, the #1 Cooper's field mark */}
+          <path d="M 13 53 C 9 56 9 61 13 64 C 20 68 40 69 59 65"
+                stroke="#8A8898" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+          {/* 3 dark tail bands */}
+          <path d="M 15 53 C 30 50 47 49 60 52" stroke="#2A2A3A" strokeWidth="2.3" fill="none" opacity="0.7"/>
+          <path d="M 13 57 C 28 55 46 54 61 56" stroke="#2A2A3A" strokeWidth="2.0" fill="none" opacity="0.65"/>
+          <path d="M 13 61 C 28 59 46 58 61 60" stroke="#2A2A3A" strokeWidth="1.8" fill="none" opacity="0.6"/>
+        </g>
+
+        {/* LEFT WING — bent accipiter shape, carpal joint visible */}
+        <g transform={`translate(0,${wingY})`}>
+          {/* Inner wing / secondaries — blue-gray, broadest panel */}
+          <path d="M 79 53 C 64 42 46 33 34 31"
+                stroke="#6A7A9A" strokeWidth="24" fill="none" strokeLinecap="round"/>
+          {/* Outer wing / primaries — darker blue, sweeps to pointed tip */}
+          <path d="M 34 31 C 20 37 10 44 7 50"
+                stroke="#5A6888" strokeWidth="15" fill="none" strokeLinecap="round"/>
+          {/* Underwing barring on secondary coverts */}
+          <g clipPath="url(#coopSoarLWing)">
+            {[0,1,2,3].map(i => (
+              <path key={i}
+                d={`M ${16+i*15} ${47-i} C ${26+i*11} ${41-i} ${42+i*7} ${36-i} ${54+i*4} ${35-i}`}
+                stroke="#C07838" strokeWidth="3.5" fill="none" opacity="0.52" strokeLinecap="round"/>
+            ))}
+          </g>
+          {/* Individual primary feather tips — 6 fingers at wing tip */}
+          {[0,1,2,3,4,5].map(i => (
+            <path key={i}
+              d={`M ${7+i*1.2} ${50+i*2.3} L ${5+i*1.0} ${57+i*2.6}`}
+              stroke="#3A4858" strokeWidth="3.2" strokeLinecap="round"/>
+          ))}
+          {/* Wing covert panel — lighter mid-wing highlight */}
+          <path d="M 79 53 C 62 44 46 35 34 33"
+                stroke="#7A8AAA" strokeWidth="9" fill="none" strokeLinecap="round" opacity="0.55"/>
+          {/* Covert bar rows — subtle horizontal pattern */}
+          <path d="M 74 54 C 59 45 44 37 34 35" stroke="#BCA870" strokeWidth="1.8" fill="none" opacity="0.38" strokeDasharray="4 7"/>
+          <path d="M 70 56 C 56 48 42 40 33 38" stroke="#BCA870" strokeWidth="1.6" fill="none" opacity="0.32" strokeDasharray="4 7"/>
+        </g>
+
+        {/* RIGHT WING — mirror of left */}
+        <g transform={`translate(0,${wingY})`}>
+          <path d="M 89 53 C 104 42 122 33 134 31"
+                stroke="#6A7A9A" strokeWidth="24" fill="none" strokeLinecap="round"/>
+          <path d="M 134 31 C 148 37 156 44 159 50"
+                stroke="#5A6888" strokeWidth="15" fill="none" strokeLinecap="round"/>
+          <g clipPath="url(#coopSoarRWing)">
+            {[0,1,2,3].map(i => (
+              <path key={i}
+                d={`M ${152-i*15} ${47-i} C ${142-i*11} ${41-i} ${126-i*7} ${36-i} ${114-i*4} ${35-i}`}
+                stroke="#C07838" strokeWidth="3.5" fill="none" opacity="0.52" strokeLinecap="round"/>
+            ))}
+          </g>
+          {[0,1,2,3,4,5].map(i => (
+            <path key={i}
+              d={`M ${159-i*1.2} ${50+i*2.3} L ${161-i*1.0} ${57+i*2.6}`}
+              stroke="#3A4858" strokeWidth="3.2" strokeLinecap="round"/>
+          ))}
+          <path d="M 89 53 C 106 44 122 35 134 33"
+                stroke="#7A8AAA" strokeWidth="9" fill="none" strokeLinecap="round" opacity="0.55"/>
+          <path d="M 94 54 C 109 45 124 37 134 35" stroke="#BCA870" strokeWidth="1.8" fill="none" opacity="0.38" strokeDasharray="4 7"/>
+          <path d="M 98 56 C 112 48 126 40 135 38" stroke="#BCA870" strokeWidth="1.6" fill="none" opacity="0.32" strokeDasharray="4 7"/>
+        </g>
+
+        {/* BODY — warm white underparts with rufous barring */}
+        <ellipse cx="84" cy="57" rx="24" ry="11" fill="#F0E8D8"/>
+        <g clipPath="url(#coopSoarBody)">
+          {[50,54,58,62,66].map((y,i) => (
             <path key={y}
-              d={`M ${32+i} ${y} C ${44+i} ${y-1} ${60} ${y} ${82-i} ${y}`}
+              d={`M ${62+i} ${y} C ${72} ${y-1} ${88} ${y} ${106-i} ${y}`}
               stroke="#C06828" strokeWidth="2.8" fill="none" strokeLinecap="round" opacity="0.72"/>
           ))}
         </g>
+        {/* Blue-gray mantle/back visible between wings */}
+        <ellipse cx="84" cy="50" rx="18" ry="7" fill="#6A7A9A"/>
 
-        {/* Blue-gray back — warmer and richer than Sharp-shinned */}
-        <path d="M 30 80 C 34 66 52 60 72 62 C 88 65 92 76 88 84 C 76 90 46 90 32 85 Z" fill="#6A7A9A"/>
-        {/* Wing with feather edge detail */}
-        <path d="M 40 68 C 56 60 82 62 88 74 C 82 88 58 90 42 86 Z" fill="#5C6A88"/>
-        <path d="M 44 68 C 60 61 82 63 88 72" stroke="#4A5878" strokeWidth="1.8" fill="none" opacity="0.5"/>
-        <path d="M 43 76 C 58 70 80 72 87 78" stroke="#4A5878" strokeWidth="1.4" fill="none" opacity="0.4"/>
+        {/* === TALONS EXTENDED FORWARD — reaching for the strike === */}
+        {/* Left foot — tarsus angles forward in pursuit reach */}
+        <path d="M 78 67 C 80 74 84 80 86 87" stroke="#D0B060" strokeWidth="2.5" strokeLinecap="round"/>
+        {/* Four spread toes */}
+        <path d="M 86 87 C 82 91 76 92 73 91" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 86 87 C 84 93 80 97 79 99" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 86 87 C 90 91 94 93 96 93" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 86 87 C 87 82 91 79 94 79" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        {/* Long curved talon hooks — black, sharp */}
+        <path d="M 73 91 C 70 94 70 97 72 98" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 79 99 C 78 102 76 104 75 103" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 96 93 C 98 96 98 99 96 100" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 94 79 C 97 77 99 78 99 81" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        {/* Hallux — the long rear killing talon, most powerful */}
+        <path d="M 86 87 C 88 84 86 81 83 80 C 80 79 78 82 80 85" stroke="#111010" strokeWidth="2.3" fill="none" strokeLinecap="round"/>
 
-        {/* HEAD — organic path, larger and rounder than Sharp-shinned */}
-        <g transform={`rotate(${headTurn}, 42, 59)`}>
-          <path d="M 25 58 C 26 43 37 35 50 37 C 62 39 68 50 64 62 C 58 70 35 70 27 62 C 25 60 25 59 25 58 Z" fill="#8A9AB0"/>
-          {/* Dark blackish cap — strong contrast with pale nape (key Cooper's mark) */}
-          <path d="M 26 54 C 28 40 38 34 52 36 C 60 38 63 47 58 54 C 50 51 34 52 26 55 Z" fill="#2A3040"/>
-          {/* Pale nape — lighter than cap, diagnostic Cooper's feature */}
-          <path d="M 58 54 C 68 54 76 60 75 68 C 68 65 60 58 58 55 Z" fill="#B0BCCC"/>
-          {/* RED-ORANGE EYE — adult Cooper's has fiery orange-red eye */}
-          <circle cx="39" cy="58" r="5.5" fill="#DD4400"/>
-          <circle cx="39" cy="58" r="3.5" fill="#220800"/>
-          <circle cx="38" cy="57" r="1.5" fill="white" opacity="0.6"/>
-          {/* ── ACCIPITER BILL — built structure by structure ── */}
-          {/* Cere: waxy yellow-green patch at bill base (sits on face, not floating) */}
-          <ellipse cx="26" cy="56" rx="4" ry="3" fill="#98B830" opacity="0.95"/>
-          {/* Upper mandible: culmen arches from cere to tip, HOOKS DOWN — closed filled shape */}
-          <path d="M 28 54 C 21 52 14 53 11 56 C 10 59 12 62 15 62
-                   C 14 60 13 58 14 57 C 17 56 23 55 28 56 Z" fill="#CEC060"/>
-          {/* Lower mandible: shorter wedge, meets hook at tip — closed filled shape */}
-          <path d="M 28 58 C 22 58 16 58 14 60 C 14 63 16 63 16 62 L 28 61 Z" fill="#BCB050"/>
-          {/* Tomia: the cutting edge where mandibles meet — subtle gape line */}
-          <path d="M 28 57 C 21 57 15 58 12 60" stroke="#7A6020" strokeWidth="0.9" fill="none" opacity="0.5"/>
-          {/* Nostril slit in upper mandible near base */}
-          <path d="M 24 54 L 19 55" stroke="#7A6820" strokeWidth="1" fill="none" opacity="0.45"/>
-        </g>
+        {/* Right foot */}
+        <path d="M 90 67 C 93 74 97 80 99 87" stroke="#D0B060" strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M 99 87 C 95 91 89 92 86 91" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 99 87 C 97 93 93 97 92 99" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 99 87 C 103 91 107 93 109 93" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 99 87 C 100 82 104 79 107 79" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 86 91 C 83 94 83 97 85 98" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 92 99 C 91 102 89 104 88 103" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 109 93 C 111 96 111 99 109 100" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 107 79 C 110 77 112 78 112 81" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 99 87 C 101 84 99 81 96 80 C 93 79 91 82 93 85" stroke="#111010" strokeWidth="2.3" fill="none" strokeLinecap="round"/>
 
-        {/* Long yellow legs */}
-        <path d="M 48 96 L 44 112" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
-        <path d="M 64 96 L 68 112" stroke="#D0B060" strokeWidth="2.2" strokeLinecap="round"/>
-        <path d="M 44 112 L 37 115 M 44 112 L 44 117 M 44 112 L 49 115" stroke="#D0B060" strokeWidth="1.6" strokeLinecap="round"/>
-        <path d="M 68 112 L 61 115 M 68 112 L 68 117 M 68 112 L 73 115" stroke="#D0B060" strokeWidth="1.6" strokeLinecap="round"/>
+        {/* HEAD — large, rounded, alert forward gaze */}
+        <path d="M 97 44 C 98 32 108 26 118 30 C 128 34 130 46 124 53 C 116 58 98 56 97 48 Z" fill="#8A9AB0"/>
+        {/* Dark blackish cap — strong contrast with pale nape */}
+        <path d="M 99 42 C 100 30 110 24 120 28 C 126 31 127 40 120 43 C 112 40 102 40 99 42 Z" fill="#2A3040"/>
+        {/* Pale nape patch — diagnostic Cooper's Hawk feature */}
+        <path d="M 120 40 C 130 40 134 46 132 54 C 126 50 118 44 120 42 Z" fill="#B0BCCC"/>
+        {/* RED-ORANGE EYE — fiery, adult Cooper's */}
+        <circle cx="110" cy="45" r="5.5" fill="#DD4400"/>
+        <circle cx="110" cy="45" r="3.5" fill="#220800"/>
+        <circle cx="109" cy="44" r="1.5" fill="white" opacity="0.6"/>
+        {/* Cere — waxy yellow-green at bill base */}
+        <ellipse cx="99" cy="43" rx="4" ry="3" fill="#98B830" opacity="0.95"/>
+        {/* Upper mandible — arched culmen, hooked tip */}
+        <path d="M 101 41 C 94 39 87 40 84 43 C 83 46 85 49 88 49
+                 C 87 47 86 45 87 44 C 90 43 96 42 101 43 Z" fill="#CEC060"/>
+        {/* Lower mandible */}
+        <path d="M 101 45 C 96 45 89 45 87 47 C 87 50 89 50 89 49 L 101 48 Z" fill="#BCB050"/>
+        {/* Tomia / gape line */}
+        <path d="M 101 43.5 C 94 44 88 45 85 47" stroke="#7A6020" strokeWidth="0.9" fill="none" opacity="0.5"/>
+        {/* Nostril slit */}
+        <path d="M 97 41 L 92 42" stroke="#7A6820" strokeWidth="1" fill="none" opacity="0.45"/>
       </g>
     </svg>
   )
 }
 
 export function SharpShinnedHawkAvatar({ size = 120, animated = false, style = {} }) {
-  // Head-swivel + alert posture — accipiter scanning for prey
   const [frame, setFrame] = useState(0)
-  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 8), 620); return () => clearInterval(id) }, [animated])
-  const headTurn = animated ? [0, 3, 7, 10, 7, 3, 0, -4][frame] : 0
+  useEffect(() => {
+    if (!animated) return
+    const id = setInterval(() => setFrame(f => (f + 1) % 12), 380)
+    return () => clearInterval(id)
+  }, [animated])
+  // Pursuit flap-glide — SSH is faster, more flicky than Cooper's
+  const wingY   = animated ? [0,-3,-5,-7,-5,-3,0,4,6,4,1,0][frame] : 0
+  const bodyDip = animated ? [0,0,1,1,0,0,-1,-2,-1,0,0,0][frame] : 0
+  const tailSpr = animated ? [0,0,0,1,2,1,0,2,3,2,1,0][frame] : 0
+
   return (
-    <svg viewBox="0 0 120 132" width={size} height={size} style={style} aria-label="Sharp-shinned Hawk">
+    <svg viewBox="0 0 160 110" width={size} height={size} style={style} aria-label="Sharp-shinned Hawk — low pursuit soar">
       <defs>
-        <clipPath id="sshBodyClip"><ellipse cx="55" cy="86" rx="21" ry="16"/></clipPath>
+        <clipPath id="sshSoarBody">
+          <ellipse cx="82" cy="57" rx="22" ry="10"/>
+        </clipPath>
+        <clipPath id="sshSoarLWing">
+          <path d="M 78 55 C 56 42 26 30 6 44 L 6 58 C 26 52 56 50 78 57 Z"/>
+        </clipPath>
+        <clipPath id="sshSoarRWing">
+          <path d="M 86 55 C 108 42 138 30 154 44 L 154 58 C 134 52 108 50 86 57 Z"/>
+        </clipPath>
       </defs>
-      <g>
-        {/* TAIL — long, banded, with the distinctive SQUARE tip (vs Cooper's rounded) */}
-        <path d="M 66 88 C 79 88 98 90 104 102 C 93 102 77 97 64 91" fill="#7A8090"/>
-        <path d="M 64 90 C 70 103 70 116 67 123 C 63 114 61 101 61 92" fill="#7A8090"/>
-        {/* SQUARE tail tip — the #1 field mark separating it from Cooper's Hawk */}
-        <path d="M 61 123 L 104 123" stroke="#8090A0" strokeWidth="3.5" strokeLinecap="square"/>
-        {/* Dark tail bands */}
-        <path d="M 62 103 C 77 103 96 104 104 105" stroke="#3A4050" strokeWidth="2.5" fill="none" opacity="0.6"/>
-        <path d="M 62 111 C 76 111 94 112 102 113" stroke="#3A4050" strokeWidth="2.2" fill="none" opacity="0.6"/>
-        <path d="M 62 119 C 75 119 93 120 102 121" stroke="#3A4050" strokeWidth="2" fill="none" opacity="0.6"/>
 
-        {/* Body — white with warm rufous wash */}
-        <ellipse cx="54" cy="86" rx="22" ry="16" fill="#F2EAE0"/>
+      <g transform={`translate(0,${bodyDip})`}>
 
-        {/* RUFOUS BARRING on breast — horizontal warm orange bars, thinner and more feather-like */}
-        <g clipPath="url(#sshBodyClip)">
-          {[77, 82, 87, 92, 97].map((y, i) => (
+        {/* TAIL — SQUARE-TIPPED tail fan (the #1 field mark vs Cooper's rounded) */}
+        <g transform={`translate(0,${tailSpr * 0.35})`}>
+          <path d="M 62 53 C 44 46 22 46 11 53 C 17 60 38 67 60 64 Z" fill="#7A8090"/>
+          <path d="M 60 53 C 45 48 25 48 13 53" fill="#9098A8" opacity="0.6"/>
+          {/* SQUARE tail tip — straight horizontal line, NOT curved — definitive SSH mark */}
+          <line x1="11" y1="64" x2="60" y2="64" stroke="#8090A0" strokeWidth="4" strokeLinecap="square"/>
+          {/* 3 dark tail bands */}
+          <path d="M 13 53 C 28 50 46 49 59 52" stroke="#28303A" strokeWidth="2.3" fill="none" opacity="0.7"/>
+          <path d="M 11 57 C 26 55 44 54 60 56" stroke="#28303A" strokeWidth="2.0" fill="none" opacity="0.65"/>
+          <path d="M 11 61 C 26 59 44 58 60 60" stroke="#28303A" strokeWidth="1.8" fill="none" opacity="0.6"/>
+        </g>
+
+        {/* LEFT WING — slim accipiter wing, bent at carpal */}
+        <g transform={`translate(0,${wingY})`}>
+          {/* Inner wing / secondaries — slate blue-gray, somewhat narrow */}
+          <path d="M 77 53 C 62 42 44 33 32 31"
+                stroke="#6878A0" strokeWidth="22" fill="none" strokeLinecap="round"/>
+          {/* Outer wing / primaries — narrower, pointed tip, darker */}
+          <path d="M 32 31 C 18 37 8 43 5 49"
+                stroke="#5A6890" strokeWidth="13" fill="none" strokeLinecap="round"/>
+          {/* Underwing barring — SSH barring is more rufous, slightly denser */}
+          <g clipPath="url(#sshSoarLWing)">
+            {[0,1,2,3].map(i => (
+              <path key={i}
+                d={`M ${14+i*15} ${46-i} C ${24+i*11} ${40-i} ${40+i*7} ${35-i} ${52+i*4} ${34-i}`}
+                stroke="#B86830" strokeWidth="3.5" fill="none" opacity="0.56" strokeLinecap="round"/>
+            ))}
+          </g>
+          {/* Primary tips — 6 distinct fingers */}
+          {[0,1,2,3,4,5].map(i => (
+            <path key={i}
+              d={`M ${5+i*1.1} ${49+i*2.2} L ${3+i*0.9} ${56+i*2.5}`}
+              stroke="#38485A" strokeWidth="3" strokeLinecap="round"/>
+          ))}
+          {/* Wing covert panel */}
+          <path d="M 77 53 C 60 44 44 35 32 33"
+                stroke="#7888B0" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.5"/>
+          <path d="M 72 55 C 57 46 42 38 32 36" stroke="#B8A068" strokeWidth="1.7" fill="none" opacity="0.36" strokeDasharray="4 7"/>
+          <path d="M 68 57 C 54 49 40 41 31 39" stroke="#B8A068" strokeWidth="1.5" fill="none" opacity="0.3" strokeDasharray="4 7"/>
+        </g>
+
+        {/* RIGHT WING — mirror */}
+        <g transform={`translate(0,${wingY})`}>
+          <path d="M 87 53 C 102 42 120 33 132 31"
+                stroke="#6878A0" strokeWidth="22" fill="none" strokeLinecap="round"/>
+          <path d="M 132 31 C 146 37 154 43 157 49"
+                stroke="#5A6890" strokeWidth="13" fill="none" strokeLinecap="round"/>
+          <g clipPath="url(#sshSoarRWing)">
+            {[0,1,2,3].map(i => (
+              <path key={i}
+                d={`M ${150-i*15} ${46-i} C ${140-i*11} ${40-i} ${124-i*7} ${35-i} ${112-i*4} ${34-i}`}
+                stroke="#B86830" strokeWidth="3.5" fill="none" opacity="0.56" strokeLinecap="round"/>
+            ))}
+          </g>
+          {[0,1,2,3,4,5].map(i => (
+            <path key={i}
+              d={`M ${157-i*1.1} ${49+i*2.2} L ${159-i*0.9} ${56+i*2.5}`}
+              stroke="#38485A" strokeWidth="3" strokeLinecap="round"/>
+          ))}
+          <path d="M 87 53 C 104 44 120 35 132 33"
+                stroke="#7888B0" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.5"/>
+          <path d="M 92 55 C 107 46 122 38 132 36" stroke="#B8A068" strokeWidth="1.7" fill="none" opacity="0.36" strokeDasharray="4 7"/>
+          <path d="M 96 57 C 110 49 124 41 133 39" stroke="#B8A068" strokeWidth="1.5" fill="none" opacity="0.3" strokeDasharray="4 7"/>
+        </g>
+
+        {/* BODY — white underparts, rufous-barred breast */}
+        <ellipse cx="82" cy="57" rx="22" ry="10" fill="#F2EAE0"/>
+        <g clipPath="url(#sshSoarBody)">
+          {[50,54,58,62,66].map((y,i) => (
             <path key={y}
-              d={`M ${34+i} ${y} C ${44+i} ${y-1} ${56} ${y} ${74-i} ${y}`}
-              stroke="#B86830" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.78"/>
+              d={`M ${62+i} ${y} C ${70} ${y-1} ${86} ${y} ${102-i} ${y}`}
+              stroke="#B86830" strokeWidth="2.8" fill="none" strokeLinecap="round" opacity="0.76"/>
           ))}
         </g>
+        {/* Slate-blue back/mantle between wings */}
+        <ellipse cx="82" cy="50" rx="16" ry="6" fill="#6878A0"/>
 
-        {/* Blue-gray back — rich slate-blue, not gray */}
-        <path d="M 33 81 C 36 68 54 61 72 63 C 86 66 90 75 86 83 C 76 89 50 89 35 85 Z" fill="#6878A0"/>
+        {/* === TALONS EXTENDED — long slender legs reaching forward === */}
+        {/* SSH talons are proportionally large relative to body size */}
+        {/* Left foot */}
+        <path d="M 76 66 C 78 73 82 79 84 86" stroke="#C8A030" strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M 84 86 C 80 90 74 91 71 90" stroke="#C8A030" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 84 86 C 82 93 78 97 77 99" stroke="#C8A030" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 84 86 C 88 90 92 92 94 92" stroke="#C8A030" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 84 86 C 85 81 89 78 92 78" stroke="#C8A030" strokeWidth="2.2" strokeLinecap="round"/>
+        {/* Long curved talon hooks */}
+        <path d="M 71 90 C 68 93 68 97 70 98" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 77 99 C 76 102 74 104 73 103" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 94 92 C 96 95 96 98 94 99" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 92 78 C 95 76 97 77 97 80" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        {/* Hallux — rear killing talon */}
+        <path d="M 84 86 C 86 83 84 80 81 79 C 78 78 76 81 78 84" stroke="#111010" strokeWidth="2.3" fill="none" strokeLinecap="round"/>
 
-        {/* Wing — slightly darker blue-gray with feather edge detail */}
-        <path d="M 43 69 C 58 62 82 63 88 75 C 82 88 60 90 44 86 Z" fill="#5A6890"/>
-        <path d="M 47 69 C 62 63 82 65 88 73" stroke="#4A5880" strokeWidth="1.8" fill="none" opacity="0.55"/>
-        <path d="M 45 77 C 60 72 80 73 87 79" stroke="#4A5880" strokeWidth="1.4" fill="none" opacity="0.45"/>
+        {/* Right foot */}
+        <path d="M 88 66 C 91 73 95 79 97 86" stroke="#C8A030" strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M 97 86 C 93 90 87 91 84 90" stroke="#C8A030" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 97 86 C 95 93 91 97 90 99" stroke="#C8A030" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 97 86 C 101 90 105 92 107 92" stroke="#C8A030" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 97 86 C 98 81 102 78 105 78" stroke="#C8A030" strokeWidth="2.2" strokeLinecap="round"/>
+        <path d="M 84 90 C 81 93 81 97 83 98" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 90 99 C 89 102 87 104 86 103" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 107 92 C 109 95 109 98 107 99" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 105 78 C 108 76 110 77 110 80" stroke="#111010" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M 97 86 C 99 83 97 80 94 79 C 91 78 89 81 91 84" stroke="#111010" strokeWidth="2.3" fill="none" strokeLinecap="round"/>
 
-        {/* HEAD — small, rounded. Dark cap. The head barely projects past the wings. */}
-        <g transform={`rotate(${headTurn}, 40, 60)`}>
-          <circle cx="40" cy="60" r="16" fill="#8A9AB0"/>
-          {/* Dark slate-blue cap */}
-          <path d="M 27 57 C 28 46 37 40 48 42 C 55 44 57 51 52 57 C 45 55 33 55 27 57 Z" fill="#28303E"/>
-          {/* YELLOW-ORANGE EYE — fierce intensity, a key feature of accipiters */}
-          <circle cx="38" cy="59" r="5" fill="#E09000"/>
-          <circle cx="38" cy="59" r="3.2" fill="#180800"/>
-          <circle cx="37" cy="58" r="1.3" fill="white" opacity="0.65"/>
-          {/* Yellow eyebrow (supraorbital ridge) */}
-          <path d="M 30 55 C 35 53 42 53 47 55" stroke="#D0A000" strokeWidth="1.5" fill="none" opacity="0.6"/>
-          {/* BILL — small, sharp, properly hooked. NOT a half-moon curve. */}
-          {/* Upper mandible: short, down-curved at tip */}
-          <path d="M 24 59 L 14 57 L 24 55 Z" fill="#787878"/>
-          {/* The hook — sharp downward point at bill tip */}
-          <path d="M 14 57 C 12 57 11 59 13 61" stroke="#585858" strokeWidth="1.6" fill="none" strokeLinecap="round"/>
-          {/* Lower mandible */}
-          <path d="M 24 59 L 14 61 C 16 62 21 62 24 60 Z" fill="#909090"/>
-          {/* Yellow cere at base */}
-          <ellipse cx="23" cy="57" rx="3.5" ry="2.5" fill="#C8A000" opacity="0.75"/>
-        </g>
-
-        {/* LONG, SLENDER LEGS — the "sharp shins." Yellow with large talons */}
-        <path d="M 45 101 L 41 115" stroke="#C8A030" strokeWidth="2.5" strokeLinecap="round"/>
-        <path d="M 59 101 L 63 115" stroke="#C8A030" strokeWidth="2.5" strokeLinecap="round"/>
-        {/* Four talons each foot — long and hooked for gripping prey */}
-        <path d="M 41 115 L 34 119 M 41 115 L 40 121 M 41 115 L 47 119 M 41 115 L 37 123" stroke="#C8A030" strokeWidth="1.6" strokeLinecap="round"/>
-        <path d="M 63 115 L 56 119 M 63 115 L 62 121 M 63 115 L 69 119 M 63 115 L 59 123" stroke="#C8A030" strokeWidth="1.6" strokeLinecap="round"/>
+        {/* HEAD — small, compact, barely projecting beyond wings (SSH field mark) */}
+        <circle cx="107" cy="44" r="13" fill="#8A9AB0"/>
+        {/* Dark slate cap — extends farther down than Cooper's, no pale nape */}
+        <path d="M 96 42 C 97 31 106 25 116 29 C 122 32 122 40 116 43 C 108 40 98 40 96 42 Z" fill="#28303E"/>
+        {/* YELLOW-ORANGE EYE — fierce, the accipiter glare */}
+        <circle cx="106" cy="44" r="5" fill="#E09000"/>
+        <circle cx="106" cy="44" r="3.2" fill="#180800"/>
+        <circle cx="105" cy="43" r="1.3" fill="white" opacity="0.65"/>
+        {/* Prominent bony supraorbital ridge — yellow, juts over eye */}
+        <path d="M 98 40 C 103 38 110 38 115 40" stroke="#D0A000" strokeWidth="1.8" fill="none" opacity="0.65"/>
+        {/* Bill — small, sharp hooked accipiter bill */}
+        {/* Cere at base */}
+        <ellipse cx="96" cy="43" rx="3.5" ry="2.5" fill="#C8A000" opacity="0.8"/>
+        {/* Upper mandible */}
+        <path d="M 97 41 C 91 39 85 40 82 43 C 81 46 83 49 86 49
+                 C 85 47 84 45 85 44 C 88 43 93 42 97 43 Z" fill="#7A7878"/>
+        {/* Hook at tip */}
+        <path d="M 82 43 C 80 43 79 45 81 47" stroke="#585858" strokeWidth="1.7" fill="none" strokeLinecap="round"/>
+        {/* Lower mandible */}
+        <path d="M 97 45 C 92 45 86 45 84 47 C 84 50 86 50 86 49 L 97 48 Z" fill="#909090"/>
       </g>
     </svg>
   )
