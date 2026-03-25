@@ -426,9 +426,9 @@ CREATE TABLE productions (
   matter_id       UUID NOT NULL REFERENCES matters(id) ON DELETE CASCADE,
   name            TEXT NOT NULL,                    -- "Production Vol. 001"
   description     TEXT,
-  status          TEXT NOT NULL DEFAULT 'DRAFT'
+  status          TEXT NOT NULL DEFAULT 'PENDING'
                     CHECK (status IN (
-                      'DRAFT','BUILDING','QUALITY_CHECK','COMPLETE','EXPORTED','ERROR'
+                      'PENDING','DRAFT','BUILDING','QUALITY_CHECK','COMPLETE','EXPORTED','FAILED','ERROR'
                     )),
   -- Bates
   bates_prefix    TEXT,
@@ -442,10 +442,16 @@ CREATE TABLE productions (
   include_text    BOOLEAN NOT NULL DEFAULT TRUE,
   load_file_format TEXT NOT NULL DEFAULT 'DAT',
   -- Output
-  output_key      TEXT,                             -- MinIO key for production zip
+  output_key      TEXT,                             -- MinIO key for production zip (legacy)
+  zip_key         TEXT,                             -- MinIO key for production zip
   document_count  INTEGER NOT NULL DEFAULT 0,
+  doc_count       INTEGER,                          -- populated after build
   page_count      INTEGER NOT NULL DEFAULT 0,
   output_size     BIGINT NOT NULL DEFAULT 0,
+  -- Build tracking
+  started_at      TIMESTAMPTZ,
+  completed_at    TIMESTAMPTZ,
+  error_message   TEXT,
   -- Delivery
   produced_to     TEXT,
   produced_at     TIMESTAMPTZ,
