@@ -3,10 +3,10 @@
 
 /* ── Design tokens ─────────────────────────────────────────────────────────── */
 :root {
-  --bg-deep:      #0a1a0c;
-  --bg-card:      #121e14;
-  --bg-elevated:  #1a2e1c;
-  --bg-modal:     #0e1f10;
+  --bg-deep:      #091824;   /* deep dawn sky — rich dark blue */
+  --bg-card:      #0e2236;   /* card surfaces */
+  --bg-elevated:  #162e46;   /* elevated / progress bars */
+  --bg-modal:     #0b1e30;   /* modals */
 
   --accent-green:  #3ddc7f;
   --accent-green2: #2abc65;
@@ -14,10 +14,10 @@
   --accent-gold:   #ffd700;
   --accent-sky:    #5bc4e8;
 
-  --text-primary:   #e8f5e9;
-  --text-secondary: #a5c8a8;
-  --text-dim:       #5a7a5e;
-  --text-muted:     #3a5a3e;
+  --text-primary:   #e8f4f8;   /* slightly cooler white */
+  --text-secondary: #9ec4d8;   /* sky-tinted secondary */
+  --text-dim:       #5a7a90;   /* blue-tinted dim */
+  --text-muted:     #3a5a6e;   /* blue-tinted muted */
 
   --rarity-common:    #4caf50;
   --rarity-uncommon:  #2196f3;
@@ -28,7 +28,7 @@
   --success: #3ddc7f;
 
   --radar-green: #00ff88;
-  --radar-dim:   #004422;
+  --radar-dim:   #003344;
 
   --radius-sm: 8px;
   --radius-md: 16px;

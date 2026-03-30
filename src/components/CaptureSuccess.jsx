@@ -75,8 +75,8 @@ export default function CaptureSuccess({ bird, isNew, score, funFact, verificati
   return (
     <div className="screen" style={{
       background: isNew
-        ? 'radial-gradient(ellipse at 50% 30%, #1a3a1c 0%, #0a1a0c 60%)'
-        : 'radial-gradient(ellipse at 50% 30%, #1a2a1c 0%, #0a1a0c 60%)',
+        ? 'radial-gradient(ellipse at 50% 30%, #1c6a9a 0%, #091824 60%)'
+        : 'radial-gradient(ellipse at 50% 30%, #0e4e78 0%, #091824 60%)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
