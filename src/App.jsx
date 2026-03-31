@@ -10,6 +10,9 @@ import VerificationModal from './components/VerificationModal'
 import { BIRDS, getRandomBird } from './data/birds'
 import { detectAutoEvidence } from './lib/verification'
 import { useEBirdLocation } from './hooks/useEBirdLocation'
+import EasterEggEncounter from './components/EasterEggs/EasterEggEncounter'
+import EasterEggGame from './components/EasterEggs/EasterEggGame'
+import { pickRandomEasterEgg } from './components/EasterEggs/easterEggData'
 
 function timeAgo(obsDt) {
   if (!obsDt) return ''
@@ -27,6 +30,7 @@ const SCREEN = {
   RADAR: 'radar', RARITY_ALERT: 'rarityAlert', ENCOUNTER: 'encounter',
   BINOCULARS: 'binoculars', SUCCESS: 'success', AVIARY: 'aviary',
   BIRD_DETAIL: 'birdDetail', LEADERBOARD: 'leaderboard', VERIFY: 'verify',
+  EASTER_EGG_ENCOUNTER: 'easterEggEncounter', EASTER_EGG_GAME: 'easterEggGame',
 }
 
 function RarityAlert({ bird, onProceed, onDismiss }) {
@@ -111,6 +115,10 @@ export default function App() {
   const [userLocation, setUserLocation]   = useState({ lat: 40.7614, lng: -73.9776 })
   const [funFactIndex, setFunFactIndex]   = useState(0)
   const [verificationResult, setVerificationResult] = useState(null)
+  const [currentEgg, setCurrentEgg]                = useState(null)
+  const [seenEggs, setSeenEggs]                    = useState(() => {
+    try { return JSON.parse(localStorage.getItem('bhn_seen_eggs') || '[]') } catch { return [] }
+  })
   const handle = (() => { try { return localStorage.getItem('bhn_handle') || '' } catch { return '' } })()
 
   const { nearbyBirds, eBirdObs, eBirdActive } = useEBirdLocation(userLocation)
@@ -122,6 +130,9 @@ export default function App() {
   useEffect(() => {
     try { localStorage.setItem('bhn_score', String(score)) } catch {}
   }, [score])
+  useEffect(() => {
+    try { localStorage.setItem('bhn_seen_eggs', JSON.stringify(seenEggs)) } catch {}
+  }, [seenEggs])
 
   // Geolocation
   useEffect(() => {
@@ -139,6 +150,16 @@ export default function App() {
     const HABITATS   = ['the hedgerow','a nearby oak','the water\'s edge','the lawn','open field','the treetops']
 
     const timer = setTimeout(() => {
+      // ~4% chance of an Easter Egg encounter instead of a bird
+      if (Math.random() < 0.04) {
+        const egg = pickRandomEasterEgg(capturedBirds.length, seenEggs)
+        if (egg) {
+          setCurrentEgg(egg)
+          setScreen(SCREEN.EASTER_EGG_ENCOUNTER)
+          return
+        }
+      }
+
       // Weight toward common species 70% of the time
       const common = pool.filter(b => b.rarity === 'common')
       const bird = (common.length > 0 && Math.random() < 0.7)
@@ -175,7 +196,7 @@ export default function App() {
     }, ENCOUNTER_DELAY_MS)
 
     return () => clearTimeout(timer)
-  }, [screen, nearbyBirds, eBirdActive])
+  }, [screen, nearbyBirds, eBirdActive, capturedBirds.length, seenEggs])
 
   const goToRadar              = useCallback(() => setScreen(SCREEN.RADAR), [])
   const handleStartCapture     = useCallback(() => setScreen(SCREEN.BINOCULARS), [])
@@ -223,6 +244,17 @@ export default function App() {
     setVerificationResult({ confirmed: false })
     setScreen(SCREEN.SUCCESS)
   }, [])
+
+  const handleEggPlayGame    = useCallback(() => setScreen(SCREEN.EASTER_EGG_GAME), [])
+  const handleEggDismiss     = useCallback(() => { setCurrentEgg(null); setScreen(SCREEN.RADAR) }, [])
+  const handleEggComplete    = useCallback(({ won, points }) => {
+    if (currentEgg) {
+      setScore(prev => prev + points)
+      setSeenEggs(prev => prev.includes(currentEgg.id) ? prev : [...prev, currentEgg.id])
+    }
+    setCurrentEgg(null)
+    setScreen(SCREEN.RADAR)
+  }, [currentEgg])
 
   const handleSelectBird = useCallback((birdId) => {
     setSelectedBird(BIRDS.find(b => b.id === birdId))
@@ -292,6 +324,13 @@ export default function App() {
       )}
       {screen === SCREEN.LEADERBOARD && (
         <Leaderboard capturedBirds={capturedBirds} score={score} onBack={goToRadar}/>
+      )}
+      {screen === SCREEN.EASTER_EGG_ENCOUNTER && currentEgg && (
+        <EasterEggEncounter egg={currentEgg}
+          onPlayGame={handleEggPlayGame} onDismiss={handleEggDismiss}/>
+      )}
+      {screen === SCREEN.EASTER_EGG_GAME && currentEgg && (
+        <EasterEggGame egg={currentEgg} onComplete={handleEggComplete}/>
       )}
     </div>
   )
