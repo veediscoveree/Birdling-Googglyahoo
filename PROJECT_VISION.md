@@ -294,6 +294,8 @@ Parallel-safe: Phases 3 and 4 can run alongside 6.
    aligning before anything public.
 5. **Native wrapper** (later): appetite for a Capacitor iOS/Android build once
    verification matters? Affects mic/camera/GPS quality significantly.
+6. **Deploy source** (see Appendix C): confirm which branch GitHub Pages serves, and
+   decide whether `main` or the feature branch is the single source of truth going forward.
 
 ---
 
@@ -325,3 +327,46 @@ All three are optional; the app falls back to mock/offline modes without them.
   80 km/30 days — until ≥20 known species are found nearby.
 - **BirdNET**: Cornell Lab's open-source bird-sound classifier (the "Merlin-like" engine).
 - **eBird Record Format**: CSV format eBird accepts for bulk checklist import.
+
+## Appendix C — Repository & deployment state (2026-07-09 archaeology)
+
+A read-only "repository archaeology" pass established the following. No code was changed.
+
+**Branches that exist:**
+- `claude/bird-game-prototype-Mx0aV` — the **branch of record** and the real, current game.
+  It is a clean *superset* of `main`: it has everything `main` has, **plus** the Easter
+  Eggs feature and these vision docs. Verified: `main` contains nothing the branch lacks.
+- `main` — **stale snapshot.** Frozen at 2026-03-30. PR #9 merged an *older* state of the
+  branch into `main` (before Easter Eggs), so `main` is missing the Easter Eggs entirely
+  (confirmed: its `docs/index.html` has 0 hits for "Carolina Parakeet"/"Save the Last
+  Flock"/"Birding Bob"; the branch's build has them). This is a git-history staleness, not
+  a lost-work problem — the work is safe on the branch.
+- `claude/data-discovery-processing-system-yJMWn` — **orphaned, unrelated.** A whole
+  eDiscovery/nginx/container platform ("VDiscovery") that was merged in via PR #8, then
+  deliberately deleted (commit `a4e78b2`). The branch lingers as pure noise in a birding
+  repo. Safe to delete.
+
+**Build integrity:** the branch's committed `docs/index.html` is a **faithful, current
+build** of the branch source — verified by a fresh `npm run build` producing a
+byte-identical file. Not stale relative to its own source.
+
+**Deployment mechanism:** `.github/workflows/deploy.yml` runs on pushes to **both** `main`
+and the feature branch — it builds and auto-commits `docs/index.html` back to whichever
+branch was pushed (these are the "Auto-rebuild docs [skip ci]" commits). Building on two
+branches is *how `main` and the branch drifted apart*.
+
+**Open question — which branch does GitHub Pages actually serve?** Could not be read from
+inside the dev environment (no repo-settings access; the proxy blocks `github.io`).
+Evidence leans toward Pages serving the **feature branch's `/docs`** (commit `b484c88` is
+titled "…(GitHub Pages source branch)" referring to the feature branch). If so, the **live
+site is already current** with Easter Eggs and nothing is broken for players — only `main`
+is a stale git snapshot. **Jared to confirm in Settings → Pages.**
+
+**Recommended actions (all are GitHub web clicks — see chat for direct links):**
+1. Confirm the Pages source branch (Settings → Pages) and eyeball the live site.
+2. *(Optional hygiene)* Merge the branch of record → `main` so `main` stops being a stale
+   snapshot. Low-risk because the branch is a clean superset.
+3. *(Optional cleanup)* Delete the orphaned `claude/data-discovery-processing-system-yJMWn`
+   branch.
+4. *(Later)* Pick ONE deploy source and keep it fed, so "latest work" and "what's live"
+   stop diverging.
