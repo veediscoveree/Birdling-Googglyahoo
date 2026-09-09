@@ -6,7 +6,7 @@ import { useWikimediaPhotos } from '../hooks/useWikimediaPhotos'
 
 export default function BirdPhotos({ bird }) {
   const searchTerms = bird.wikimediaSearchTerms || [bird.scientificName, `${bird.commonName} bird`]
-  const { photos, loading, error } = useWikimediaPhotos(searchTerms)
+  const { photos, loading, error } = useWikimediaPhotos(searchTerms, bird.scientificName)
   const [selected, setSelected] = useState(0)
   const [lightbox, setLightbox] = useState(false)
 

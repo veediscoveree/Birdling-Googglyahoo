@@ -4,10 +4,10 @@
 // Results are persisted in localStorage (7-day TTL) for instant repeat loads.
 
 import { useState, useEffect, useRef } from 'react'
+import { fetchJsonWithFallback } from './corsFetch'
 
-const XC_API          = 'https://xeno-canto.org/api/2/recordings'
-const CORS_PROXY      = 'https://corsproxy.io/?url='
-const LS_PREFIX = 'bhn_xc_v2_'  // bumped to evict any stale empty-result caches
+const XC_API    = 'https://xeno-canto.org/api/2/recordings'
+const LS_PREFIX = 'bhn_xc_v3_'  // bumped to evict stale empty-result caches from the old fetch path
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000   // 7 days
 
 // ── localStorage helpers ──────────────────────────────────────────────────────
@@ -63,12 +63,6 @@ function parseXCResponse(data) {
   }))
 }
 
-async function tryFetch(url) {
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return res.json()
-}
-
 async function fetchRecordings(speciesName, type) {
   const query    = `"${speciesName}"${type ? ` type:${type}` : ''}`
   const cacheKey = query
@@ -78,18 +72,15 @@ async function fetchRecordings(speciesName, type) {
   if (persisted) { memCache[cacheKey] = persisted; return persisted }
 
   const targetUrl = `${XC_API}?${new URLSearchParams({ query })}`
-  // Proxy URL must encode the full target URL (including its query string) as a single param
-  const proxyUrl  = `${CORS_PROXY}${encodeURIComponent(targetUrl)}`
 
+  // xeno-canto sends no CORS headers, so a direct browser fetch is blocked;
+  // fetchJsonWithFallback routes through CORS proxies until one succeeds.
   let recs = []
-  for (const url of [targetUrl, proxyUrl]) {
-    try {
-      const data = await tryFetch(url)
-      recs = parseXCResponse(data)
-      break  // success — stop trying
-    } catch (e) {
-      console.warn(`[XC] fetch failed via ${url}:`, e.message)
-    }
+  try {
+    const data = await fetchJsonWithFallback(targetUrl)
+    recs = parseXCResponse(data)
+  } catch (e) {
+    console.warn('[XC] fetch failed for', query, '—', e.message)
   }
 
   if (recs.length > 0) {

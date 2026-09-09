@@ -330,6 +330,22 @@ All three are optional; the app falls back to mock/offline modes without them.
 
 ## Changelog
 
+**2026-09-09 (b) — Photo & audio loading fixes.**
+- **Root causes:** the xeno-canto metadata fetch is CORS-blocked in browsers (xeno-canto
+  sends no CORS headers) and the single `corsproxy.io` fallback now requires registration,
+  so recording lists never arrived → *audio never worked*. Wikimedia Commons *does* allow
+  CORS but had no fallback, so any tightening on their side left photos dead.
+- **Fix:** new shared helper `src/hooks/corsFetch.js` — `fetchJsonWithFallback()` tries the
+  direct request first (keeps Wikimedia's fast path), then falls through a chain of public
+  CORS proxies (allorigins → codetabs → corsproxy). `useXenoCantoAudio` and
+  `useWikimediaPhotos` both use it. Added a reliable **Wikipedia REST lead-image fallback**
+  so the headline species photo appears even if Commons search returns nothing. Cache
+  prefixes bumped (`bhn_wiki_v2_`, `bhn_xc_v3_`) to evict stale empty results.
+- **Verified** with a mocked-network headless run: photos render and load; when the direct
+  xeno-canto fetch is blocked the proxy fallback delivers recordings and audio plays.
+  *(Caveat: the mock proves our code path; real-world success also depends on the public
+  proxies and xeno-canto being up — needs on-device confirmation.)*
+
 **2026-09-09 — Phase 1 (dev mode) + two capture bug fixes.**
 - **Dev mode** (`src/components/DevPanel.jsx`, wired in `App.jsx`): enable via `?dev=1`
   or by tapping the version badge 5×. Summon any of the 73 species (to the encounter or
