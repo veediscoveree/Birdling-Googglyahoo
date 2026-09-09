@@ -1,11 +1,13 @@
 // Bird. Here. Now. — Binoculars Capture Mechanic
 //
 // Controls:
-//   Mobile  — DeviceOrientationEvent: tilt creates velocity (momentum-based panning)
+//   Mobile  — DeviceOrientationEvent: tilt ANGLE maps to view POSITION, measured
+//             relative to the pose held at Start (absolute, no drift)
 //   Desktop — Mouse move (relative to screen center)
 //   Touch   — Drag (fallback)
 //
 // Bird movement: species-specific state machines with 2-3 characteristic moves.
+// All motion is dt-scaled (frame-rate independent) so speeds match on 60/120Hz.
 // Focus knob: players must also dial in the correct optical focus distance.
 // Backgrounds: habitat-appropriate SVG scenes inside the lens.
 
@@ -337,6 +339,7 @@ function makeBehaviorEngine(movementPattern, startPos) {
   let phaseTimer = 0
   let phaseDuration = 800
   let phaseIndex = 0
+  let timeMs = 0   // wall-clock accumulator so oscillations are frame-rate independent
 
   const rand = (min, max) => min + Math.random() * (max - min)
   const lerp = (a, b, t) => a + (b - a) * t
@@ -471,8 +474,8 @@ function makeBehaviorEngine(movementPattern, startPos) {
         } else if (seq === 2) {
           // THE CAPTURE WINDOW — dips close, nearly level, chasing an insect
           phase = 'dart'
-          target = { x: rand(-0.18, 0.18), y: rand(-0.05, 0.2) }
-          phaseDuration = rand(700, 1100)    // lingers briefly — player's chance to lock on
+          target = { x: rand(-0.15, 0.15), y: rand(-0.05, 0.18) }
+          phaseDuration = rand(1100, 1600)   // lingers near center — player's chance to lock on
         } else if (seq === 3) {
           // Brief climb away, then another sweep
           phase = 'dart_fast'
@@ -578,8 +581,8 @@ function makeBehaviorEngine(movementPattern, startPos) {
         } else if (seq === 1) {
           // THE CAPTURE WINDOW — crosses center in a direct pass, briefly trackable
           phase = 'dart'
-          target = { x: rand(-0.13, 0.13), y: rand(-0.2, 0.2) }
-          phaseDuration = rand(450, 750)
+          target = { x: rand(-0.12, 0.12), y: rand(-0.18, 0.18) }
+          phaseDuration = rand(800, 1200)
         } else if (seq === 2) {
           // Pumps wings, banks sharply upward / outward
           phase = 'dart_fast'
@@ -620,10 +623,17 @@ function makeBehaviorEngine(movementPattern, startPos) {
   return {
     update(dt, totalFrame) {
       phaseTimer += dt
+      timeMs += dt
       if (phaseTimer >= phaseDuration) nextPhase()
 
       const t = Math.min(phaseTimer / phaseDuration, 1)
-      const noise = () => (Math.random() - 0.5) * 0.004
+      // Frame-rate independence: f = number of 60fps-frames elapsed this tick
+      // (≈1 at 60Hz, ≈0.5 at 120Hz ProMotion), capped so a long stall (tab
+      // backgrounded) can't teleport the bird. Without this, birds moved at
+      // double speed on 120Hz devices.
+      const f  = Math.min(dt / 16.667, 3)
+      const sm = (k) => 1 - Math.pow(1 - k, f)          // dt-scaled lerp factor
+      const noise = () => (Math.random() - 0.5) * 0.004 * f
 
       switch (phase) {
         case 'perch':
@@ -633,7 +643,7 @@ function makeBehaviorEngine(movementPattern, startPos) {
         case 'pause_scratch':
         case 'hang':
           pos.x += noise()
-          pos.y += (Math.sin(totalFrame * 0.05) * 0.003) + noise()
+          pos.y += (Math.sin(timeMs * 0.003) * 0.003) * f + noise()
           break
 
         case 'dart':
@@ -650,40 +660,41 @@ function makeBehaviorEngine(movementPattern, startPos) {
         case 'peek':
         case 'scurry':
         case 'scratch': {
-          // Smooth lerp toward target
-          const speed = phase === 'dart_fast' ? 0.18 : (phase === 'dart' || phase === 'hop' ? 0.12 : 0.06)
-          pos.x = lerp(pos.x, target.x, speed)
-          pos.y = lerp(pos.y, target.y, speed)
+          // Smooth lerp toward target (peak speeds trimmed for catchability)
+          const base = phase === 'dart_fast' ? 0.15 : (phase === 'dart' || phase === 'hop' ? 0.10 : 0.06)
+          pos.x = lerp(pos.x, target.x, sm(base))
+          pos.y = lerp(pos.y, target.y, sm(base))
           break
         }
 
         case 'hide':
-          pos.x = lerp(pos.x, target.x, 0.04)
-          pos.y = lerp(pos.y, target.y, 0.04)
+          pos.x = lerp(pos.x, target.x, sm(0.04))
+          pos.y = lerp(pos.y, target.y, sm(0.04))
           break
 
         case 'probe':
-          pos.x += Math.sin(totalFrame * 0.3) * 0.006
-          pos.y += Math.cos(totalFrame * 0.4) * 0.004
+          pos.x += Math.sin(timeMs * 0.018) * 0.006 * f
+          pos.y += Math.cos(timeMs * 0.024) * 0.004 * f
           break
 
         case 'return':
           // Return roughly toward center after catch
-          pos.x = lerp(pos.x, pos.x * 0.5, 0.08)
-          pos.y = lerp(pos.y, pos.y * 0.5, 0.08)
+          pos.x = lerp(pos.x, pos.x * 0.5, sm(0.08))
+          pos.y = lerp(pos.y, pos.y * 0.5, sm(0.08))
           break
 
         case 'swim_sway':
           // Gentle drift toward target — duck glides on water, player can track it
-          pos.x = lerp(pos.x, target.x, 0.008)
-          pos.y = lerp(pos.y, target.y, 0.006)
-          pos.x += Math.sin(totalFrame * 0.04) * 0.003  // gentle side-to-side sway
+          pos.x = lerp(pos.x, target.x, sm(0.008))
+          pos.y = lerp(pos.y, target.y, sm(0.006))
+          pos.x += Math.sin(timeMs * 0.0024) * 0.003 * f  // gentle side-to-side sway
           pos.y += noise() * 0.5
           break
 
         case 'soar_circle': {
-          // Reduced amplitude (was 0.45/0.22) so bird stays closer to center — catchable
-          const angle = totalFrame * 0.016
+          // Reduced amplitude so bird stays closer to center — catchable.
+          // Time-based angle so the circle rate is identical at any refresh rate.
+          const angle = timeMs * 0.00096
           pos.x = Math.sin(angle) * 0.30
           pos.y = Math.cos(angle) * 0.14
           break
@@ -691,36 +702,36 @@ function makeBehaviorEngine(movementPattern, startPos) {
 
         case 'soar_pass':
           // Slow drift through center — the capture window for soaring birds
-          pos.x = lerp(pos.x, target.x, 0.007)
-          pos.y = lerp(pos.y, target.y, 0.005)
+          pos.x = lerp(pos.x, target.x, sm(0.007))
+          pos.y = lerp(pos.y, target.y, sm(0.005))
           pos.x += noise() * 0.4
           pos.y += noise() * 0.3
           break
 
         case 'stalk_slow':
-          pos.x = lerp(pos.x, target.x, 0.006)
-          pos.y = lerp(pos.y, target.y, 0.005)
+          pos.x = lerp(pos.x, target.x, sm(0.006))
+          pos.y = lerp(pos.y, target.y, sm(0.005))
           pos.x += noise()
           pos.y += noise()
           break
 
         case 'hover': {
           const hNoise = 0.008
-          pos.x += (Math.random() - 0.5) * hNoise
-          pos.y += (Math.random() - 0.5) * hNoise
+          pos.x += (Math.random() - 0.5) * hNoise * f
+          pos.y += (Math.random() - 0.5) * hNoise * f
           break
         }
 
         case 'swing':
-          pos.x = lerp(pos.x, pos.x + Math.sin(totalFrame * 0.08) * 0.03, 1)
+          pos.x += Math.sin(timeMs * 0.0048) * 0.03 * f
           pos.y += noise()
           break
 
         case 'walk_step':
           // Smooth walk with subtle head-bob
-          pos.x = lerp(pos.x, target.x, 0.035)
-          pos.y = lerp(pos.y, target.y, 0.028)
-          pos.y += Math.sin(totalFrame * 0.18) * 0.003   // walking bob
+          pos.x = lerp(pos.x, target.x, sm(0.035))
+          pos.y = lerp(pos.y, target.y, sm(0.028))
+          pos.y += Math.sin(timeMs * 0.0108) * 0.003 * f   // walking bob
           break
       }
 
@@ -783,6 +794,8 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const tiltVelRef      = useRef({ x: 0, y: 0 })
   const orientRef       = useRef({ beta: 45, gamma: 0 })
   const hasTiltRef      = useRef(false)
+  const neutralRef      = useRef(null)   // pose captured at Start; tilt is measured relative to it
+  const needsNeutralRef = useRef(false)
   const prevViewRef     = useRef({ x: 0, y: 0 })
 
   // Focus knob — optical focus distance in meters
@@ -838,10 +851,14 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   // ── Device orientation (mobile) ──────────────────────────────────────────
   useEffect(() => {
     const handler = (e) => {
-      orientRef.current = { beta: e.beta ?? 45, gamma: e.gamma ?? 0 }
-      if (Math.abs(e.gamma ?? 0) > 1.5 || Math.abs((e.beta ?? 45) - 45) > 1.5) {
-        hasTiltRef.current = true
-      }
+      if (e.beta == null && e.gamma == null) return   // no orientation sensor / no data
+      const reading = { beta: e.beta ?? 45, gamma: e.gamma ?? 0 }
+      orientRef.current = reading
+      // Capture the pose held at Start as the neutral baseline, so tilt is
+      // measured relative to however the phone is held (works in any orientation
+      // and never pegs the view to an edge).
+      if (needsNeutralRef.current) { neutralRef.current = { ...reading }; needsNeutralRef.current = false }
+      hasTiltRef.current = true
     }
     window.addEventListener('deviceorientation', handler)
     return () => window.removeEventListener('deviceorientation', handler)
@@ -954,6 +971,11 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
       try { await DeviceOrientationEvent.requestPermission() } catch {}
     }
 
+    // Recalibrate tilt neutral to the current holding pose and re-center the view.
+    needsNeutralRef.current = true
+    if (hasTiltRef.current) neutralRef.current = { ...orientRef.current }
+    viewOffsetRef.current = { x: 0, y: 0 }
+
     const movementPattern = bird.captureStats.movementPattern || 'perching'
     // Spawn distance varies by movement pattern: swimmers/stalkers closer, fliers further
     const spawnSide = Math.random() > 0.5 ? 1 : -1
@@ -979,24 +1001,21 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
       // ── Momentum-based tilt aiming (mobile) ─────────────────────────────
       if (hasTiltRef.current) {
         const { beta, gamma } = orientRef.current
-        // Raw tilt values with dead zones
-        const rawGamma = Math.abs(gamma) > 3 ? gamma : 0          // portrait: left/right roll
-        const rawBeta  = Math.abs(beta - 45) > 3 ? (beta - 45) : 0 // portrait: forward/back pitch
-        // In landscape (rotated 90° clockwise) axes swap:
-        //   portrait γ (left/right) → landscape up/down (Y axis on screen)
-        //   portrait β (forward/back) → landscape left/right (X axis on screen)
-        const tiltX = isLandscapeRef.current ? -rawBeta  : rawGamma
-        const tiltY = isLandscapeRef.current ? -rawGamma : rawBeta
-        // Absolute mapping: tilt ANGLE → view POSITION (not velocity).
-        // Previously tilt was integrated as a velocity, so holding the phone at
-        // any slight angle made the view (and background) drift forever and never
-        // settle. Now ~22° of tilt maps to full deflection, and holding the phone
-        // steady holds the view — and the background — steady.
-        const TILT_RANGE = 22
+        const n = neutralRef.current || { beta, gamma }
+        // Measure tilt RELATIVE to the pose held at Start (with small dead zones).
+        const dGamma = Math.abs(gamma - n.gamma) > 2 ? (gamma - n.gamma) : 0  // left/right roll
+        const dBeta  = Math.abs(beta  - n.beta)  > 2 ? (beta  - n.beta)  : 0  // forward/back pitch
+        // In landscape (rotated 90°) the on-screen axes swap.
+        const tiltX = isLandscapeRef.current ? -dBeta  : dGamma
+        const tiltY = isLandscapeRef.current ? -dGamma : dBeta
+        // Absolute mapping: tilt ANGLE from neutral → view POSITION (not velocity),
+        // so holding the phone steady holds the view — and background — steady.
+        // ~18° of tilt from the neutral pose pans fully to an edge.
+        const TILT_RANGE = 18
         const targetX = clamp(tiltX / TILT_RANGE, -1, 1)
         const targetY = clamp(tiltY / TILT_RANGE, -1, 1)
         // Frame-rate-independent easing toward the target for smooth motion.
-        const ease = 1 - Math.exp(-dt / 140)
+        const ease = 1 - Math.exp(-dt / 130)
         viewOffsetRef.current.x = clamp(viewOffsetRef.current.x + (targetX - viewOffsetRef.current.x) * ease, -1, 1)
         viewOffsetRef.current.y = clamp(viewOffsetRef.current.y + (targetY - viewOffsetRef.current.y) * ease, -1, 1)
       }

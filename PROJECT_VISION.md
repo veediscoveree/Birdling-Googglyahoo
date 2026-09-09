@@ -330,6 +330,22 @@ All three are optional; the app falls back to mock/offline modes without them.
 
 ## Changelog
 
+**2026-09-09 (c) — Tilt control + bird-speed calibration.**
+- **Tilt "doesn't work" fixed** (`BinocularsCapture.jsx`): the absolute tilt mapping assumed a
+  fixed neutral (beta=45°, gamma=0), which in landscape pegged the view to an edge so tilting
+  did nothing. Now the pose held at **Start is captured as the neutral baseline** and tilt is
+  measured relative to it (works in any orientation, still no drift). ~18° pans fully.
+- **"Unaccountably fast" birds fixed** (frame-rate independence): the behavior engine used
+  fixed per-frame lerp factors and `totalFrame` counters that ignored `dt`, so on 120Hz
+  ProMotion iPhones/iPads every bird moved ~2× too fast (validated: a 300ms dart covered ~99.7%
+  of its path at 120Hz vs ~94.6% at 60Hz). All motion is now **dt-scaled** via a wall-clock
+  accumulator, so speeds are identical at any refresh rate.
+- **Barn Swallow & Cooper's Hawk specifically**: peak dart speed trimmed (0.18→0.15, 0.12→0.10)
+  and the `aerial_dart` / `fast_low_ambush` **capture windows lengthened** (~1.1–1.6s near
+  center) so they're catchable. *Note:* `captureStats.speed` per species is still unused —
+  wiring it into a real per-species difficulty band is the proper Phase 2 follow-up.
+- Version badge bumped to `v2.3`.
+
 **2026-09-09 (b) — Photo & audio loading fixes.**
 - **Root causes:** the xeno-canto metadata fetch is CORS-blocked in browsers (xeno-canto
   sends no CORS headers) and the single `corsproxy.io` fallback now requires registration,
