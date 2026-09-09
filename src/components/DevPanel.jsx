@@ -12,6 +12,33 @@ const RARITY_COLOR = {
   very_rare: '#e0a020', legendary: '#e05050',
 }
 
+// ── Audio-source diagnostics ──────────────────────────────────────────────
+// Probes each fetch strategy against xeno-canto so we can see, from the user's
+// own device, exactly which (if any) path works and what the others return.
+const XC_V2 = 'https://xeno-canto.org/api/2/recordings?query=' + encodeURIComponent('"Cardinalis cardinalis"')
+const XC_V3 = 'https://xeno-canto.org/api/3/recordings?query=' + encodeURIComponent('"Cardinalis cardinalis"')
+const AUDIO_PROBES = [
+  ['direct v2',  XC_V2],
+  ['allorigins', 'https://api.allorigins.win/raw?url=' + encodeURIComponent(XC_V2)],
+  ['codetabs',   'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(XC_V2)],
+  ['corsproxy',  'https://corsproxy.io/?url=' + encodeURIComponent(XC_V2)],
+  ['v3 (no key)', XC_V3],
+]
+async function probeOne(label, url) {
+  const t0 = Date.now()
+  try {
+    const res  = await fetch(url)
+    const text = await res.text()
+    let n = null
+    try { n = JSON.parse(text).numRecordings } catch {}
+    return { label, ok: res.ok, status: String(res.status), ms: Date.now() - t0,
+      n: n ?? '—', snippet: text.slice(0, 90).replace(/\s+/g, ' ') }
+  } catch (e) {
+    return { label, ok: false, status: 'ERR', ms: Date.now() - t0, n: '—',
+      snippet: `${e.name || 'Error'}: ${(e.message || '').slice(0, 70)}` }
+  }
+}
+
 const box = {
   background: 'rgba(10,16,10,0.96)',
   border: '1px solid rgba(245,166,35,0.45)',
@@ -28,6 +55,20 @@ export default function DevPanel({
 }) {
   const [query, setQuery]   = useState('')
   const [rarity, setRarity] = useState('all')
+  const [diag, setDiag]     = useState(null)
+  const [diagRunning, setDiagRunning] = useState(false)
+
+  const runAudioDiag = async () => {
+    setDiagRunning(true)
+    setDiag([])
+    const results = []
+    for (const [label, url] of AUDIO_PROBES) {
+      const r = await probeOne(label, url)
+      results.push(r)
+      setDiag([...results])
+    }
+    setDiagRunning(false)
+  }
 
   const sorted = useMemo(() => {
     return [...birds].sort((a, b) => {
@@ -101,6 +142,33 @@ export default function DevPanel({
           <button style={btn} onClick={onGoAviary}>Aviary</button>
           <button style={btn} onClick={onGoLeaderboard}>Leaders</button>
         </div>
+
+        {/* Audio diagnostics */}
+        <div style={{ fontSize: 10, color: '#9ab088', letterSpacing: 1, margin: '2px 0 5px' }}>
+          AUDIO DIAGNOSTIC
+        </div>
+        <button onClick={runAudioDiag} disabled={diagRunning} style={{
+          ...btn, width: '100%', flex: 'none', marginBottom: 6,
+          opacity: diagRunning ? 0.6 : 1,
+        }}>{diagRunning ? 'probing…' : '🎵 Test audio sources'}</button>
+        {diag && (
+          <div style={{
+            fontSize: 9.5, lineHeight: 1.35, marginBottom: 12,
+            border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: 7,
+            background: 'rgba(0,0,0,0.3)',
+          }}>
+            {diag.length === 0 && <div style={{ color: '#9ab088' }}>running…</div>}
+            {diag.map((r, i) => (
+              <div key={i} style={{ marginBottom: 5, wordBreak: 'break-word' }}>
+                <span style={{ color: r.ok ? '#6fe0a0' : '#e88' }}>
+                  {r.ok ? '✓' : '✗'} {r.label}
+                </span>
+                <span style={{ color: '#8a9a7a' }}> · {r.status} · n={r.n} · {r.ms}ms</span>
+                <div style={{ color: '#aab', opacity: 0.75 }}>{r.snippet}</div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Easter Eggs */}
         <div style={{ fontSize: 10, color: '#9ab088', letterSpacing: 1, margin: '2px 0 5px' }}>
