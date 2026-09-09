@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import RadarScreen from './components/RadarScreen'
 import BirdEncounter from './components/BirdEncounter'
 import BinocularsCapture from './components/BinocularsCapture'
@@ -12,7 +12,8 @@ import { detectAutoEvidence } from './lib/verification'
 import { useEBirdLocation } from './hooks/useEBirdLocation'
 import EasterEggEncounter from './components/EasterEggs/EasterEggEncounter'
 import EasterEggGame from './components/EasterEggs/EasterEggGame'
-import { pickRandomEasterEgg } from './components/EasterEggs/easterEggData'
+import { pickRandomEasterEgg, EASTER_EGGS } from './components/EasterEggs/easterEggData'
+import DevPanel from './components/DevPanel'
 
 function timeAgo(obsDt) {
   if (!obsDt) return ''
@@ -121,6 +122,31 @@ export default function App() {
   })
   const handle = (() => { try { return localStorage.getItem('bhn_handle') || '' } catch { return '' } })()
 
+  // ── Developer mode ────────────────────────────────────────────────────────
+  // On via ?dev=1 in the URL, or by tapping the version badge 5 times.
+  // Lets the developer summon any bird or Easter Egg on demand and jump screens,
+  // instead of grinding random encounters to review a change.
+  const [devMode, setDevMode] = useState(() => {
+    try {
+      if (new URLSearchParams(window.location.search).has('dev')) return true
+      return localStorage.getItem('bhn_devmode') === '1'
+    } catch { return false }
+  })
+  const [devPanelOpen, setDevPanelOpen] = useState(true)
+  const badgeTapsRef = useRef(0)
+  const handleBadgeTap = useCallback(() => {
+    badgeTapsRef.current += 1
+    if (badgeTapsRef.current >= 5) {
+      badgeTapsRef.current = 0
+      setDevMode(prev => {
+        const next = !prev
+        try { localStorage.setItem('bhn_devmode', next ? '1' : '0') } catch {}
+        return next
+      })
+      setDevPanelOpen(true)
+    }
+  }, [])
+
   const { nearbyBirds, eBirdObs, eBirdActive } = useEBirdLocation(userLocation)
 
   // Persist aviary across reloads
@@ -145,6 +171,9 @@ export default function App() {
   // Encounter trigger — picks from nearby birds (location-aware)
   useEffect(() => {
     if (screen !== SCREEN.RADAR) return
+    // In dev mode, suppress random encounters so the developer controls exactly
+    // what appears via the dev panel.
+    if (devMode) return
     const pool = nearbyBirds.length > 0 ? nearbyBirds : BIRDS
     const DIRECTIONS = ['to the north','nearby','to the east','in the park','50m away','just ahead']
     const HABITATS   = ['the hedgerow','a nearby oak','the water\'s edge','the lawn','open field','the treetops']
@@ -196,7 +225,7 @@ export default function App() {
     }, ENCOUNTER_DELAY_MS)
 
     return () => clearTimeout(timer)
-  }, [screen, nearbyBirds, eBirdActive, capturedBirds.length, seenEggs])
+  }, [screen, nearbyBirds, eBirdActive, capturedBirds.length, seenEggs, devMode])
 
   const goToRadar              = useCallback(() => setScreen(SCREEN.RADAR), [])
   const handleStartCapture     = useCallback(() => setScreen(SCREEN.BINOCULARS), [])
@@ -261,6 +290,27 @@ export default function App() {
     setScreen(SCREEN.BIRD_DETAIL)
   }, [])
 
+  // ── Dev-panel actions ─────────────────────────────────────────────────────
+  const devSummonBird = useCallback((bird, { straightToCapture = false } = {}) => {
+    if (!bird) return
+    const minDist = { tiny: 20, small: 30, medium: 45, large: 65, very_large: 90 }
+    const dMin = minDist[bird.sizeCategory] ?? 30
+    const distance = Math.floor(Math.random() * (130 - dMin)) + dMin
+    setCurrentBird(bird)
+    setFunFactIndex(0)
+    setEncounterInfo({
+      distance, direction: 'summoned', habitat: 'dev summon',
+      isEBirdVerified: false, eBirdLocName: null, eBirdTimeAgo: null,
+    })
+    setScreen(straightToCapture ? SCREEN.BINOCULARS : SCREEN.ENCOUNTER)
+  }, [])
+
+  const devTriggerEgg = useCallback((egg) => {
+    if (!egg) return
+    setCurrentEgg(egg)
+    setScreen(SCREEN.EASTER_EGG_ENCOUNTER)
+  }, [])
+
   // Get the current fun fact for the active bird (rotates on resighting)
   const getCurrentFunFact = (bird) => {
     if (!bird) return ''
@@ -270,12 +320,29 @@ export default function App() {
 
   return (
     <div className="app">
-      {/* Version badge — visible in all screens for debugging */}
-      <div style={{
+      {/* Version badge — visible in all screens. Tap 5× to toggle dev mode. */}
+      <div onClick={handleBadgeTap} style={{
         position: 'fixed', bottom: 4, right: 6, zIndex: 9999,
-        fontSize: 9, fontFamily: 'monospace', color: 'rgba(61,220,127,0.55)',
-        letterSpacing: 0.5, pointerEvents: 'none',
-      }}>v2.1-landscape</div>
+        fontSize: 9, fontFamily: 'monospace',
+        color: devMode ? 'rgba(245,166,35,0.9)' : 'rgba(61,220,127,0.55)',
+        letterSpacing: 0.5, pointerEvents: 'auto', cursor: 'pointer',
+        padding: '4px 6px',
+      }}>{devMode ? 'v2.2-dev ●' : 'v2.2'}</div>
+
+      {devMode && (
+        <DevPanel
+          birds={BIRDS}
+          eggs={EASTER_EGGS}
+          open={devPanelOpen}
+          onToggleOpen={() => setDevPanelOpen(o => !o)}
+          onSummonBird={devSummonBird}
+          onTriggerEgg={devTriggerEgg}
+          onGoRadar={goToRadar}
+          onGoAviary={handleViewAviary}
+          onGoLeaderboard={handleViewLeaderboard}
+          onExit={() => { setDevMode(false); try { localStorage.setItem('bhn_devmode', '0') } catch {} }}
+        />
+      )}
       {screen === SCREEN.RARITY_ALERT && currentBird && (
         <RarityAlert bird={currentBird}
           onProceed={handleRarityProceed} onDismiss={handleDismiss}/>

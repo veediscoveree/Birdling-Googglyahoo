@@ -269,7 +269,7 @@ partner for exactly this evidence-quality work.
 | Phase | Scope | Why this order | Status |
 |---|---|---|---|
 | **0** | This document + `CLAUDE.md`; optional: convert roadmap to GitHub issues | Protect knowledge | ✅ this commit |
-| **1** | **Dev mode**: summon any bird/rarity/egg, fake GPS, screen jump, player code redemption stub | Makes every later phase testable in minutes | ☐ |
+| **1** | **Dev mode**: summon any bird/rarity/egg, screen jump | Makes every later phase testable in minutes | ✅ shipped 2026-09-09 (fake-GPS + player-codes deferred) |
 | **2** | **Capture overhaul**: derived difficulty model + feasibility bands; behavior plausibility pass (all 73 species vs. their `behaviorNotes`); observation-quality scoring prototype behind a dev-mode flag | Core gameplay first | ☐ |
 | **3** | **Backgrounds pass**: layered parallax scenes, time-of-day palettes, per-habitat polish | Visual payoff on solid gameplay | ☐ |
 | **4** | **Avatar accuracy+charm pass**: style guide, then species in batches of 5 audited against `distinctiveMarkings` | Uses dev mode for instant review | ☐ |
@@ -327,6 +327,29 @@ All three are optional; the app falls back to mock/offline modes without them.
   80 km/30 days — until ≥20 known species are found nearby.
 - **BirdNET**: Cornell Lab's open-source bird-sound classifier (the "Merlin-like" engine).
 - **eBird Record Format**: CSV format eBird accepts for bulk checklist import.
+
+## Changelog
+
+**2026-09-09 — Phase 1 (dev mode) + two capture bug fixes.**
+- **Dev mode** (`src/components/DevPanel.jsx`, wired in `App.jsx`): enable via `?dev=1`
+  or by tapping the version badge 5×. Summon any of the 73 species (to the encounter or
+  straight to capture), trigger any Easter Egg on demand, jump to Radar/Aviary/Leaderboard,
+  filter by rarity, search by name. While dev mode is on, random encounters are suppressed
+  so review is deterministic. State persists in `localStorage` (`bhn_devmode`).
+- **Rotation cut-off fixed** (`BinocularsCapture.jsx`): in landscape the capture screen was
+  clipped to the app's 430px-wide centered column (`App.css .app { max-width: 430px }`),
+  showing a cut-off partial image. The capture screen now becomes a full-viewport
+  `position: fixed` overlay in landscape, and viewport dimensions are tracked in state so a
+  rotation always re-renders cleanly (iOS reports stale sizes mid-rotation, so we re-read at
+  0/150/400 ms). Verified headlessly: capture `.screen` spans the full 844px viewport.
+- **Drifting background fixed** (`BinocularsCapture.jsx`): tilt aiming integrated the tilt
+  angle as a *velocity*, so holding the phone at any slight angle drifted the view (and
+  background) forever. Now tilt angle maps directly to view *position* (~22° = full
+  deflection) with easing, so holding steady holds the view steady. *(Reasoned + build-
+  verified; needs on-device confirmation of feel since headless has no device-orientation.)*
+- Version badge bumped to `v2.2`.
+
+---
 
 ## Appendix C — Repository & deployment state (2026-07-09 archaeology)
 

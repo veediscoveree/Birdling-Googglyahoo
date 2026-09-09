@@ -812,7 +812,10 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const [started, setStarted]           = useState(false)
   const [speedWarning, setSpeedWarning] = useState(false)
   const [opticalFocusDisplay, setOpticalFocusDisplay] = useState(35)
-  const [isLandscape, setIsLandscape]   = useState(() => window.innerWidth > window.innerHeight)
+  // Track real viewport pixels in state so rotation always triggers a re-render
+  // (reading window.innerWidth directly at render does NOT re-render on its own).
+  const [viewport, setViewport] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }))
+  const isLandscape = viewport.w > viewport.h
   const isLandscapeRef = useRef(window.innerWidth > window.innerHeight)
   // viewPhase drives the housing animation:
   //   'raising'   → figure-8 housing fully visible, two-circle clip
@@ -845,19 +848,21 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   }, [])
 
   // ── Landscape / orientation tracking ─────────────────────────────────────
-  // iOS fires orientationchange before innerWidth/innerHeight update, so defer 150ms.
+  // iOS reports stale innerWidth/innerHeight during and just after a rotation,
+  // so on orientationchange we re-read a few times until the values settle.
   useEffect(() => {
     const update = () => {
-      const ls = window.innerWidth > window.innerHeight
-      setIsLandscape(ls)
-      isLandscapeRef.current = ls
+      const w = window.innerWidth, h = window.innerHeight
+      isLandscapeRef.current = w > h
+      setViewport(prev => (prev.w === w && prev.h === h ? prev : { w, h }))
     }
-    const deferredUpdate = () => setTimeout(update, 150)
+    update()
+    const onOrient = () => { update(); setTimeout(update, 150); setTimeout(update, 400) }
     window.addEventListener('resize', update)
-    window.addEventListener('orientationchange', deferredUpdate)
+    window.addEventListener('orientationchange', onOrient)
     return () => {
       window.removeEventListener('resize', update)
-      window.removeEventListener('orientationchange', deferredUpdate)
+      window.removeEventListener('orientationchange', onOrient)
     }
   }, [])
 
@@ -982,10 +987,18 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
         //   portrait β (forward/back) → landscape left/right (X axis on screen)
         const tiltX = isLandscapeRef.current ? -rawBeta  : rawGamma
         const tiltY = isLandscapeRef.current ? -rawGamma : rawBeta
-        // Tilt angle → velocity contribution
-        const sensitivity = 0.0018
-        viewOffsetRef.current.x = clamp(viewOffsetRef.current.x + tiltX * sensitivity * dt / 16, -1, 1)
-        viewOffsetRef.current.y = clamp(viewOffsetRef.current.y + tiltY * sensitivity * dt / 16, -1, 1)
+        // Absolute mapping: tilt ANGLE → view POSITION (not velocity).
+        // Previously tilt was integrated as a velocity, so holding the phone at
+        // any slight angle made the view (and background) drift forever and never
+        // settle. Now ~22° of tilt maps to full deflection, and holding the phone
+        // steady holds the view — and the background — steady.
+        const TILT_RANGE = 22
+        const targetX = clamp(tiltX / TILT_RANGE, -1, 1)
+        const targetY = clamp(tiltY / TILT_RANGE, -1, 1)
+        // Frame-rate-independent easing toward the target for smooth motion.
+        const ease = 1 - Math.exp(-dt / 140)
+        viewOffsetRef.current.x = clamp(viewOffsetRef.current.x + (targetX - viewOffsetRef.current.x) * ease, -1, 1)
+        viewOffsetRef.current.y = clamp(viewOffsetRef.current.y + (targetY - viewOffsetRef.current.y) * ease, -1, 1)
       }
 
       // ── Speed warning (spook) ────────────────────────────────────────────
@@ -1066,8 +1079,8 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
 
   // ── Merged binocular view constants (landscape-aware) ─────────────────────
   // In landscape: binoculars fill the screen; focus ring moves to a right-side panel.
-  const lsVW = window.innerWidth
-  const lsVH = window.innerHeight
+  const lsVW = viewport.w
+  const lsVH = viewport.h
   const RING_LANE_W = isLandscape ? RING_R * 2 + 28 : 0   // right panel width in landscape
   const LS_TOP_H    = isLandscape ? 44 : 0                 // slim top-bar overlay height
   const BIN_W   = isLandscape ? Math.max(320, lsVW - RING_LANE_W - 8) : 348
@@ -1454,7 +1467,16 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
       justifyContent: isLandscape ? 'flex-start' : 'space-between',
       padding: isLandscape ? 0 : '20px 0 24px',
       userSelect: 'none',
-      position: 'relative',
+      // In landscape, break out of the app's 430px-wide centered column
+      // (App.css .app { max-width: 430px }) which otherwise clips the wide
+      // binoculars view to a partial, cut-off image. position:fixed is not
+      // constrained by that ancestor, so the capture fills the whole screen.
+      position: isLandscape ? 'fixed' : 'relative',
+      inset: isLandscape ? 0 : undefined,
+      width: isLandscape ? '100vw' : undefined,
+      height: isLandscape ? '100vh' : undefined,
+      maxWidth: isLandscape ? 'none' : undefined,
+      zIndex: isLandscape ? 300 : undefined,
       overflow: 'hidden',
     }}>
 
