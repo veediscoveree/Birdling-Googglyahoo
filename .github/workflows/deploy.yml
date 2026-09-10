@@ -22,6 +22,11 @@ jobs:
       - run: npm ci
 
       - run: npm run build
+        env:
+          # Optional API keys — set these as repository secrets to enable live
+          # data in the deployed build. Absent = the app runs in mock/offline mode.
+          VITE_XENOCANTO_KEY: ${{ secrets.VITE_XENOCANTO_KEY }}
+          VITE_EBIRD_API_KEY: ${{ secrets.VITE_EBIRD_API_KEY }}
 
       - name: Update docs/index.html
         run: |

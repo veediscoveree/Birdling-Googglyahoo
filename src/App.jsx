@@ -327,7 +327,7 @@ export default function App() {
         color: devMode ? 'rgba(245,166,35,0.9)' : 'rgba(61,220,127,0.55)',
         letterSpacing: 0.5, pointerEvents: 'auto', cursor: 'pointer',
         padding: '4px 6px',
-      }}>{devMode ? 'v2.3-dev ●' : 'v2.3'}</div>
+      }}>{devMode ? 'v2.4-dev ●' : 'v2.4'}</div>
 
       {devMode && (
         <DevPanel

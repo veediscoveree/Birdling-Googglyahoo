@@ -330,6 +330,26 @@ All three are optional; the app falls back to mock/offline modes without them.
 
 ## Changelog
 
+**2026-09-10 — Audio migrated to xeno-canto API v3 (keyed).**
+- On-device diagnostic revealed the truth: **xeno-canto API v2 is permanently retired**
+  (404 "no longer available"), all public CORS proxies are dead/keyed (allorigins timeout,
+  codetabs blocked, corsproxy now requires its own key), and **v3 requires a free key but is
+  CORS-enabled** (a keyless call returned a readable 401 — proving direct browser access works).
+- **Fix:** `useXenoCantoAudio` rewritten for **v3** — tag-based query (`gen:"X" sp:"Y"`),
+  `key` param, direct fetch (no proxy), tolerant parser. Key resolves from `?xckey=` → env
+  `VITE_XENOCANTO_KEY` → `localStorage.bhn_xc_key`. Cache namespace `bhn_xc3_`.
+- **Dev panel** now has a **xeno-canto key input** (saves to localStorage) so audio can be
+  tested instantly without a deploy, and the diagnostic tests v3 across 3 query formats and
+  dumps the response field names + file URL (to confirm the exact v3 shape from the device).
+- `deploy.yml` now passes `VITE_XENOCANTO_KEY` and `VITE_EBIRD_API_KEY` from repo secrets so
+  production bakes them in (absent → mock/offline mode).
+- **Action needed from Jared:** register a free xeno-canto account, get an API key, paste it
+  into the dev panel to confirm, then add it as repo secret `VITE_XENOCANTO_KEY` for the live
+  site. *Tradeoff:* a key baked into a public static build is visible in the JS (low-risk,
+  rate-limited to his account); a key-hiding relay (Cloudflare Worker) is the later hardening.
+- Verified with a mocked v3 response: diagnostic passes, Songs/Calls render, playback wired.
+  Version badge `v2.4`.
+
 **2026-09-09 (c) — Tilt control + bird-speed calibration.**
 - **Tilt "doesn't work" fixed** (`BinocularsCapture.jsx`): the absolute tilt mapping assumed a
   fixed neutral (beta=45°, gamma=0), which in landscape pegged the view to an edge so tilting

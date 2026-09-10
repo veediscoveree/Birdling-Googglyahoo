@@ -1,14 +1,42 @@
-// Fetches bird sound recordings from xeno-canto.org.
-// Most recordings are CC BY or CC BY-NC-SA — credited per recording.
-// API v2 supports CORS, no key required.
+// Fetches bird sound recordings from xeno-canto.org — API v3.
+//
+// The old keyless API v2 was permanently retired in 2025. API v3 requires a
+// free key but IS CORS-enabled, so the browser can fetch it directly (no proxy).
+//
+// Key resolution order:
+//   1. ?xckey=... in the URL (also saved to localStorage for convenience)
+//   2. VITE_XENOCANTO_KEY baked in at build time (production)
+//   3. localStorage 'bhn_xc_key' (pasted via the dev panel while testing)
+//
 // Results are persisted in localStorage (7-day TTL) for instant repeat loads.
 
 import { useState, useEffect, useRef } from 'react'
-import { fetchJsonWithFallback } from './corsFetch'
 
-const XC_API    = 'https://xeno-canto.org/api/2/recordings'
-const LS_PREFIX = 'bhn_xc_v3_'  // bumped to evict stale empty-result caches from the old fetch path
+export const XC_V3 = 'https://xeno-canto.org/api/3/recordings'
+const LS_PREFIX = 'bhn_xc3_'   // v3 cache namespace
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000   // 7 days
+
+// ── Key resolution ────────────────────────────────────────────────────────────
+export function getXcKey() {
+  try {
+    const fromUrl = new URLSearchParams(window.location.search).get('xckey')
+    if (fromUrl) { try { localStorage.setItem('bhn_xc_key', fromUrl) } catch {} ; return fromUrl }
+  } catch {}
+  const fromEnv = (import.meta.env && import.meta.env.VITE_XENOCANTO_KEY) || ''
+  if (fromEnv) return fromEnv
+  try { return localStorage.getItem('bhn_xc_key') || '' } catch { return '' }
+}
+
+// ── v3 query builder (tag-based) ──────────────────────────────────────────────
+// v3 replaced free-text species search with field tags. We split the scientific
+// name into genus + species epithet: e.g. "Cardinalis cardinalis" →
+// gen:"Cardinalis" sp:"cardinalis".
+export function buildXcQuery(scientificName, type) {
+  const parts = (scientificName || '').trim().split(/\s+/)
+  let q = parts.length >= 2 ? `gen:"${parts[0]}" sp:"${parts[1]}"` : (scientificName || '')
+  if (type) q += ` type:${type}`
+  return q
+}
 
 // ── localStorage helpers ──────────────────────────────────────────────────────
 function lsGet(key) {
@@ -24,19 +52,17 @@ function lsSet(key, data) {
   try { localStorage.setItem(LS_PREFIX + key, JSON.stringify({ data, ts: Date.now() })) } catch {}
 }
 
-// ── In-memory cache (avoids redundant network calls within a session) ─────────
 const memCache = {}
 
 // ── Length parser: "1:32" → 92 ────────────────────────────────────────────────
 function parseSeconds(lengthStr) {
   if (!lengthStr) return 0
-  const parts = lengthStr.split(':').map(Number)
+  const parts = String(lengthStr).split(':').map(Number)
   return parts.length === 2 ? parts[0] * 60 + (parts[1] || 0) : parts[0] || 0
 }
 
 const QUALITY_RANK = { A: 1, B: 2, C: 3, D: 4, E: 5 }
 
-// Pick highest-quality song longer than minSec; fall back to any song if none qualify
 export function pickBestSong(songs, minSec = 10) {
   if (!songs?.length) return null
   const ranked = [...songs].sort(
@@ -45,42 +71,47 @@ export function pickBestSong(songs, minSec = 10) {
   return ranked.find(s => parseSeconds(s.length) > minSec) || ranked[0] || null
 }
 
-// ── Fetcher ───────────────────────────────────────────────────────────────────
-function parseXCResponse(data) {
-  return (data.recordings || []).slice(0, 12).map(r => ({
-    id:          r.id,
-    url:         r.file ? (r.file.startsWith('//') ? `https:${r.file}` : r.file) : null,
-    type:        r.type,
-    length:      r.length,
-    quality:     r.q,
-    location:    r.loc,
-    country:     r.cnt,
-    date:        r.date,
-    recordist:   r.rec,
-    license:     r.lic,
-    sonogramUrl: r.sono?.small,
-    xcUrl:       `https://xeno-canto.org/${r.id}`,
-  }))
+// ── Response parser — tolerant of v3 field-name variations ────────────────────
+export function parseXCResponse(data) {
+  return (data.recordings || []).slice(0, 12).map(r => {
+    const raw = r.file || r['file-name'] || r.url || r.audio ||
+                (r.sono && (r.sono.full || r.sono.large)) || null
+    const url = raw ? (String(raw).startsWith('//') ? `https:${raw}` : String(raw)) : null
+    return {
+      id:        String(r.id),
+      url,
+      type:      r.type || '',
+      length:    r.length || r.len || '',
+      quality:   r.q || r.quality || '',
+      location:  r.loc || '',
+      country:   r.cnt || '',
+      date:      r.date || '',
+      recordist: r.rec || '',
+      license:   r.lic || '',
+      xcUrl:     `https://xeno-canto.org/${r.id}`,
+    }
+  }).filter(r => r.url)
 }
 
-async function fetchRecordings(speciesName, type) {
-  const query    = `"${speciesName}"${type ? ` type:${type}` : ''}`
-  const cacheKey = query
+// ── Fetcher (v3, direct, keyed) ───────────────────────────────────────────────
+async function fetchRecordings(scientificName, type) {
+  const key = getXcKey()
+  if (!key) return []
+  const query    = buildXcQuery(scientificName, type)
+  const cacheKey = `${query}`
 
   if (memCache[cacheKey]) return memCache[cacheKey]
   const persisted = lsGet(cacheKey)
   if (persisted) { memCache[cacheKey] = persisted; return persisted }
 
-  const targetUrl = `${XC_API}?${new URLSearchParams({ query })}`
-
-  // xeno-canto sends no CORS headers, so a direct browser fetch is blocked;
-  // fetchJsonWithFallback routes through CORS proxies until one succeeds.
+  const url = `${XC_V3}?${new URLSearchParams({ query, key })}`
   let recs = []
   try {
-    const data = await fetchJsonWithFallback(targetUrl)
-    recs = parseXCResponse(data)
+    const res = await fetch(url)
+    if (res.ok) recs = parseXCResponse(await res.json())
+    else console.warn('[XC v3]', res.status, 'for', query)
   } catch (e) {
-    console.warn('[XC] fetch failed for', query, '—', e.message)
+    console.warn('[XC v3] fetch failed for', query, '—', e.message)
   }
 
   if (recs.length > 0) {
@@ -96,11 +127,14 @@ export function useXenoCantoAudio(xenoCantoSpecies) {
   const [calls, setCalls]       = useState([])
   const [loading, setLoading]   = useState(true)
   const [apiError, setApiError] = useState(false)
+  const [noKey, setNoKey]       = useState(!getXcKey())
   const [playing, setPlaying]   = useState(null)
   const audioRef = useRef(null)
 
   useEffect(() => {
     if (!xenoCantoSpecies) { setLoading(false); return }
+    if (!getXcKey()) { setNoKey(true); setLoading(false); return }
+    setNoKey(false)
     let cancelled = false
     setLoading(true)
 
@@ -108,14 +142,10 @@ export function useXenoCantoAudio(xenoCantoSpecies) {
       fetchRecordings(xenoCantoSpecies, 'song'),
       fetchRecordings(xenoCantoSpecies, 'call'),
     ]).then(async ([songRecs, callRecs]) => {
-      // Fall back to untyped query if both typed queries returned nothing
       if (songRecs.length === 0 && callRecs.length === 0) {
         const all = await fetchRecordings(xenoCantoSpecies, '')
         songRecs = all.slice(0, 8)
-        if (all.length === 0) {
-          // Still nothing — mark as API error so UI can show the right message
-          if (!cancelled) setApiError(true)
-        }
+        if (all.length === 0 && !cancelled) setApiError(true)
       }
       if (!cancelled) {
         setSongs(songRecs)
@@ -147,5 +177,5 @@ export function useXenoCantoAudio(xenoCantoSpecies) {
 
   useEffect(() => () => { if (audioRef.current) audioRef.current.pause() }, [])
 
-  return { songs, calls, loading, apiError, playing, play, stop, bestSong: pickBestSong(songs) }
+  return { songs, calls, loading, apiError, noKey, playing, play, stop, bestSong: pickBestSong(songs) }
 }

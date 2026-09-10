@@ -9,7 +9,7 @@ const QUALITY_COLOR = { A: '#3ddc7f', B: '#a8d878', C: '#f5a623', D: '#ff8a65', 
 
 export default function BirdAudio({ bird }) {
   const speciesName = bird.xenoCantoSpecies || bird.scientificName
-  const { songs, calls, loading, apiError } = useXenoCantoAudio(speciesName)
+  const { songs, calls, loading, apiError, noKey } = useXenoCantoAudio(speciesName)
   const [playing, setPlaying] = useState(null)
   const audioRef = useRef(null)
 
@@ -41,7 +41,15 @@ export default function BirdAudio({ bird }) {
 
   if (!songs.length && !calls.length) return (
     <div style={{ padding: '24px 16px', background: 'var(--bg-card)', borderRadius: 12, textAlign: 'center', color: 'var(--text-dim)', fontSize: 13 }}>
-      {apiError
+      {noKey
+        ? <>Bird sounds need a free xeno-canto key.<br/>
+            <span style={{ fontSize: 12, opacity: 0.85 }}>Add one in the DEV panel to enable audio.</span><br/>
+            <a href={`https://xeno-canto.org/explore?query=${encodeURIComponent(speciesName)}`}
+               target="_blank" rel="noopener noreferrer"
+               style={{ color: 'var(--accent-sky)', marginTop: 6, display: 'inline-block' }}>
+              Meanwhile, listen on xeno-canto.org ↗
+            </a></>
+        : apiError
         ? <>Audio unavailable — xeno-canto.org could not be reached.<br/>
             <a href={`https://xeno-canto.org/explore?query=${encodeURIComponent(speciesName)}`}
                target="_blank" rel="noopener noreferrer"

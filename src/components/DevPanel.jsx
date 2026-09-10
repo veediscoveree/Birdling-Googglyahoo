@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { XC_V3, getXcKey, buildXcQuery } from '../hooks/useXenoCantoAudio'
 
 // ──────────────────────────────────────────────────────────────────────────
 // Developer panel — summon any bird or Easter Egg on demand, jump screens.
@@ -13,28 +14,33 @@ const RARITY_COLOR = {
 }
 
 // ── Audio-source diagnostics ──────────────────────────────────────────────
-// Probes each fetch strategy against xeno-canto so we can see, from the user's
-// own device, exactly which (if any) path works and what the others return.
-const XC_V2 = 'https://xeno-canto.org/api/2/recordings?query=' + encodeURIComponent('"Cardinalis cardinalis"')
-const XC_V3 = 'https://xeno-canto.org/api/3/recordings?query=' + encodeURIComponent('"Cardinalis cardinalis"')
-const AUDIO_PROBES = [
-  ['direct v2',  XC_V2],
-  ['allorigins', 'https://api.allorigins.win/raw?url=' + encodeURIComponent(XC_V2)],
-  ['codetabs',   'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(XC_V2)],
-  ['corsproxy',  'https://corsproxy.io/?url=' + encodeURIComponent(XC_V2)],
-  ['v3 (no key)', XC_V3],
-]
-async function probeOne(label, url) {
+// v2 is retired and the public proxies are dead; v3 needs a key but is
+// CORS-direct. These probes test v3 (with the key) across query formats and
+// reveal the response shape, so we can confirm audio works from the device.
+function v3Url(query, key) {
+  return `${XC_V3}?${new URLSearchParams({ query, key })}`
+}
+async function probeUrl(label, url, key) {
   const t0 = Date.now()
+  if (!key) return { label, ok: false, status: 'no-key', ms: 0, n: '—', keys: '', fileUrl: '',
+    snippet: 'paste a xeno-canto key above first' }
   try {
     const res  = await fetch(url)
     const text = await res.text()
-    let n = null
-    try { n = JSON.parse(text).numRecordings } catch {}
-    return { label, ok: res.ok, status: String(res.status), ms: Date.now() - t0,
-      n: n ?? '—', snippet: text.slice(0, 90).replace(/\s+/g, ' ') }
+    let n = '—', keys = '', fileUrl = ''
+    try {
+      const j  = JSON.parse(text)
+      n = j.numRecordings ?? (j.recordings ? j.recordings.length : '—')
+      const r0 = j.recordings && j.recordings[0]
+      if (r0) {
+        keys = Object.keys(r0).join(',')
+        fileUrl = r0.file || r0['file-name'] || r0.url || r0.audio || (r0.sono && r0.sono.full) || ''
+      }
+    } catch {}
+    return { label, ok: res.ok && n !== '—' && n !== 0 && n !== '0', status: String(res.status),
+      ms: Date.now() - t0, n, keys, fileUrl, snippet: text.slice(0, 90).replace(/\s+/g, ' ') }
   } catch (e) {
-    return { label, ok: false, status: 'ERR', ms: Date.now() - t0, n: '—',
+    return { label, ok: false, status: 'ERR', ms: Date.now() - t0, n: '—', keys: '', fileUrl: '',
       snippet: `${e.name || 'Error'}: ${(e.message || '').slice(0, 70)}` }
   }
 }
@@ -57,13 +63,25 @@ export default function DevPanel({
   const [rarity, setRarity] = useState('all')
   const [diag, setDiag]     = useState(null)
   const [diagRunning, setDiagRunning] = useState(false)
+  const [xcKey, setXcKey]   = useState(() => getXcKey())
+
+  const saveXcKey = (v) => {
+    setXcKey(v)
+    try { v ? localStorage.setItem('bhn_xc_key', v.trim()) : localStorage.removeItem('bhn_xc_key') } catch {}
+  }
 
   const runAudioDiag = async () => {
     setDiagRunning(true)
     setDiag([])
+    const key = getXcKey()
+    const probes = [
+      ['v3 gen/sp',  v3Url(buildXcQuery('Cardinalis cardinalis', 'song'), key)],
+      ['v3 sp:full', v3Url('sp:"Cardinalis cardinalis"', key)],
+      ['v3 freetext', v3Url('Cardinalis cardinalis', key)],
+    ]
     const results = []
-    for (const [label, url] of AUDIO_PROBES) {
-      const r = await probeOne(label, url)
+    for (const [label, url] of probes) {
+      const r = await probeUrl(label, url, key)
       results.push(r)
       setDiag([...results])
     }
@@ -143,14 +161,29 @@ export default function DevPanel({
           <button style={btn} onClick={onGoLeaderboard}>Leaders</button>
         </div>
 
-        {/* Audio diagnostics */}
+        {/* Audio key + diagnostics */}
         <div style={{ fontSize: 10, color: '#9ab088', letterSpacing: 1, margin: '2px 0 5px' }}>
-          AUDIO DIAGNOSTIC
+          XENO-CANTO KEY (for bird sounds)
+        </div>
+        <input
+          value={xcKey}
+          onChange={e => saveXcKey(e.target.value)}
+          placeholder="paste your xeno-canto API key…"
+          autoCapitalize="off" autoCorrect="off" spellCheck={false}
+          style={{
+            width: '100%', boxSizing: 'border-box', marginBottom: 6,
+            background: 'rgba(0,0,0,0.4)', border: `1px solid ${xcKey ? 'rgba(61,220,127,0.4)' : 'rgba(255,255,255,0.15)'}`,
+            borderRadius: 6, padding: '6px 8px', color: '#e8f0e0',
+            fontFamily: 'monospace', fontSize: 11,
+          }}
+        />
+        <div style={{ fontSize: 9.5, color: '#8a9a7a', marginBottom: 6 }}>
+          {xcKey ? '✓ key saved on this device' : 'Get a free key at xeno-canto.org → your account → API'}
         </div>
         <button onClick={runAudioDiag} disabled={diagRunning} style={{
           ...btn, width: '100%', flex: 'none', marginBottom: 6,
           opacity: diagRunning ? 0.6 : 1,
-        }}>{diagRunning ? 'probing…' : '🎵 Test audio sources'}</button>
+        }}>{diagRunning ? 'probing…' : '🎵 Test audio (v3)'}</button>
         {diag && (
           <div style={{
             fontSize: 9.5, lineHeight: 1.35, marginBottom: 12,
@@ -159,12 +192,14 @@ export default function DevPanel({
           }}>
             {diag.length === 0 && <div style={{ color: '#9ab088' }}>running…</div>}
             {diag.map((r, i) => (
-              <div key={i} style={{ marginBottom: 5, wordBreak: 'break-word' }}>
+              <div key={i} style={{ marginBottom: 6, wordBreak: 'break-word' }}>
                 <span style={{ color: r.ok ? '#6fe0a0' : '#e88' }}>
                   {r.ok ? '✓' : '✗'} {r.label}
                 </span>
                 <span style={{ color: '#8a9a7a' }}> · {r.status} · n={r.n} · {r.ms}ms</span>
-                <div style={{ color: '#aab', opacity: 0.75 }}>{r.snippet}</div>
+                {r.keys && <div style={{ color: '#8ab0d0' }}>fields: {r.keys}</div>}
+                {r.fileUrl && <div style={{ color: '#6fe0a0', opacity: 0.85 }}>file: {r.fileUrl.slice(0, 80)}</div>}
+                {!r.ok && <div style={{ color: '#aab', opacity: 0.75 }}>{r.snippet}</div>}
               </div>
             ))}
           </div>
