@@ -13,7 +13,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 export const XC_V3 = 'https://xeno-canto.org/api/3/recordings'
-const LS_PREFIX = 'bhn_xc3_'   // v3 cache namespace
+const LS_PREFIX = 'bhn_xc3b_'  // v3 cache namespace (b: records now carry candidate urls[])
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000   // 7 days
 
 // ── Key resolution ────────────────────────────────────────────────────────────
@@ -72,14 +72,25 @@ export function pickBestSong(songs, minSec = 10) {
 }
 
 // ── Response parser — tolerant of v3 field-name variations ────────────────────
+const abs = (u) => (u ? (String(u).startsWith('//') ? `https:${u}` : String(u)) : null)
+
 export function parseXCResponse(data) {
   return (data.recordings || []).slice(0, 12).map(r => {
-    const raw = r.file || r['file-name'] || r.url || r.audio ||
-                (r.sono && (r.sono.full || r.sono.large)) || null
-    const url = raw ? (String(raw).startsWith('//') ? `https:${raw}` : String(raw)) : null
+    // The v3 `file` field is a /download endpoint (attachment-style), which mobile
+    // Safari often refuses to stream. The static mp3 lives beside the sonogram:
+    //   sono.small = .../sounds/uploaded/<dir>/ffts/XC123-small.png
+    //   file-name  = XC123-Some bird.mp3   →   .../sounds/uploaded/<dir>/<file-name>
+    const sono = abs(r.sono && (r.sono.small || r.sono.med || r.sono.large || r.sono.full))
+    const fname = r['file-name']
+    const direct = (sono && fname && sono.includes('/ffts/'))
+      ? `${sono.split('/ffts/')[0]}/${encodeURIComponent(fname)}`
+      : null
+    const download = abs(r.file || r.url || r.audio)
+    const urls = [direct, download].filter(Boolean)
     return {
       id:        String(r.id),
-      url,
+      url:       urls[0] || null,
+      urls,
       type:      r.type || '',
       length:    r.length || r.len || '',
       quality:   r.q || r.quality || '',

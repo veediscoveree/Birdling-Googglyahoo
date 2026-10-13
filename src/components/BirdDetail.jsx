@@ -69,9 +69,9 @@ export default function BirdDetail({ bird, captured, onBack }) {
 
   const tabs = [
     ...(captured ? [{ id: 'photos',    label: '📷 Photos' }] : []),
+    ...(captured ? [{ id: 'sounds',    label: '🎵 Sounds' }] : []),
     { id: 'appearance', label: 'Appearance' },
     { id: 'behavior',   label: 'Behavior' },
-    ...(captured ? [{ id: 'sounds', label: '🎵 Sounds' }] : []),
     { id: 'capture',    label: 'Capture' },
   ]
 
@@ -294,7 +294,9 @@ export default function BirdDetail({ bird, captured, onBack }) {
           {captured && (
             <div style={{ marginTop: 8, padding: '12px 14px', background: `${bird.appearance.uiColor}10`, border: `1px solid ${bird.appearance.uiColor}25`, borderRadius: 12 }}>
               <div style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: 1, marginBottom: 5 }}>DID YOU KNOW</div>
-              <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{bird.funFact}</div>
+              {(bird.funFacts || [bird.funFact]).filter(Boolean).map((f, i) => (
+                <div key={i} style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, marginTop: i ? 8 : 0 }}>{f}</div>
+              ))}
             </div>
           )}
 

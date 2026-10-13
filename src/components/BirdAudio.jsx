@@ -11,25 +11,50 @@ export default function BirdAudio({ bird }) {
   const speciesName = bird.xenoCantoSpecies || bird.scientificName
   const { songs, calls, loading, apiError, noKey } = useXenoCantoAudio(speciesName)
   const [playing, setPlaying] = useState(null)
-  const audioRef = useRef(null)
+  const [failed, setFailed]   = useState({})      // recId → error text
+  const audioRef   = useRef(null)
+  const attemptRef = useRef(null)                 // { rec, idx } currently loading
+
+  // Try each candidate URL for a recording in turn; surface the real error if all fail.
+  const startAttempt = (rec, idx) => {
+    const audio = audioRef.current
+    const urls = rec.urls && rec.urls.length ? rec.urls : [rec.url]
+    if (!audio) return
+    if (idx >= urls.length) {
+      const code = audio.error ? audio.error.code : '?'
+      setPlaying(null)
+      setFailed(f => ({ ...f, [rec.id]: `Couldn't play (media error ${code})` }))
+      return
+    }
+    attemptRef.current = { rec, idx }
+    audio.src = urls[idx]
+    audio.load()                       // load() before play() is required on iOS
+    const p = audio.play()
+    if (p && p.catch) p.catch(err => {
+      if (err && err.name === 'AbortError') return          // superseded by another tap
+      if (attemptRef.current && attemptRef.current.rec.id === rec.id && attemptRef.current.idx === idx) {
+        startAttempt(rec, idx + 1)
+      }
+    })
+  }
 
   const play = (rec) => {
     const audio = audioRef.current
     if (!audio || !rec.url) return
-
-    // Tapping the active row stops playback
-    if (playing === rec.id) {
+    if (playing === rec.id) {          // tapping the active row stops playback
       audio.pause()
+      attemptRef.current = null
       setPlaying(null)
       return
     }
+    setFailed(f => { const n = { ...f }; delete n[rec.id]; return n })
+    setPlaying(rec.id)
+    startAttempt(rec, 0)
+  }
 
-    // Switch source and play — load() is required before play() on iOS
-    audio.src = rec.url
-    audio.load()
-    audio.play()
-      .then(() => setPlaying(rec.id))
-      .catch(() => setPlaying(null))
+  const handleAudioError = () => {
+    const at = attemptRef.current
+    if (at) startAttempt(at.rec, at.idx + 1)
   }
 
   if (loading) return (
@@ -90,6 +115,9 @@ export default function BirdAudio({ bird }) {
           <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {rec.recordist} · {rec.location || rec.country} · {rec.length}
           </div>
+          {failed[rec.id] && (
+            <div style={{ fontSize: 11, color: '#ff8a65', marginTop: 3 }}>{failed[rec.id]}</div>
+          )}
         </div>
 
         <div style={{
@@ -112,7 +140,7 @@ export default function BirdAudio({ bird }) {
         ref={audioRef}
         preload="none"
         onEnded={() => setPlaying(null)}
-        onError={() => setPlaying(null)}
+        onError={handleAudioError}
         style={{ display: 'none' }}
       />
 

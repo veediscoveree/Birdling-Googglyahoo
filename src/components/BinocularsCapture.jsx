@@ -13,6 +13,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { BirdAvatar } from './BirdAvatars'
+import { eulerToMatrix, relativePan, screenQuarterTurn, holdMode } from '../lib/tilt'
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const CAPTURE_TIME_MS   = 2200   // hold BOTH spatial + optical focus this long
@@ -848,16 +849,23 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
+  const captureNeutral = () => {
+    const { alpha, beta, gamma } = orientRef.current
+    const m = eulerToMatrix(alpha, beta, gamma)
+    const angle = (typeof screen !== 'undefined' && screen.orientation) ? screen.orientation.angle : 0
+    neutralRef.current = { m, q: screenQuarterTurn(m, isLandscapeRef.current, angle), mode: holdMode(m) }
+  }
+
   // ── Device orientation (mobile) ──────────────────────────────────────────
   useEffect(() => {
     const handler = (e) => {
       if (e.beta == null && e.gamma == null) return   // no orientation sensor / no data
-      const reading = { beta: e.beta ?? 45, gamma: e.gamma ?? 0 }
+      const reading = { alpha: e.alpha ?? 0, beta: e.beta ?? 0, gamma: e.gamma ?? 0 }
       orientRef.current = reading
-      // Capture the pose held at Start as the neutral baseline, so tilt is
-      // measured relative to however the phone is held (works in any orientation
-      // and never pegs the view to an edge).
-      if (needsNeutralRef.current) { neutralRef.current = { ...reading }; needsNeutralRef.current = false }
+      // Capture the pose held at Start as the neutral reference (as a rotation matrix plus
+      // which way the screen is turned), so tilt is measured relative to however the phone
+      // is held — in any orientation, without Euler-angle singularities.
+      if (needsNeutralRef.current) { captureNeutral(); needsNeutralRef.current = false }
       hasTiltRef.current = true
     }
     window.addEventListener('deviceorientation', handler)
@@ -870,6 +878,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth, h = window.innerHeight
+      if (isLandscapeRef.current !== (w > h)) needsNeutralRef.current = true   // re-center tilt after a rotation
       isLandscapeRef.current = w > h
       setViewport(prev => (prev.w === w && prev.h === h ? prev : { w, h }))
     }
@@ -972,8 +981,9 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
     }
 
     // Recalibrate tilt neutral to the current holding pose and re-center the view.
-    needsNeutralRef.current = true
-    if (hasTiltRef.current) neutralRef.current = { ...orientRef.current }
+    // If we already have a sensor reading, calibrate now; otherwise calibrate on the first one.
+    if (hasTiltRef.current) { captureNeutral(); needsNeutralRef.current = false }
+    else needsNeutralRef.current = true
     viewOffsetRef.current = { x: 0, y: 0 }
 
     const movementPattern = bird.captureStats.movementPattern || 'perching'
@@ -999,18 +1009,16 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
       const frame = ++frameRef.current
 
       // ── Momentum-based tilt aiming (mobile) ─────────────────────────────
-      if (hasTiltRef.current) {
-        const { beta, gamma } = orientRef.current
-        const n = neutralRef.current || { beta, gamma }
-        // Measure tilt RELATIVE to the pose held at Start (with small dead zones).
-        const dGamma = Math.abs(gamma - n.gamma) > 2 ? (gamma - n.gamma) : 0  // left/right roll
-        const dBeta  = Math.abs(beta  - n.beta)  > 2 ? (beta  - n.beta)  : 0  // forward/back pitch
-        // In landscape (rotated 90°) the on-screen axes swap.
-        const tiltX = isLandscapeRef.current ? -dBeta  : dGamma
-        const tiltY = isLandscapeRef.current ? -dGamma : dBeta
-        // Absolute mapping: tilt ANGLE from neutral → view POSITION (not velocity),
-        // so holding the phone steady holds the view — and background — steady.
-        // ~18° of tilt from the neutral pose pans fully to an edge.
+      if (hasTiltRef.current && neutralRef.current) {
+        const { alpha, beta, gamma } = orientRef.current
+        const pan = relativePan(neutralRef.current.m, eulerToMatrix(alpha, beta, gamma), neutralRef.current.q, neutralRef.current.mode)
+        const R2D = 180 / Math.PI
+        // Small dead zone (degrees) so hand tremor doesn't jitter the view
+        const dz = (v) => (Math.abs(v) > 1.5 ? v : 0)
+        const tiltX = dz(pan.x * R2D)
+        const tiltY = dz(pan.y * R2D)
+        // Absolute mapping: tilt ANGLE from neutral → view POSITION (not velocity), so
+        // holding steady holds the view — and background — steady. ~18° pans to an edge.
         const TILT_RANGE = 18
         const targetX = clamp(tiltX / TILT_RANGE, -1, 1)
         const targetY = clamp(tiltY / TILT_RANGE, -1, 1)

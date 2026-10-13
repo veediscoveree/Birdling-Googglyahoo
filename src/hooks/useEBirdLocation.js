@@ -8,7 +8,18 @@
 import { useState, useEffect } from 'react'
 import { BIRDS } from '../data/birds'
 
-const EBIRD_API_KEY = import.meta.env.VITE_EBIRD_API_KEY || ''
+// Key resolution: ?ebirdkey= in the URL (saved for next time) → build-time env → localStorage
+// (the dev panel writes localStorage 'bhn_ebird_key'). Read lazily so a pasted key works
+// without a rebuild.
+export function getEBirdKey() {
+  try {
+    const fromUrl = new URLSearchParams(window.location.search).get('ebirdkey')
+    if (fromUrl) { try { localStorage.setItem('bhn_ebird_key', fromUrl) } catch {} ; return fromUrl }
+  } catch {}
+  const fromEnv = import.meta.env.VITE_EBIRD_API_KEY || ''
+  if (fromEnv) return fromEnv
+  try { return localStorage.getItem('bhn_ebird_key') || '' } catch { return '' }
+}
 const EBIRD_BASE    = 'https://api.ebird.org/v2'
 const MIN_BIRDS     = 20   // keep expanding until we have this many
 
@@ -21,13 +32,14 @@ const SEARCH_LADDER = [
 ]
 
 // Build a map of eBirdCode → BIRDS entry for fast lookup
-const EBIRD_MAP = {}
+export const EBIRD_MAP = {}
 for (const b of BIRDS) {
   if (b.eBirdCode) EBIRD_MAP[b.eBirdCode] = b
 }
 
 // ── Fetch one rung of the ladder ──────────────────────────────────────────────
-async function fetchObservations(lat, lng, radiusKm, daysBack) {
+export async function fetchObservations(lat, lng, radiusKm, daysBack) {
+  const key = getEBirdKey()
   const params = new URLSearchParams({
     lat, lng,
     dist:       radiusKm,
@@ -35,9 +47,18 @@ async function fetchObservations(lat, lng, radiusKm, daysBack) {
     maxResults: 500,
     fmt:        'json',
   })
-  const res = await fetch(`${EBIRD_BASE}/data/obs/geo/recent?${params}`, {
-    headers: { 'X-eBirdApiToken': EBIRD_API_KEY },
-  })
+  const url = `${EBIRD_BASE}/data/obs/geo/recent?${params}`
+  // A header-less request avoids a CORS preflight, so try the key as a query param first
+  // and fall back to the documented X-eBirdApiToken header.
+  let res
+  try {
+    res = await fetch(`${url}&key=${encodeURIComponent(key)}`)
+  } catch {
+    res = await fetch(url, { headers: { 'X-eBirdApiToken': key } })
+  }
+  if (res.status === 401 || res.status === 403) {
+    res = await fetch(url, { headers: { 'X-eBirdApiToken': key } })
+  }
   if (!res.ok) throw new Error(`eBird ${res.status}`)
   return res.json()   // array of observation objects
 }
@@ -105,7 +126,7 @@ export function useEBirdLocation(userLocation) {
   const [loading,        setLoading]        = useState(false)
 
   useEffect(() => {
-    if (!EBIRD_API_KEY || !userLocation?.lat || !userLocation?.lng) return
+    if (!getEBirdKey() || !userLocation?.lat || !userLocation?.lng) return
     let cancelled = false
     setLoading(true)
 

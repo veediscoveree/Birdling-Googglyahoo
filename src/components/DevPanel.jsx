@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
-import { XC_V3, getXcKey, buildXcQuery } from '../hooks/useXenoCantoAudio'
+import { getEBirdKey, fetchObservations, EBIRD_MAP } from '../hooks/useEBirdLocation'
+import { XC_V3, getXcKey, buildXcQuery, parseXCResponse } from '../hooks/useXenoCantoAudio'
 
 // ──────────────────────────────────────────────────────────────────────────
 // Developer panel — summon any bird or Easter Egg on demand, jump screens.
@@ -20,6 +21,22 @@ const RARITY_COLOR = {
 function v3Url(query, key) {
   return `${XC_V3}?${new URLSearchParams({ query, key })}`
 }
+// Try to actually load an audio URL; resolve with how it went.
+function testAudioUrl(url) {
+  return new Promise(resolve => {
+    const t0 = Date.now()
+    const a = new Audio()
+    let done = false
+    const finish = (ok, why) => { if (done) return; done = true; a.src = ''; resolve({ ok, why, ms: Date.now() - t0 }) }
+    a.preload = 'auto'
+    a.oncanplay = () => finish(true, 'canplay')
+    a.onerror = () => finish(false, `media error ${a.error ? a.error.code : '?'}`)
+    setTimeout(() => finish(false, 'timeout (8s)'), 8000)
+    a.src = url
+    a.load()
+  })
+}
+
 async function probeUrl(label, url, key) {
   const t0 = Date.now()
   if (!key) return { label, ok: false, status: 'no-key', ms: 0, n: '—', keys: '', fileUrl: '',
@@ -56,7 +73,7 @@ const box = {
 
 export default function DevPanel({
   birds, eggs, open, onToggleOpen,
-  onSummonBird, onTriggerEgg,
+  onSummonBird, onTriggerEgg, userLocation,
   onGoRadar, onGoAviary, onGoLeaderboard, onExit,
 }) {
   const [query, setQuery]   = useState('')
@@ -64,6 +81,26 @@ export default function DevPanel({
   const [diag, setDiag]     = useState(null)
   const [diagRunning, setDiagRunning] = useState(false)
   const [xcKey, setXcKey]   = useState(() => getXcKey())
+  const [ebKey, setEbKey]   = useState(() => getEBirdKey())
+  const [ebDiag, setEbDiag] = useState(null)
+
+  const saveEbKey = (v) => {
+    setEbKey(v)
+    try { v ? localStorage.setItem('bhn_ebird_key', v.trim()) : localStorage.removeItem('bhn_ebird_key') } catch {}
+  }
+  const runEbirdDiag = async () => {
+    setEbDiag({ running: true })
+    const lat = userLocation?.lat ?? 40.7614, lng = userLocation?.lng ?? -73.9776
+    try {
+      const raw = await fetchObservations(lat, lng, 25, 14)
+      const species = new Set(raw.map(o => o.speciesCode))
+      const matched = [...species].filter(c => EBIRD_MAP[c])
+      setEbDiag({ ok: true, lat, lng, obs: raw.length, species: species.size, matched: matched.length,
+        sample: raw.slice(0, 3).map(o => `${o.comName} @ ${o.locName}`).join(' | ') })
+    } catch (e) {
+      setEbDiag({ ok: false, error: String(e.message || e) })
+    }
+  }
 
   const saveXcKey = (v) => {
     setXcKey(v)
@@ -84,6 +121,24 @@ export default function DevPanel({
       const r = await probeUrl(label, url, key)
       results.push(r)
       setDiag([...results])
+    }
+    // Real playback test of the first recording's candidate file URLs
+    if (key) {
+      try {
+        const res = await fetch(v3Url(buildXcQuery('Cardinalis cardinalis', 'song'), key))
+        const rec = parseXCResponse(await res.json())[0]
+        if (rec) {
+          for (const [i, u] of rec.urls.entries()) {
+            const t = await testAudioUrl(u)
+            results.push({ label: `play ${i === 0 && rec.urls.length > 1 ? 'direct' : 'download'}`, ok: t.ok,
+              status: t.why, ms: t.ms, n: '—', keys: '', fileUrl: u, snippet: u })
+            setDiag([...results])
+          }
+        }
+      } catch (e) {
+        results.push({ label: 'play test', ok: false, status: 'ERR', ms: 0, n: '—', keys: '', fileUrl: '', snippet: String(e.message || e) })
+        setDiag([...results])
+      }
     }
     setDiagRunning(false)
   }
@@ -160,6 +215,38 @@ export default function DevPanel({
           <button style={btn} onClick={onGoAviary}>Aviary</button>
           <button style={btn} onClick={onGoLeaderboard}>Leaders</button>
         </div>
+
+        {/* eBird key + diagnostics */}
+        <div style={{ fontSize: 10, color: '#9ab088', letterSpacing: 1, margin: '2px 0 5px' }}>
+          EBIRD KEY (real birds near you)
+        </div>
+        <input
+          value={ebKey}
+          onChange={e => saveEbKey(e.target.value)}
+          placeholder="paste your eBird API key…"
+          autoCapitalize="off" autoCorrect="off" spellCheck={false}
+          style={{
+            width: '100%', boxSizing: 'border-box', marginBottom: 6,
+            background: 'rgba(0,0,0,0.4)', border: `1px solid ${ebKey ? 'rgba(61,220,127,0.4)' : 'rgba(255,255,255,0.15)'}`,
+            borderRadius: 6, padding: '6px 8px', color: '#e8f0e0',
+            fontFamily: 'monospace', fontSize: 11,
+          }}
+        />
+        <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
+          <button onClick={runEbirdDiag} style={{ ...btn }}>🐦 Test eBird</button>
+          <button onClick={() => window.location.reload()} style={{ ...btn }}>↻ Reload app</button>
+        </div>
+        {ebDiag && !ebDiag.running && (
+          <div style={{ fontSize: 9.5, lineHeight: 1.4, marginBottom: 12, border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 6, padding: 7, background: 'rgba(0,0,0,0.3)', wordBreak: 'break-word' }}>
+            {ebDiag.ok ? (<>
+              <div style={{ color: '#6fe0a0' }}>✓ eBird OK · {ebDiag.obs} sightings · {ebDiag.species} species within 25 km / 14 days of {ebDiag.lat.toFixed(2)},{ebDiag.lng.toFixed(2)}</div>
+              <div style={{ color: '#8a9a7a' }}>{ebDiag.matched} of those are in our 73-bird game</div>
+              <div style={{ color: '#aab', opacity: 0.8 }}>{ebDiag.sample}</div>
+            </>) : <div style={{ color: '#e88' }}>✗ {ebDiag.error}</div>}
+          </div>
+        )}
+        {ebDiag && ebDiag.running && <div style={{ fontSize: 10, color: '#9ab088', marginBottom: 8 }}>asking eBird…</div>}
 
         {/* Audio key + diagnostics */}
         <div style={{ fontSize: 10, color: '#9ab088', letterSpacing: 1, margin: '2px 0 5px' }}>

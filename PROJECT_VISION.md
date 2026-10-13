@@ -330,6 +330,28 @@ All three are optional; the app falls back to mock/offline modes without them.
 
 ## Changelog
 
+**2026-10-13 — Sound playback, tab order, "Did you know", pose-aware tilt, eBird key plumbing (v2.5).**
+- **xeno-canto v3 key confirmed working** on-device (`n=676`). The recording list loaded but no
+  sound played: v3's `file` field is a `/download` (attachment-style) endpoint mobile Safari often
+  won't stream. Now each recording carries candidate URLs — the static mp3 built from `sono` dir +
+  `file-name` first, `/download` second — `BirdAudio` falls through them and shows the real media
+  error on the row if all fail. Dev-panel "Test audio (v3)" now also does a real playback test per
+  candidate URL. *Unverified on a real device — needs Jared's confirmation; if still silent the
+  panel's `play direct/download` rows will say why.*
+- **Sounds tab is now 2nd** (right after Photos).
+- **"Did you know" was blank**: it read `bird.funFact`, but all 73 species store `funFacts[]`. Fixed.
+- **Tilt rewritten** (`src/lib/tilt.js`): raw `beta/gamma` Euler angles are unreliable in landscape
+  and ignore which way the phone was turned. Now uses the full rotation matrix, measured relative to
+  the pose held at Start, mapped into screen axes (portrait / landscape-90 / landscape-270 detected
+  from gravity, not browser angle signs). **Pose-aware:** held flat-ish → "plate" (tilt toward the
+  edge you want); held upright like binoculars → "aim" (point where you want to look). Re-centres
+  after a rotation. Verified headlessly with simulated sensor events (all directions correct).
+  *Feel/sensitivity (18° = edge) still needs on-device tuning.*
+- **eBird plumbing:** key resolves `?ebirdkey=` → `VITE_EBIRD_API_KEY` → `localStorage.bhn_ebird_key`
+  (dev-panel box), request tries a header-less `key=` param first then `X-eBirdApiToken`. Dev panel
+  has "Test eBird" (sightings, species, how many match the 73-bird game). All 73 species have
+  `eBirdCode`. Needs Jared's free eBird key to go live.
+
 **2026-09-10 — Audio migrated to xeno-canto API v3 (keyed).**
 - On-device diagnostic revealed the truth: **xeno-canto API v2 is permanently retired**
   (404 "no longer available"), all public CORS proxies are dead/keyed (allorigins timeout,
