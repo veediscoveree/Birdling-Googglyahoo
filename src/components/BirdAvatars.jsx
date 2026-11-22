@@ -3783,8 +3783,8 @@ export const hasNewAvatar = (birdId) => !!NEW_AVATARS[birdId]
 // pose: name or index; omitted → a random pose chosen once per mount, so the bird
 // looks different each time you meet it. scene=false drops the habitat backdrop
 // (used inside the binoculars view, which draws its own background).
-export function BirdAvatar({ birdId, size = 120, animated = false, style = {}, pose, scene = true }) {
-  const mod = NEW_AVATARS[birdId]
+export function BirdAvatar({ birdId, size = 120, animated = false, style = {}, pose, scene = true, legacy = false }) {
+  const mod = legacy ? null : NEW_AVATARS[birdId]
   const [randomPose] = useState(() => Math.floor(Math.random() * 1000))
   if (mod) {
     const poses = mod.meta.poses

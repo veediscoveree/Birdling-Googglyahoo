@@ -8,6 +8,7 @@ import { readFileSync, readdirSync, existsSync } from 'fs'
 const [, , out, distArg, idsArg] = process.argv
 const html = readFileSync(distArg || 'dist/index.html', 'utf8')
 const ids = idsArg?.startsWith('ids=') ? idsArg.slice(4) : ''
+const extra = process.argv.slice(5).map(a => '&' + a).join('')   // e.g. legacy=1
 const findChrome = () => {
   const root = '/opt/pw-browsers'
   for (const d of readdirSync(root).filter(d => d.startsWith('chromium-'))) {
@@ -23,7 +24,7 @@ const ctx = await b.newContext({ viewport: { width: ids ? 560 : 840, height: 900
 await ctx.route(/wikimedia|wikipedia|xeno-canto|ebird/, r => r.fulfill({ contentType: 'application/json', body: '{}' }))
 const p = await ctx.newPage()
 const errs = []; p.on('pageerror', e => errs.push(e.message))
-await p.goto(`http://127.0.0.1:${srv.address().port}/?gallery=1${ids ? '&ids=' + ids : ''}`, { waitUntil: 'networkidle' })
+await p.goto(`http://127.0.0.1:${srv.address().port}/?gallery=1${ids ? '&ids=' + ids : ''}${extra}`, { waitUntil: 'networkidle' })
 await p.waitForTimeout(400)
 const h = await p.evaluate(() => document.querySelector('div[style*="overflow-y: auto"]').scrollHeight)
 await p.setViewportSize({ width: ids ? 560 : 840, height: h + 20 })
