@@ -218,6 +218,8 @@ export default function App() {
         isEBirdVerified: !!obs,
         eBirdLocName:  obs?.locName || null,
         eBirdTimeAgo:  obs?.obsDt   ? timeAgo(obs.obsDt) : null,
+        eBirdLat:      obs?.lat ?? null,
+        eBirdLng:      obs?.lng ?? null,
       })
       // Rare/vagrant birds get a dramatic rarity alert before the encounter
       const isVagrant = bird.vagrantAlert || bird.rarity === 'legendary'
@@ -327,7 +329,7 @@ export default function App() {
         color: devMode ? 'rgba(245,166,35,0.9)' : 'rgba(61,220,127,0.55)',
         letterSpacing: 0.5, pointerEvents: 'auto', cursor: 'pointer',
         padding: '4px 6px',
-      }}>{devMode ? 'v2.5-dev ●' : 'v2.5'}</div>
+      }}>{devMode ? 'v2.6-dev ●' : 'v2.6'}</div>
 
       {devMode && (
         <DevPanel

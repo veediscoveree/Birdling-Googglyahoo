@@ -330,6 +330,17 @@ All three are optional; the app falls back to mock/offline modes without them.
 
 ## Changelog
 
+**2026-11-22 — eBird confirmed live; "Find it in real life" (v2.6).**
+- On-device **Test eBird passed**: 177 sightings / 177 species within 25 km / 14 days of Jared's
+  location, **47 of 73** game species matched. Header-less `key=` request works (CORS ok).
+- Observed: the xeno-canto key pasted earlier was gone from `localStorage` (browser storage is
+  per-device and clearable) — reinforces baking keys in via repo secrets for the live build.
+- New: eBird-verified encounters show **📍 Find it in real life** → Google Maps directions to the
+  sighting's coordinates (`eBirdLat/eBirdLng` added to `encounterInfo`). Verified headlessly with a
+  mocked eBird response. Roadmap: first piece of "find the bird IRL".
+- Open: add repo secrets `VITE_EBIRD_API_KEY` and `VITE_XENOCANTO_KEY` (deploy.yml already passes
+  them) so the live site works for everyone; on-device confirmation of sound playback + tilt feel.
+
 **2026-10-13 — Sound playback, tab order, "Did you know", pose-aware tilt, eBird key plumbing (v2.5).**
 - **xeno-canto v3 key confirmed working** on-device (`n=676`). The recording list loaded but no
   sound played: v3's `file` field is a `/download` (attachment-style) endpoint mobile Safari often

@@ -59,6 +59,15 @@ export default function BirdEncounter({ bird, info, onStartCapture, onDismiss })
                 {info.eBirdTimeAgo ? ` ${info.eBirdTimeAgo}` : ''}
               </span>
             )}
+            {info?.eBirdLat != null && info?.eBirdLng != null && (
+              <a href={`https://www.google.com/maps/dir/?api=1&destination=${info.eBirdLat},${info.eBirdLng}`}
+                 target="_blank" rel="noopener noreferrer"
+                 style={{ display: 'inline-block', marginTop: 6, padding: '4px 10px', borderRadius: 14,
+                   background: 'rgba(61,220,127,0.14)', border: '1px solid rgba(61,220,127,0.4)',
+                   color: 'var(--accent-green)', fontSize: 11, fontWeight: 700, textDecoration: 'none' }}>
+                📍 Find it in real life
+              </a>
+            )}
             {!info?.eBirdLocName && info?.isEBirdVerified && (
               <span style={{ marginLeft: 6, color: 'var(--accent-amber)', fontWeight: 600 }}>
                 · eBird verified
