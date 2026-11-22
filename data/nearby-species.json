@@ -1,0 +1,1135 @@
+{
+ "generated": "2026-11-22T04:30:36.666Z",
+ "regions": [
+  "US-NY-061",
+  "US-NY-005",
+  "US-NJ-003"
+ ],
+ "days": 60,
+ "maxRegionDays": 180,
+ "inGame": 59,
+ "candidates": [
+  {
+   "code": "ribgul",
+   "comName": "Ring-billed Gull",
+   "sciName": "Larus delawarensis",
+   "regionDays": 179
+  },
+  {
+   "code": "normoc",
+   "comName": "Northern Mockingbird",
+   "sciName": "Mimus polyglottos",
+   "regionDays": 179
+  },
+  {
+   "code": "doccor",
+   "comName": "Double-crested Cormorant",
+   "sciName": "Nannopterum auritum",
+   "regionDays": 177
+  },
+  {
+   "code": "amhgul1",
+   "comName": "American Herring Gull",
+   "sciName": "Larus smithsonianus",
+   "regionDays": 174
+  },
+  {
+   "code": "rocpig",
+   "comName": "Rock Pigeon",
+   "sciName": "Columba livia",
+   "regionDays": 172
+  },
+  {
+   "code": "norfli",
+   "comName": "Northern Flicker",
+   "sciName": "Colaptes auratus",
+   "regionDays": 171
+  },
+  {
+   "code": "grbher3",
+   "comName": "Great Blue Heron",
+   "sciName": "Ardea herodias",
+   "regionDays": 170
+  },
+  {
+   "code": "swaspa",
+   "comName": "Swamp Sparrow",
+   "sciName": "Melospiza georgiana",
+   "regionDays": 168
+  },
+  {
+   "code": "ruckin",
+   "comName": "Ruby-crowned Kinglet",
+   "sciName": "Corthylio calendula",
+   "regionDays": 167
+  },
+  {
+   "code": "whbnut",
+   "comName": "White-breasted Nuthatch",
+   "sciName": "Sitta carolinensis",
+   "regionDays": 162
+  },
+  {
+   "code": "comrav",
+   "comName": "Common Raven",
+   "sciName": "Corvus corax",
+   "regionDays": 160
+  },
+  {
+   "code": "tuftit",
+   "comName": "Tufted Titmouse",
+   "sciName": "Baeolophus bicolor",
+   "regionDays": 157
+  },
+  {
+   "code": "haiwoo",
+   "comName": "Hairy Woodpecker",
+   "sciName": "Leuconotopicus villosus",
+   "regionDays": 157
+  },
+  {
+   "code": "ambduc",
+   "comName": "American Black Duck",
+   "sciName": "Anas rubripes",
+   "regionDays": 157
+  },
+  {
+   "code": "chispa",
+   "comName": "Chipping Sparrow",
+   "sciName": "Spizella passerina",
+   "regionDays": 152
+  },
+  {
+   "code": "grycat",
+   "comName": "Gray Catbird",
+   "sciName": "Dumetella carolinensis",
+   "regionDays": 147
+  },
+  {
+   "code": "gockin",
+   "comName": "Golden-crowned Kinglet",
+   "sciName": "Regulus satrapa",
+   "regionDays": 146
+  },
+  {
+   "code": "savspa",
+   "comName": "Savannah Sparrow",
+   "sciName": "Passerculus sandwichensis",
+   "regionDays": 143
+  },
+  {
+   "code": "gbbgul",
+   "comName": "Great Black-backed Gull",
+   "sciName": "Larus marinus",
+   "regionDays": 141
+  },
+  {
+   "code": "baleag",
+   "comName": "Bald Eagle",
+   "sciName": "Haliaeetus leucocephalus",
+   "regionDays": 140
+  },
+  {
+   "code": "belkin1",
+   "comName": "Belted Kingfisher",
+   "sciName": "Megaceryle alcyon",
+   "regionDays": 139
+  },
+  {
+   "code": "laugul",
+   "comName": "Laughing Gull",
+   "sciName": "Leucophaeus atricilla",
+   "regionDays": 139
+  },
+  {
+   "code": "perfal",
+   "comName": "Peregrine Falcon",
+   "sciName": "Falco peregrinus",
+   "regionDays": 132
+  },
+  {
+   "code": "norsho",
+   "comName": "Northern Shoveler",
+   "sciName": "Spatula clypeata",
+   "regionDays": 130
+  },
+  {
+   "code": "palwar",
+   "comName": "Palm Warbler",
+   "sciName": "Setophaga palmarum",
+   "regionDays": 130
+  },
+  {
+   "code": "eastow",
+   "comName": "Eastern Towhee",
+   "sciName": "Pipilo erythrophthalmus",
+   "regionDays": 129
+  },
+  {
+   "code": "gnwtea",
+   "comName": "Green-winged Teal",
+   "sciName": "Anas crecca",
+   "regionDays": 128
+  },
+  {
+   "code": "fiscro",
+   "comName": "Fish Crow",
+   "sciName": "Corvus ossifragus",
+   "regionDays": 125
+  },
+  {
+   "code": "brncre",
+   "comName": "Brown Creeper",
+   "sciName": "Certhia americana",
+   "regionDays": 122
+  },
+  {
+   "code": "merlin",
+   "comName": "Merlin",
+   "sciName": "Falco columbarius",
+   "regionDays": 113
+  },
+  {
+   "code": "greegr",
+   "comName": "Great Egret",
+   "sciName": "Ardea alba",
+   "regionDays": 113
+  },
+  {
+   "code": "reshaw",
+   "comName": "Red-shouldered Hawk",
+   "sciName": "Buteo lineatus",
+   "regionDays": 110
+  },
+  {
+   "code": "gadwal",
+   "comName": "Gadwall",
+   "sciName": "Mareca strepera",
+   "regionDays": 105
+  },
+  {
+   "code": "bnhcow",
+   "comName": "Brown-headed Cowbird",
+   "sciName": "Molothrus ater",
+   "regionDays": 104
+  },
+  {
+   "code": "purfin",
+   "comName": "Purple Finch",
+   "sciName": "Haemorhous purpureus",
+   "regionDays": 103
+  },
+  {
+   "code": "winwre3",
+   "comName": "Winter Wren",
+   "sciName": "Nannus hiemalis",
+   "regionDays": 100
+  },
+  {
+   "code": "whcspa",
+   "comName": "White-crowned Sparrow",
+   "sciName": "Zonotrichia leucophrys",
+   "regionDays": 89
+  },
+  {
+   "code": "rudduc",
+   "comName": "Ruddy Duck",
+   "sciName": "Oxyura jamaicensis",
+   "regionDays": 88
+  },
+  {
+   "code": "buhvir",
+   "comName": "Blue-headed Vireo",
+   "sciName": "Vireo solitarius",
+   "regionDays": 86
+  },
+  {
+   "code": "blkvul",
+   "comName": "Black Vulture",
+   "sciName": "Coragyps atratus",
+   "regionDays": 83
+  },
+  {
+   "code": "pinsis",
+   "comName": "Pine Siskin",
+   "sciName": "Spinus pinus",
+   "regionDays": 83
+  },
+  {
+   "code": "brant",
+   "comName": "Brant",
+   "sciName": "Branta bernicla",
+   "regionDays": 82
+  },
+  {
+   "code": "killde",
+   "comName": "Killdeer",
+   "sciName": "Charadrius vociferus",
+   "regionDays": 82
+  },
+  {
+   "code": "norhar2",
+   "comName": "Northern Harrier",
+   "sciName": "Circus hudsonius",
+   "regionDays": 80
+  },
+  {
+   "code": "fiespa",
+   "comName": "Field Sparrow",
+   "sciName": "Spizella pusilla",
+   "regionDays": 80
+  },
+  {
+   "code": "linspa",
+   "comName": "Lincoln's Sparrow",
+   "sciName": "Melospiza lincolnii",
+   "regionDays": 80
+  },
+  {
+   "code": "bkpwar",
+   "comName": "Blackpoll Warbler",
+   "sciName": "Setophaga striata",
+   "regionDays": 77
+  },
+  {
+   "code": "amepip",
+   "comName": "American Pipit",
+   "sciName": "Anthus rubescens",
+   "regionDays": 74
+  },
+  {
+   "code": "monpar",
+   "comName": "Monk Parakeet",
+   "sciName": "Myiopsitta monachus",
+   "regionDays": 73
+  },
+  {
+   "code": "pinwar",
+   "comName": "Pine Warbler",
+   "sciName": "Setophaga pinus",
+   "regionDays": 73
+  },
+  {
+   "code": "chiswi",
+   "comName": "Chimney Swift",
+   "sciName": "Chaetura pelagica",
+   "regionDays": 73
+  },
+  {
+   "code": "mutswa",
+   "comName": "Mute Swan",
+   "sciName": "Cygnus olor",
+   "regionDays": 71
+  },
+  {
+   "code": "brnthr",
+   "comName": "Brown Thrasher",
+   "sciName": "Toxostoma rufum",
+   "regionDays": 67
+  },
+  {
+   "code": "norpar",
+   "comName": "Northern Parula",
+   "sciName": "Setophaga americana",
+   "regionDays": 67
+  },
+  {
+   "code": "greyel",
+   "comName": "Greater Yellowlegs",
+   "sciName": "Tringa melanoleuca",
+   "regionDays": 66
+  },
+  {
+   "code": "bcnher",
+   "comName": "Black-crowned Night Heron",
+   "sciName": "Nycticorax nycticorax",
+   "regionDays": 66
+  },
+  {
+   "code": "norpin",
+   "comName": "Northern Pintail",
+   "sciName": "Anas acuta",
+   "regionDays": 65
+  },
+  {
+   "code": "hoomer",
+   "comName": "Hooded Merganser",
+   "sciName": "Lophodytes cucullatus",
+   "regionDays": 65
+  },
+  {
+   "code": "wiltur",
+   "comName": "Wild Turkey",
+   "sciName": "Meleagris gallopavo",
+   "regionDays": 65
+  },
+  {
+   "code": "rebnut",
+   "comName": "Red-breasted Nuthatch",
+   "sciName": "Sitta canadensis",
+   "regionDays": 65
+  },
+  {
+   "code": "ovenbi1",
+   "comName": "Ovenbird",
+   "sciName": "Seiurus aurocapilla",
+   "regionDays": 60
+  },
+  {
+   "code": "buffle",
+   "comName": "Bufflehead",
+   "sciName": "Bucephala albeola",
+   "regionDays": 58
+  },
+  {
+   "code": "amewig",
+   "comName": "American Wigeon",
+   "sciName": "Mareca americana",
+   "regionDays": 58
+  },
+  {
+   "code": "orcwar",
+   "comName": "Orange-crowned Warbler",
+   "sciName": "Leiothlypis celata",
+   "regionDays": 57
+  },
+  {
+   "code": "lesyel",
+   "comName": "Lesser Yellowlegs",
+   "sciName": "Tringa flavipes",
+   "regionDays": 55
+  },
+  {
+   "code": "rusbla",
+   "comName": "Rusty Blackbird",
+   "sciName": "Euphagus carolinus",
+   "regionDays": 54
+  },
+  {
+   "code": "reevir1",
+   "comName": "Red-eyed Vireo",
+   "sciName": "Vireo olivaceus",
+   "regionDays": 53
+  },
+  {
+   "code": "tenwar",
+   "comName": "Tennessee Warbler",
+   "sciName": "Leiothlypis peregrina",
+   "regionDays": 52
+  },
+  {
+   "code": "comloo",
+   "comName": "Common Loon",
+   "sciName": "Gavia immer",
+   "regionDays": 49
+  },
+  {
+   "code": "swathr",
+   "comName": "Swainson's Thrush",
+   "sciName": "Catharus ustulatus",
+   "regionDays": 49
+  },
+  {
+   "code": "eamwre1",
+   "comName": "Eastern Marsh Wren",
+   "sciName": "Cistothorus palustris",
+   "regionDays": 48
+  },
+  {
+   "code": "camwar",
+   "comName": "Cape May Warbler",
+   "sciName": "Setophaga tigrina",
+   "regionDays": 48
+  },
+  {
+   "code": "snoegr",
+   "comName": "Snowy Egret",
+   "sciName": "Egretta thula",
+   "regionDays": 41
+  },
+  {
+   "code": "foxspa",
+   "comName": "Fox Sparrow",
+   "sciName": "Passerella iliaca",
+   "regionDays": 37
+  },
+  {
+   "code": "norwat",
+   "comName": "Northern Waterthrush",
+   "sciName": "Parkesia noveboracensis",
+   "regionDays": 34
+  },
+  {
+   "code": "commer",
+   "comName": "Common Merganser",
+   "sciName": "Mergus merganser",
+   "regionDays": 33
+  },
+  {
+   "code": "royter1",
+   "comName": "Royal Tern",
+   "sciName": "Thalasseus maximus",
+   "regionDays": 33
+  },
+  {
+   "code": "sposan",
+   "comName": "Spotted Sandpiper",
+   "sciName": "Actitis macularius",
+   "regionDays": 32
+  },
+  {
+   "code": "ycnher",
+   "comName": "Yellow-crowned Night Heron",
+   "sciName": "Nyctanassa violacea",
+   "regionDays": 31
+  },
+  {
+   "code": "yelwar1",
+   "comName": "Northern Yellow Warbler",
+   "sciName": "Setophaga aestiva",
+   "regionDays": 28
+  },
+  {
+   "code": "yebcuc",
+   "comName": "Yellow-billed Cuckoo",
+   "sciName": "Coccyzus americanus",
+   "regionDays": 28
+  },
+  {
+   "code": "pibgre",
+   "comName": "Pied-billed Grebe",
+   "sciName": "Podilymbus podiceps",
+   "regionDays": 27
+  },
+  {
+   "code": "vesspa",
+   "comName": "Vesper Sparrow",
+   "sciName": "Pooecetes gramineus",
+   "regionDays": 27
+  },
+  {
+   "code": "yebcha",
+   "comName": "Yellow-breasted Chat",
+   "sciName": "Icteria virens",
+   "regionDays": 26
+  },
+  {
+   "code": "forter",
+   "comName": "Forster's Tern",
+   "sciName": "Sterna forsteri",
+   "regionDays": 26
+  },
+  {
+   "code": "amewoo",
+   "comName": "American Woodcock",
+   "sciName": "Scolopax minor",
+   "regionDays": 25
+  },
+  {
+   "code": "rebmer",
+   "comName": "Red-breasted Merganser",
+   "sciName": "Mergus serrator",
+   "regionDays": 24
+  },
+  {
+   "code": "hudgod",
+   "comName": "Hudsonian Godwit",
+   "sciName": "Limosa haemastica",
+   "regionDays": 24
+  },
+  {
+   "code": "grnher",
+   "comName": "Green Heron",
+   "sciName": "Butorides virescens",
+   "regionDays": 24
+  },
+  {
+   "code": "brwhaw",
+   "comName": "Broad-winged Hawk",
+   "sciName": "Buteo platypterus",
+   "regionDays": 22
+  },
+  {
+   "code": "retloo",
+   "comName": "Red-throated Loon",
+   "sciName": "Gavia stellata",
+   "regionDays": 21
+  },
+  {
+   "code": "easmea",
+   "comName": "Eastern Meadowlark",
+   "sciName": "Sturnella magna",
+   "regionDays": 21
+  },
+  {
+   "code": "sora",
+   "comName": "Sora",
+   "sciName": "Porzana carolina",
+   "regionDays": 20
+  },
+  {
+   "code": "gycthr",
+   "comName": "Gray-cheeked Thrush",
+   "sciName": "Catharus minimus",
+   "regionDays": 20
+  },
+  {
+   "code": "amtspa",
+   "comName": "American Tree Sparrow",
+   "sciName": "Spizelloides arborea",
+   "regionDays": 19
+  },
+  {
+   "code": "treswa",
+   "comName": "Tree Swallow",
+   "sciName": "Tachycineta bicolor",
+   "regionDays": 19
+  },
+  {
+   "code": "rufhum",
+   "comName": "Rufous Hummingbird",
+   "sciName": "Selasphorus rufus",
+   "regionDays": 17
+  },
+  {
+   "code": "comnig",
+   "comName": "Common Nighthawk",
+   "sciName": "Chordeiles minor",
+   "regionDays": 17
+  },
+  {
+   "code": "solsan",
+   "comName": "Solitary Sandpiper",
+   "sciName": "Tringa solitaria",
+   "regionDays": 16
+  },
+  {
+   "code": "grecor",
+   "comName": "Great Cormorant",
+   "sciName": "Phalacrocorax carbo",
+   "regionDays": 15
+  },
+  {
+   "code": "bkbwar",
+   "comName": "Blackburnian Warbler",
+   "sciName": "Setophaga fusca",
+   "regionDays": 15
+  },
+  {
+   "code": "rinduc",
+   "comName": "Ring-necked Duck",
+   "sciName": "Aythya collaris",
+   "regionDays": 14
+  },
+  {
+   "code": "rehwoo",
+   "comName": "Red-headed Woodpecker",
+   "sciName": "Melanerpes erythrocephalus",
+   "regionDays": 14
+  },
+  {
+   "code": "wilsni1",
+   "comName": "Wilson's Snipe",
+   "sciName": "Gallinago delicata",
+   "regionDays": 14
+  },
+  {
+   "code": "comter",
+   "comName": "Common Tern",
+   "sciName": "Sterna hirundo",
+   "regionDays": 14
+  },
+  {
+   "code": "btywar",
+   "comName": "Black-throated Gray Warbler",
+   "sciName": "Setophaga nigrescens",
+   "regionDays": 14
+  },
+  {
+   "code": "gresca",
+   "comName": "Greater Scaup",
+   "sciName": "Aythya marila",
+   "regionDays": 13
+  },
+  {
+   "code": "y00475",
+   "comName": "American Coot",
+   "sciName": "Fulica americana",
+   "regionDays": 13
+  },
+  {
+   "code": "blksco2",
+   "comName": "Black Scoter",
+   "sciName": "Melanitta americana",
+   "regionDays": 13
+  },
+  {
+   "code": "musduc",
+   "comName": "Muscovy Duck",
+   "sciName": "Cairina moschata",
+   "regionDays": 12
+  },
+  {
+   "code": "veery",
+   "comName": "Veery",
+   "sciName": "Catharus fuscescens",
+   "regionDays": 12
+  },
+  {
+   "code": "lotduc",
+   "comName": "Long-tailed Duck",
+   "sciName": "Clangula hyemalis",
+   "regionDays": 11
+  },
+  {
+   "code": "gwfgoo",
+   "comName": "Greater White-fronted Goose",
+   "sciName": "Anser albifrons",
+   "regionDays": 11
+  },
+  {
+   "code": "cacgoo1",
+   "comName": "Cackling Goose",
+   "sciName": "Branta hutchinsii",
+   "regionDays": 11
+  },
+  {
+   "code": "bkbplo",
+   "comName": "Black-bellied Plover",
+   "sciName": "Pluvialis squatarola",
+   "regionDays": 11
+  },
+  {
+   "code": "shbdow",
+   "comName": "Short-billed Dowitcher",
+   "sciName": "Limnodromus griseus",
+   "regionDays": 11
+  },
+  {
+   "code": "budger",
+   "comName": "Budgerigar",
+   "sciName": "Melopsittacus undulatus",
+   "regionDays": 10
+  },
+  {
+   "code": "bongul",
+   "comName": "Bonaparte's Gull",
+   "sciName": "Chroicocephalus philadelphia",
+   "regionDays": 10
+  },
+  {
+   "code": "pecsan",
+   "comName": "Pectoral Sandpiper",
+   "sciName": "Calidris melanotos",
+   "regionDays": 10
+  },
+  {
+   "code": "clcspa",
+   "comName": "Clay-colored Sparrow",
+   "sciName": "Spizella pallida",
+   "regionDays": 10
+  },
+  {
+   "code": "boboli",
+   "comName": "Bobolink",
+   "sciName": "Dolichonyx oryzivorus",
+   "regionDays": 10
+  },
+  {
+   "code": "leafly",
+   "comName": "Least Flycatcher",
+   "sciName": "Empidonax minimus",
+   "regionDays": 10
+  },
+  {
+   "code": "stisan",
+   "comName": "Stilt Sandpiper",
+   "sciName": "Calidris himantopus",
+   "regionDays": 10
+  },
+  {
+   "code": "bulori",
+   "comName": "Bullock's Oriole",
+   "sciName": "Icterus bullockii",
+   "regionDays": 9
+  },
+  {
+   "code": "horlar",
+   "comName": "Horned Lark",
+   "sciName": "Eremophila alpestris",
+   "regionDays": 9
+  },
+  {
+   "code": "blugrb1",
+   "comName": "Blue Grosbeak",
+   "sciName": "Passerina caerulea",
+   "regionDays": 9
+  },
+  {
+   "code": "semplo",
+   "comName": "Semipalmated Plover",
+   "sciName": "Charadrius semipalmatus",
+   "regionDays": 9
+  },
+  {
+   "code": "dickci",
+   "comName": "Dickcissel",
+   "sciName": "Spiza americana",
+   "regionDays": 9
+  },
+  {
+   "code": "hoowar",
+   "comName": "Hooded Warbler",
+   "sciName": "Setophaga citrina",
+   "regionDays": 9
+  },
+  {
+   "code": "leasan",
+   "comName": "Least Sandpiper",
+   "sciName": "Calidris minutilla",
+   "regionDays": 9
+  },
+  {
+   "code": "easowl1",
+   "comName": "Eastern Screech-Owl",
+   "sciName": "Megascops asio",
+   "regionDays": 8
+  },
+  {
+   "code": "lcspet",
+   "comName": "Leach's Storm-Petrel",
+   "sciName": "Hydrobates leucorhous",
+   "regionDays": 8
+  },
+  {
+   "code": "amebit",
+   "comName": "American Bittern",
+   "sciName": "Botaurus lentiginosus",
+   "regionDays": 7
+  },
+  {
+   "code": "nstspa",
+   "comName": "Nelson's Sparrow",
+   "sciName": "Ammospiza nelsoni",
+   "regionDays": 7
+  },
+  {
+   "code": "whevir",
+   "comName": "White-eyed Vireo",
+   "sciName": "Vireo griseus",
+   "regionDays": 7
+  },
+  {
+   "code": "lessca",
+   "comName": "Lesser Scaup",
+   "sciName": "Aythya affinis",
+   "regionDays": 6
+  },
+  {
+   "code": "sursco",
+   "comName": "Surf Scoter",
+   "sciName": "Melanitta perspicillata",
+   "regionDays": 6
+  },
+  {
+   "code": "semsan",
+   "comName": "Semipalmated Sandpiper",
+   "sciName": "Calidris pusilla",
+   "regionDays": 6
+  },
+  {
+   "code": "snogoo",
+   "comName": "Snow Goose",
+   "sciName": "Anser caerulescens",
+   "regionDays": 5
+  },
+  {
+   "code": "whwsco2",
+   "comName": "White-winged Scoter",
+   "sciName": "Melanitta deglandi",
+   "regionDays": 5
+  },
+  {
+   "code": "bkbcuc",
+   "comName": "Black-billed Cuckoo",
+   "sciName": "Coccyzus erythropthalmus",
+   "regionDays": 5
+  },
+  {
+   "code": "conwar",
+   "comName": "Connecticut Warbler",
+   "sciName": "Oporornis agilis",
+   "regionDays": 5
+  },
+  {
+   "code": "caster1",
+   "comName": "Caspian Tern",
+   "sciName": "Hydroprogne caspia",
+   "regionDays": 5
+  },
+  {
+   "code": "wispet",
+   "comName": "Wilson's Storm-Petrel",
+   "sciName": "Oceanites oceanicus",
+   "regionDays": 5
+  },
+  {
+   "code": "buwtea",
+   "comName": "Blue-winged Teal",
+   "sciName": "Spatula discors",
+   "regionDays": 4
+  },
+  {
+   "code": "lobdow",
+   "comName": "Long-billed Dowitcher",
+   "sciName": "Limnodromus scolopaceus",
+   "regionDays": 4
+  },
+  {
+   "code": "olsfly",
+   "comName": "Olive-sided Flycatcher",
+   "sciName": "Contopus cooperi",
+   "regionDays": 4
+  },
+  {
+   "code": "sumtan",
+   "comName": "Summer Tanager",
+   "sciName": "Piranga rubra",
+   "regionDays": 4
+  },
+  {
+   "code": "snobun",
+   "comName": "Snow Bunting",
+   "sciName": "Plectrophenax nivalis",
+   "regionDays": 3
+  },
+  {
+   "code": "eawvir1",
+   "comName": "Eastern Warbling Vireo",
+   "sciName": "Vireo gilvus",
+   "regionDays": 3
+  },
+  {
+   "code": "phivir",
+   "comName": "Philadelphia Vireo",
+   "sciName": "Vireo philadelphicus",
+   "regionDays": 3
+  },
+  {
+   "code": "buggna",
+   "comName": "Blue-gray Gnatcatcher",
+   "sciName": "Polioptila caerulea",
+   "regionDays": 3
+  },
+  {
+   "code": "parjae",
+   "comName": "Parasitic Jaeger",
+   "sciName": "Stercorarius parasiticus",
+   "regionDays": 3
+  },
+  {
+   "code": "yebfly",
+   "comName": "Yellow-bellied Flycatcher",
+   "sciName": "Empidonax flaviventris",
+   "regionDays": 3
+  },
+  {
+   "code": "harduc",
+   "comName": "Harlequin Duck",
+   "sciName": "Histrionicus histrionicus",
+   "regionDays": 2
+  },
+  {
+   "code": "sancra",
+   "comName": "Sandhill Crane",
+   "sciName": "Antigone canadensis",
+   "regionDays": 2
+  },
+  {
+   "code": "horgre",
+   "comName": "Horned Grebe",
+   "sciName": "Podiceps auritus",
+   "regionDays": 2
+  },
+  {
+   "code": "comgol",
+   "comName": "Common Goldeneye",
+   "sciName": "Bucephala clangula",
+   "regionDays": 2
+  },
+  {
+   "code": "botgra",
+   "comName": "Boat-tailed Grackle",
+   "sciName": "Quiscalus major",
+   "regionDays": 2
+  },
+  {
+   "code": "whrsan",
+   "comName": "White-rumped Sandpiper",
+   "sciName": "Calidris fuscicollis",
+   "regionDays": 2
+  },
+  {
+   "code": "larspa",
+   "comName": "Lark Sparrow",
+   "sciName": "Chondestes grammacus",
+   "regionDays": 2
+  },
+  {
+   "code": "blkski",
+   "comName": "Black Skimmer",
+   "sciName": "Rynchops niger",
+   "regionDays": 2
+  },
+  {
+   "code": "bklkit",
+   "comName": "Black-legged Kittiwake",
+   "sciName": "Rissa tridactyla",
+   "regionDays": 2
+  },
+  {
+   "code": "lbbgul",
+   "comName": "Lesser Black-backed Gull",
+   "sciName": "Larus fuscus",
+   "regionDays": 2
+  },
+  {
+   "code": "rengre",
+   "comName": "Red-necked Grebe",
+   "sciName": "Podiceps grisegena",
+   "regionDays": 1
+  },
+  {
+   "code": "norgan",
+   "comName": "Northern Gannet",
+   "sciName": "Morus bassanus",
+   "regionDays": 1
+  },
+  {
+   "code": "zebfin2",
+   "comName": "Zebra Finch",
+   "sciName": "Taeniopygia guttata",
+   "regionDays": 1
+  },
+  {
+   "code": "rinphe1",
+   "comName": "Ring-necked Pheasant",
+   "sciName": "Phasianus colchicus",
+   "regionDays": 1
+  },
+  {
+   "code": "pursan",
+   "comName": "Purple Sandpiper",
+   "sciName": "Calidris maritima",
+   "regionDays": 1
+  },
+  {
+   "code": "rolhaw",
+   "comName": "Rough-legged Hawk",
+   "sciName": "Buteo lagopus",
+   "regionDays": 1
+  },
+  {
+   "code": "cockat",
+   "comName": "Cockatiel",
+   "sciName": "Nymphicus hollandicus",
+   "regionDays": 1
+  },
+  {
+   "code": "graspa",
+   "comName": "Grasshopper Sparrow",
+   "sciName": "Ammodramus savannarum",
+   "regionDays": 1
+  },
+  {
+   "code": "laplon",
+   "comName": "Lapland Longspur",
+   "sciName": "Calcarius lapponicus",
+   "regionDays": 1
+  },
+  {
+   "code": "goleag",
+   "comName": "Golden Eagle",
+   "sciName": "Aquila chrysaetos",
+   "regionDays": 1
+  },
+  {
+   "code": "sedwre1",
+   "comName": "Sedge Wren",
+   "sciName": "Cistothorus stellaris",
+   "regionDays": 1
+  },
+  {
+   "code": "virrai",
+   "comName": "Virginia Rail",
+   "sciName": "Rallus limicola",
+   "regionDays": 1
+  },
+  {
+   "code": "astfly",
+   "comName": "Ash-throated Flycatcher",
+   "sciName": "Myiarchus cinerascens",
+   "regionDays": 1
+  },
+  {
+   "code": "acafly",
+   "comName": "Acadian Flycatcher",
+   "sciName": "Empidonax virescens",
+   "regionDays": 1
+  },
+  {
+   "code": "amgplo",
+   "comName": "American Golden-Plover",
+   "sciName": "Pluvialis dominica",
+   "regionDays": 1
+  },
+  {
+   "code": "mouwar",
+   "comName": "Mourning Warbler",
+   "sciName": "Geothlypis philadelphia",
+   "regionDays": 1
+  },
+  {
+   "code": "aldfly",
+   "comName": "Alder Flycatcher",
+   "sciName": "Empidonax alnorum",
+   "regionDays": 1
+  },
+  {
+   "code": "comeid",
+   "comName": "Common Eider",
+   "sciName": "Somateria mollissima",
+   "regionDays": 1
+  },
+  {
+   "code": "libher",
+   "comName": "Little Blue Heron",
+   "sciName": "Egretta caerulea",
+   "regionDays": 1
+  },
+  {
+   "code": "dunlin",
+   "comName": "Dunlin",
+   "sciName": "Calidris alpina",
+   "regionDays": 1
+  },
+  {
+   "code": "lotjae",
+   "comName": "Long-tailed Jaeger",
+   "sciName": "Stercorarius longicaudus",
+   "regionDays": 1
+  },
+  {
+   "code": "nrwswa",
+   "comName": "Northern Rough-winged Swallow",
+   "sciName": "Stelgidopteryx serripennis",
+   "regionDays": 1
+  },
+  {
+   "code": "ameoys",
+   "comName": "American Oystercatcher",
+   "sciName": "Haematopus palliatus",
+   "regionDays": 1
+  }
+ ]
+}
