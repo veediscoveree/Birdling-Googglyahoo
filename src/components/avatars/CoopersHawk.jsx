@@ -1,7 +1,7 @@
 // Cooper's Hawk (adult) — "accurate first, cute second, in habitat". Follows WoodDuck.jsx conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'coopers_hawk', poses: ['perch', 'alert', 'glide', 'pounce'] }
+export const meta = { birdId: 'coopers_hawk', poses: ['perch', 'glide'] }
 
 // Field marks (each one is drawn): blue-gray back & wings; dark slate CAP sharply darker than
 // the back, with a PALER gray nape behind it ("capped" look); relatively LARGE, blocky head

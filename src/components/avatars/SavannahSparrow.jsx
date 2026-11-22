@@ -3,7 +3,7 @@
 // scene backdrop optional, gentle idle (blink + breathing bob), field marks listed below.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'savannah_sparrow', poses: ['fence', 'sing', 'forage', 'fly'] }
+export const meta = { birdId: 'savannah_sparrow', poses: ['fence', 'forage'] }
 
 // Field marks (the acceptance test — each must be visible):
 //  • YELLOW eyebrow IN FRONT OF the eye (lores/supercilium), fading to whitish behind it

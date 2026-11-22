@@ -2,7 +2,7 @@
 // conventions. Endearingly homely: big soft eye, tidy little bald head, never gory.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'turkey_vulture', poses: ['soar', 'sun', 'perch', 'teeter'] }
+export const meta = { birdId: 'turkey_vulture', poses: ['soar', 'sun'] }
 
 // Field marks: blackish-brown body and upperparts (brownish feather edging on the coverts);
 // small, bare, wrinkled RED head with a dark feathered ruff at the neck; ivory hooked bill with

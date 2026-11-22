@@ -3,7 +3,7 @@
 // scene=true adds a wet-woodland backdrop, scene=false still reads alone.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'red_shouldered_hawk', poses: ['perch', 'call', 'soar', 'glide'] }
+export const meta = { birdId: 'red_shouldered_hawk', poses: ['perch', 'glide'] }
 
 // Field marks: RUSTY-ORANGE breast and belly finely barred white; rufous "SHOULDER" patch on
 // the folded wing; wings boldly CHECKERED black-and-white; long BLACK TAIL with narrow WHITE

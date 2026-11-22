@@ -2,7 +2,7 @@
 // Follows the WoodDuck.jsx template conventions (meta, props, viewBox 0 0 120 130, scene).
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'double_crested_cormorant', poses: ['swim', 'wingspread', 'fish', 'fly'] }
+export const meta = { birdId: 'double_crested_cormorant', poses: ['swim', 'wingspread'] }
 
 // Field marks: blackish body with green-bronze gloss; coppery back feathers scalloped with black;
 // bare ORANGE-YELLOW face skin and throat pouch; long thin gray bill with a HOOKED tip;

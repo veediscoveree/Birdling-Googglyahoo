@@ -2,7 +2,7 @@
 // cute second, in habitat". Follows the WoodDuck.jsx template conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'belted_kingfisher', poses: ['perch', 'hover', 'plunge', 'fish'] }
+export const meta = { birdId: 'belted_kingfisher', poses: ['perch', 'plunge'] }
 
 // Field marks: slate-blue head, crest, back and wings; big SHAGGY ragged crest; oversized head;
 // long heavy black DAGGER bill; small white spot in front of the eye; broad WHITE COLLAR all

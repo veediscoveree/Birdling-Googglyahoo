@@ -2,7 +2,7 @@
 // See WoodDuck.jsx for the template conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'peregrine_falcon', poses: ['perch', 'stoop', 'flight', 'mantle'] }
+export const meta = { birdId: 'peregrine_falcon', poses: ['perch', 'stoop'] }
 
 // Field marks: compact, deep-chested falcon; BLACKISH HOOD over crown and nape with a THICK
 // BLACK "HELMET" MALAR (sideburn) dropping below the eye; BRIGHT WHITE CHEEK PATCH behind the

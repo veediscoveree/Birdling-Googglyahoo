@@ -372,6 +372,12 @@ hover pitch), Bald Eagle (head too big, bill/feathers, kindergarten background),
 physics, crest unrealistic, loses grandeur), Common Raven (perch/croak/strut near-identical),
 American Black Duck & Northern Shoveler (over-rounded). All species: cut to 1–3 characteristic poses. Perched raptors were mostly fine (Kestrel perch "quite good"); flight/action poses are where raptors failed. Checkpoint with Jared once per bird TYPE, then proceed. Keep current new art live until fixes are approved.
 
+**Technique decision (Jared, option 1):** large birds (raptors, ducks, waders, corvids) use the
+"naturalistic illustration" technique of `avatars/BaldEagle.jsx` pass 3: no outlined feathers; form
+from silhouette + gradient light + fine noise grain (feTurbulence) clipped to the plumage; feather
+detail only as soft low-contrast pale tips; angular true-shaped bills; eye small and brow-shaded.
+Small songbirds keep the cleaner sparrow style. Real photos / Audubon plates were offered and declined.
+
 ## Avatar system (technical)
 
 - One file per species in `src/components/avatars/` exporting `meta = { birdId, poses }` and a

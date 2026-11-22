@@ -3,7 +3,7 @@
 // scene=true adds a spruce sprig, scene=false still reads alone (short twig stub).
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'golden_crowned_kinglet', poses: ['perch', 'flare', 'hover', 'reach'] }
+export const meta = { birdId: 'golden_crowned_kinglet', poses: ['flare', 'hover'] }
 
 // Field marks: tiny round olive-gray ball, short notched tail; bold STRIPED face — black
 // crown edges, WHITE eyebrow, black eye-line, pale-gray cheek; YELLOW crown stripe with an
@@ -40,7 +40,7 @@ function Head({ flare = false, blink = false }) {
             <circle cx="38.8" cy="56" r="0.45" fill="#FFF" opacity="0.7"/>
           </g>}
       {/* tiny black bill */}
-      <path d="M 28.8 53.5 L 23 55.2 L 28.8 56.8 Z" fill="#1A1A1A"/>
+      <path d="M 28.8 54 L 23.2 55.3 L 28.8 56.4 Z" fill="#1A1A1A" stroke="#E9E4CC" strokeWidth="0.45" strokeLinejoin="round"/>
     </g>
   )
 }
@@ -142,7 +142,7 @@ function Spruce({ pose }) {
   )
 }
 
-export default function GoldenCrownedKinglet({ size = 120, animated = false, style = {}, pose = 'perch', scene = true }) {
+export default function GoldenCrownedKinglet({ size = 120, animated = false, style = {}, pose = 'flare', scene = true }) {
   const [frame, setFrame] = useState(0)
   useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 8), 380); return () => clearInterval(id) }, [animated])
   const bob = animated ? [0, -0.5, -0.8, -0.5, 0, 0.3, 0.5, 0.3][frame] : 0

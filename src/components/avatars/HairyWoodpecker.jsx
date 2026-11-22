@@ -2,7 +2,7 @@
 // See WoodDuck.jsx for the template conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'hairy_woodpecker', poses: ['cling', 'drum', 'hitch', 'lookout'] }
+export const meta = { birdId: 'hairy_woodpecker', poses: ['cling', 'drum'] }
 
 // Field marks (the Downy look-alike test): LONG CHISEL BILL nearly as long as the head
 // (Downy's is a stubby third); pale nasal tufts at the bill base; black crown; bold white

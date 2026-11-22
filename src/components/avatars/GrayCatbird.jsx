@@ -1,7 +1,7 @@
 // Gray Catbird — "accurate first, cute second, in habitat" (see WoodDuck.jsx for conventions).
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'gray_catbird', poses: ['perch', 'tail-cock', 'mew', 'berry'] }
+export const meta = { birdId: 'gray_catbird', poses: ['tail-cock', 'berry'] }
 
 // Field marks: slate gray all over (a touch paler below); neat BLACK CAP from bill to nape;
 // RUFOUS-CHESTNUT UNDERTAIL COVERTS (the patch under the tail — shown in every pose, biggest when
@@ -123,7 +123,7 @@ function Thicket({ berries = false }) {
   )
 }
 
-export default function GrayCatbird({ size = 120, animated = false, style = {}, pose = 'perch', scene = true }) {
+export default function GrayCatbird({ size = 120, animated = false, style = {}, pose = 'tail-cock', scene = true }) {
   const [frame, setFrame] = useState(0)
   useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 8), 450); return () => clearInterval(id) }, [animated])
   const bob = animated ? [0, -0.4, -0.8, -0.4, 0, 0.3, 0.5, 0.3][frame] : 0

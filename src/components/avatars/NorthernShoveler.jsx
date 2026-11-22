@@ -2,7 +2,7 @@
 // Follows the WoodDuck.jsx template conventions (meta, props, viewBox 0 0 120 130, "nsh" ids).
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'northern_shoveler', poses: ['swim', 'skim', 'fly', 'doze'] }
+export const meta = { birdId: 'northern_shoveler', poses: ['swim', 'fly'] }
 
 // Field marks: HUGE black spatulate (spoon) bill, longer than the head, with comb-like
 // lamellae along the edge; glossy dark-green head; bright YELLOW eye; clean WHITE breast;

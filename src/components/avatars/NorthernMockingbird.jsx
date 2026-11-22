@@ -1,7 +1,7 @@
 // Northern Mockingbird — "accurate first, cute second, in habitat" (see WoodDuck.jsx for conventions).
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'northern_mockingbird', poses: ['perch', 'sing', 'wing-flash', 'berry'] }
+export const meta = { birdId: 'northern_mockingbird', poses: ['perch', 'wing-flash'] }
 
 // Field marks: slim gray bird, soft gray above / pale gray-white below; darker gray-black wings
 // with two thin white wing bars and a WHITE PATCH at the base of the primaries (a small square

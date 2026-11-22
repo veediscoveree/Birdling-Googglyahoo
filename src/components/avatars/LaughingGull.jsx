@@ -2,7 +2,7 @@
 // See WoodDuck.jsx for the template conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'laughing_gull', poses: ['stand', 'laugh', 'swim', 'fly'] }
+export const meta = { birdId: 'laughing_gull', poses: ['stand', 'fly'] }
 
 // Field marks (what separates it from Ring-billed & Herring Gulls): smaller, SLIM gull with
 // LONG wings reaching far past the tail; DARK SLATE-GRAY back and wings (much darker than

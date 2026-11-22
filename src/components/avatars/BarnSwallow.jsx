@@ -2,7 +2,7 @@
 // Follows the WoodDuck.jsx template conventions (meta, props, viewBox 0 0 120 130, "bas" ids).
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'barn_swallow', poses: ['perch', 'chatter', 'swoop', 'bank', 'feed'] }
+export const meta = { birdId: 'barn_swallow', poses: ['perch', 'swoop'] }
 
 // Field marks: glossy steely-blue upperparts (crown, back, wings, tail); rich rust-orange
 // forehead and throat; thin dark-blue breast-band edge below the throat; cinnamon-buff
@@ -47,9 +47,15 @@ function Head({ open = 0, blink = false }) {
       {/* rust forehead */}
       <path d="M 26 48.5 C 26 44 28.5 41 32.5 40.5 C 32 43.5 30.5 46.5 28.5 49.5 Z" fill={RUST}/>
       {/* tiny bill; when open shows the pale-yellow gape */}
-      <g transform={`rotate(${-open} 27 50.5)`}><path d="M 27.5 48.4 L 20 50.6 L 27.5 51.2 Z" fill="#111"/></g>
-      {open > 0 && <path d={`M 28 50.4 L ${27 - open * 0.45} ${50.4 - open * 0.12} L ${27 - open * 0.42} ${52.6 + open * 0.1} Z`} fill="#F4C24A"/>}
-      <g transform={`rotate(${open * 0.8} 27 51.5)`}><path d="M 27.5 51 L 21 51.6 L 27.5 53.2 Z" fill="#1A1A1A"/></g>
+      {/* tiny, flat, forward-pointing bill with a wide gape base (aerial insect-catcher) */}
+      <g transform={`rotate(${-open * 0.7} 28 50.6)`}>
+        <path d="M 28.2 48.9 C 26.6 49.3 24.6 50.1 23.2 50.9 C 24.8 51.1 26.6 51 28.2 50.9 Z" fill="#141414" stroke="#3A3A44" strokeWidth="0.3"/>
+      </g>
+      {open > 0 && <path d={`M 28.2 50.9 L ${25.6 - open * 0.1} ${51.2} L 28.2 ${52 + open * 0.15} Z`} fill="#F4C24A"/>}
+      <g transform={`rotate(${open * 0.7} 28 51.4)`}>
+        <path d="M 28.2 51 C 26.6 51.2 25 51.4 23.8 51.3 C 25.2 52 26.8 52.4 28.2 52.4 Z" fill="#202020"/>
+      </g>
+      <path d="M 28.4 50.95 L 30.2 51.3" stroke="#0A0A14" strokeWidth="0.5"/>
       {/* big bright eye */}
       {blink
         ? <path d="M 33.5 47.5 q 3.2 1.6 6.4 0" stroke="#0A0A14" strokeWidth="1.3" fill="none" strokeLinecap="round"/>

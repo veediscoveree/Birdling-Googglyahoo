@@ -2,7 +2,7 @@
 // See WoodDuck.jsx for the template conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'red_tailed_hawk', poses: ['perch', 'soar', 'bank', 'screech'] }
+export const meta = { birdId: 'red_tailed_hawk', poses: ['perch', 'bank'] }
 
 // Field marks: bulky buteo, broad rounded wings, short fan tail; dark-brown head with pale
 // throat; dark-brown eye; hooked dark bill with yellow cere; brown upperparts with pale

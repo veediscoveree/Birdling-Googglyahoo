@@ -2,7 +2,7 @@
 // Introduced species; the classic city-sidewalk bird of NYC / northern NJ.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'rock_pigeon', poses: ['strut', 'peck', 'loaf', 'takeoff', 'coo'] }
+export const meta = { birdId: 'rock_pigeon', poses: ['strut', 'takeoff'] }
 
 // Field marks: blue-gray body with a darker slate head; iridescent green-and-purple neck;
 // TWO BLACK WING BARS across the pale gray folded wing; darker gray primaries; WHITE RUMP

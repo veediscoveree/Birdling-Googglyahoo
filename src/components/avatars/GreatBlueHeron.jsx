@@ -2,7 +2,7 @@
 // Follows the WoodDuck.jsx template conventions (meta, props, viewBox 0 0 120 130, "gbh" ids).
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'great_blue_heron', poses: ['stand', 'stalk', 'fish', 'fly', 'hunch'] }
+export const meta = { birdId: 'great_blue_heron', poses: ['stand', 'stalk', 'fly'] }
 
 // Field marks: very tall blue-gray wader; WHITE face and crown with a broad BLACK stripe
 // above the eye that runs back into long black head PLUMES; long dagger YELLOW-ORANGE bill;

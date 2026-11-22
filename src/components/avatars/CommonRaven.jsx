@@ -2,7 +2,7 @@
 // In NYC / northern NJ ravens nest on cliffs like the Palisades, quarries, bridges and towers.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'common_raven', poses: ['perch', 'croak', 'soar', 'strut'] }
+export const meta = { birdId: 'common_raven', poses: ['perch', 'soar'] }
 
 // Field marks: entirely glossy black (blue-violet sheen); MASSIVE, deep, curved bill with long
 // bristles over its base; SHAGGY THROAT HACKLES (flared when calling); flat crown + thick neck;

@@ -1,7 +1,7 @@
 // Sharp-shinned Hawk (adult) — "accurate first, cute second, in habitat". Follows WoodDuck.jsx conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'sharp_shinned_hawk', poses: ['perch', 'alert', 'glide', 'pounce'] }
+export const meta = { birdId: 'sharp_shinned_hawk', poses: ['perch', 'glide'] }
 
 // Field marks (each one is drawn): blue-gray back & wings; SMALL ROUND HEAD with a HOODED
 // look — dark crown blends straight into the nape and back (no pale-nape contrast, unlike

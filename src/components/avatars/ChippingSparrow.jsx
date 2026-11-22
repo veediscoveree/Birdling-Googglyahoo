@@ -3,7 +3,7 @@
 // scene backdrop optional, gentle idle (blink + breathing bob), field marks listed below.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'chipping_sparrow', poses: ['perch', 'sing', 'forage', 'fly'] }
+export const meta = { birdId: 'chipping_sparrow', poses: ['perch', 'forage'] }
 
 // Field marks (the acceptance test — each must be visible):
 //  • bright RUFOUS CAP (solid, unstreaked chestnut crown)

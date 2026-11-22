@@ -1,7 +1,7 @@
 // Brown Creeper — "accurate first, cute second, in habitat" (see WoodDuck.jsx for conventions).
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'brown_creeper', poses: ['cling', 'hitch', 'probe', 'spiral-peek', 'flutter'] }
+export const meta = { birdId: 'brown_creeper', poses: ['cling', 'spiral-peek'] }
 
 // Field marks: STREAKY BROWN BACK spotted buff-white like bark; CLEAN WHITE UNDERPARTS
 // (throat to belly); THIN DECURVED BILL; buff-white eyebrow; LONG STIFF TAIL with spiky

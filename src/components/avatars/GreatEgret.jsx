@@ -2,7 +2,7 @@
 // cute second, in habitat". Follows the WoodDuck.jsx template conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'great_egret', poses: ['stand', 'stalk', 'catch', 'fly'] }
+export const meta = { birdId: 'great_egret', poses: ['stand', 'fly'] }
 
 // Field marks: ALL WHITE; long dagger YELLOW bill; yellow eye and yellowish lores; very long
 // thin S-curved neck; long BLACK legs and BLACK feet (Snowy Egret has yellow feet — not this);

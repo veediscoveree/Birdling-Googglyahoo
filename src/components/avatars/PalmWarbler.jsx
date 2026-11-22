@@ -3,7 +3,7 @@
 // ("plw"), scene=true adds a fall lawn / weedy edge, scene=false still reads alone.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'palm_warbler', poses: ['forage', 'peck', 'perch', 'flit'] }
+export const meta = { birdId: 'palm_warbler', poses: ['forage', 'perch'] }
 
 // Field marks: RUFOUS cap; YELLOW eyebrow over a dark eye-line; brownish-olive cheek and back;
 // YELLOW throat and underparts with RUSTY streaks on breast and flanks; BRIGHT YELLOW undertail

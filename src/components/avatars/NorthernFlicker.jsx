@@ -2,7 +2,7 @@
 // See WoodDuck.jsx for the template conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'northern_flicker', poses: ['probe', 'alert', 'flight', 'cling'] }
+export const meta = { birdId: 'northern_flicker', poses: ['probe', 'flight'] }
 
 // Field marks: big ground-feeding woodpecker; GRAY CROWN & NAPE with a RED NAPE CRESCENT;
 // warm TAN FACE and throat; BLACK MUSTACHE (male); slender, slightly DOWN-CURVED dark bill;

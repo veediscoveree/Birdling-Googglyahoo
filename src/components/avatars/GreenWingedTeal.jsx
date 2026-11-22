@@ -3,7 +3,7 @@
 // "gwt" ids). Drawn a touch smaller than the other ducks: it is the tiniest dabbler.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'green_winged_teal', poses: ['swim', 'mudflat', 'stretch', 'springup'] }
+export const meta = { birdId: 'green_winged_teal', poses: ['swim', 'mudflat'] }
 
 // Field marks: tiny, compact duck with a round, large-looking head; rich CHESTNUT head with a
 // glossy GREEN eye-patch swooping back to the nape, outlined by a thin BUFF line; short dark

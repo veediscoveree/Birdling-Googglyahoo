@@ -2,7 +2,7 @@
 // Follows the WoodDuck.jsx template conventions (meta, props, viewBox 0 0 120 130, "abd" ids).
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'american_black_duck', poses: ['swim', 'alert', 'takeoff', 'dabble'] }
+export const meta = { birdId: 'american_black_duck', poses: ['swim', 'takeoff'] }
 
 // Field marks: sooty blackish-brown body (with faint buff scallops) MUCH darker than the pale
 // buffy-gray head and neck; dark crown and thin dark eye-line; olive-yellow bill with dark

@@ -11,7 +11,7 @@
 //  • animated: gentle idle (bob / blink / sheen), never position jumps.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'wood_duck', poses: ['swim', 'preen', 'wingflap', 'dabble'] }
+export const meta = { birdId: 'wood_duck', poses: ['swim', 'dabble'] }
 
 // Field marks: glossy green helmet crest swept back and down; two thin white crest lines;
 // white throat with chin-strap + cheek spurs; red eye & eye-ring; candy-corn bill (red base,

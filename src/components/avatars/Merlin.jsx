@@ -2,7 +2,7 @@
 // See WoodDuck.jsx for the template conventions. Females/juveniles are brown above, not blue.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'merlin', poses: ['perch', 'flight', 'snack', 'scan'] }
+export const meta = { birdId: 'merlin', poses: ['perch', 'flight'] }
 
 // Field marks: SMALL, STOCKY, DARK falcon with a big round head; SLATE BLUE-GRAY crown, back
 // and wings with fine black shaft streaks; plain face with only a FAINT, THIN MUSTACHE (no bold

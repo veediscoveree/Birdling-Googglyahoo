@@ -1,7 +1,7 @@
 // Osprey (adult) — "accurate first, cute second, in habitat". Follows WoodDuck.jsx conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'osprey', poses: ['perch', 'soar', 'hover', 'fish'] }
+export const meta = { birdId: 'osprey', poses: ['perch', 'fish'] }
 
 // Field marks: dark chocolate-brown upperparts; clean white underparts; white head with a bold
 // dark eye-stripe running through the yellow eye back to the nape and down the neck side;

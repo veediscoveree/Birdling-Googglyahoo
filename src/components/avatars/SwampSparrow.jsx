@@ -3,7 +3,7 @@
 // scene backdrop optional, gentle idle (blink + breathing bob), field marks listed below.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'swamp_sparrow', poses: ['cattail', 'sing', 'wade', 'fly'] }
+export const meta = { birdId: 'swamp_sparrow', poses: ['cattail', 'wade'] }
 
 // Field marks (the acceptance test — each must be visible):
 //  • bright RUSTY WINGS (the reddest wings of any NE sparrow; no bold wing bars)

@@ -2,7 +2,7 @@
 // See WoodDuck.jsx for the template conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'american_kestrel', poses: ['perch', 'hover', 'bob', 'stoop'] }
+export const meta = { birdId: 'american_kestrel', poses: ['perch', 'hover'] }
 
 // Field marks: tiny falcon with a big round head; blue-gray crown with a RUFOUS crown spot;
 // white cheeks & throat with TWO vertical black facial stripes (mustache below the eye +

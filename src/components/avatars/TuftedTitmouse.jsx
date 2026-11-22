@@ -2,7 +2,7 @@
 // A year-round feeder regular in NYC / northern NJ yards and parks.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'tufted_titmouse', poses: ['perch', 'seed', 'hammer', 'flit'] }
+export const meta = { birdId: 'tufted_titmouse', poses: ['perch', 'hammer'] }
 
 // Field marks: soft gray upperparts; pointed gray CREST; small BLACK FOREHEAD patch just above
 // the bill; big dark eye on a plain gray face (no cap, no bib — unlike a chickadee); whitish

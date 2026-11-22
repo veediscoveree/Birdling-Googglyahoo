@@ -2,7 +2,7 @@
 // See WoodDuck.jsx for the template conventions.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'ruby_crowned_kinglet', poses: ['perch', 'flick', 'excited', 'hover'] }
+export const meta = { birdId: 'ruby_crowned_kinglet', poses: ['perch', 'excited'] }
 
 // Field marks: TINY round olive-green bird with a big head and short notched tail; bold
 // BROKEN WHITE EYE-RING (gaps at top and bottom) around a big dark eye; tiny thin dark
