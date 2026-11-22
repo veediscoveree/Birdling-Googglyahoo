@@ -1,14 +1,16 @@
 // Tally which species were reported in the player's area over the last N days, using
 // eBird's per-day historic endpoint, and list the ones the game doesn't have yet.
 // Run in CI (needs EBIRD_KEY). Output: data/nearby-species.json
-import { readFileSync, writeFileSync, mkdirSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'fs'
 
 const KEY = process.env.EBIRD_KEY
 const REGIONS = (process.env.REGIONS || 'US-NY-061,US-NY-005,US-NJ-003').split(',')
 const DAYS = +(process.env.DAYS || 60)
 if (!KEY) { console.error('EBIRD_KEY missing'); process.exit(1) }
 
-const have = new Set([...readFileSync('src/data/birds.js', 'utf8').matchAll(/eBirdCode:\s*'([a-z0-9]+)'/g)].map(m => m[1]))
+const dataSrc = [readFileSync('src/data/birds.js', 'utf8'),
+  ...(existsSync('src/data/birds-new') ? readdirSync('src/data/birds-new').map(f => readFileSync('src/data/birds-new/' + f, 'utf8')) : [])].join('\n')
+const have = new Set([...dataSrc.matchAll(/eBirdCode:\s*'([a-z0-9]+)'/g)].map(m => m[1]))
 const tally = {}
 for (let d = 1; d <= DAYS; d++) {
   const dt = new Date(Date.now() - d * 864e5)

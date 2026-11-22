@@ -4,7 +4,7 @@
 // Each species entry drives: avatar rendering, encounter behavior,
 // capture difficulty, unlockable field-guide content, and rarity scoring.
 
-export const BIRDS = [
+const CORE_BIRDS = [
   // ─────────────────────────────────────────────────────────────
   // NORTHERN CARDINAL
   // ─────────────────────────────────────────────────────────────
@@ -3805,6 +3805,14 @@ export const BIRDS = [
     eBirdCode: 'varthr',
   },
 ]
+
+// Additional species live one-per-file in ./birds-new/ (each `export default { ...entry }`),
+// so they can be authored independently. Same schema as the entries above.
+const NEW_BIRDS = Object.values(import.meta.glob('./birds-new/*.js', { eager: true }))
+  .map(m => m.default).filter(Boolean)
+  .sort((a, b) => a.commonName.localeCompare(b.commonName))
+
+export const BIRDS = [...CORE_BIRDS, ...NEW_BIRDS]
 
 // ── Helper utilities ──────────────────────────────────────────────────────────
 

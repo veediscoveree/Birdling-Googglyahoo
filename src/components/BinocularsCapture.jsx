@@ -773,13 +773,18 @@ const BIRD_BACKGROUNDS = {
   urban_edge:      ['house_sparrow', 'european_starling'],
 }
 
-function getBirdBackground(birdId) {
-  if (!birdId) return 'forest_edge'
-  // Check captureBackground from data first via birdId matching
+const KNOWN_BACKGROUNDS = ['wetland', 'marsh_edge', 'forest_canopy', 'tall_trees', 'forest_floor',
+  'forest_trunk', 'shrubby_field', 'shrubby_undergrowth', 'forest_undergrowth', 'forest_edge',
+  'urban_edge', 'open_water', 'open_field', 'open_sky', 'sky']
+
+// Hand-tuned map first, then the species' own captureStats.captureBackground, then forest edge.
+function getBirdBackground(bird) {
+  if (!bird) return 'forest_edge'
   for (const [bg, ids] of Object.entries(BIRD_BACKGROUNDS)) {
-    if (ids.includes(birdId)) return bg
+    if (ids.includes(bird.id)) return bg
   }
-  return 'forest_edge'
+  const own = bird.captureStats?.captureBackground
+  return KNOWN_BACKGROUNDS.includes(own) ? own : 'forest_edge'
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
@@ -838,7 +843,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
   const [viewPhase, setViewPhase]       = useState('raising')
   const birdDistance = birdDistanceRef.current
 
-  const habitatBg = getBirdBackground(bird?.id || bird?.captureStats?.captureBackground)
+  const habitatBg = getBirdBackground(bird)
 
   // ── Binocular view phase: figure-8 raises → fades → oval appears ──
   // Delay between 'fading' and 'searching' equals the CSS fade duration (700ms)

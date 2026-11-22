@@ -338,6 +338,9 @@ All three are optional; the app falls back to mock/offline modes without them.
   the habitat backdrop. Reference/template: `avatars/WoodDuck.jsx`.
 - Review: `?gallery=1` (or DEV → Avatar gallery); `?gallery=1&ids=a,b` shows all poses.
   `node scripts/shot-gallery.mjs out.png dist/index.html ids=a,b` screenshots it.
+- **Quality floor (Jared):** current best old-style avatars are Red-bellied Woodpecker, Eastern
+  Towhee, Canada Warbler, Rose-breasted Grosbeak (plus Red-eyed Vireo, Cedar Waxwing, Black-throated
+  Blue). New work must clearly beat these.
 - Order: worst first, batches of ~8 with before/after sheets. Jared considers only Red-eyed Vireo,
   Cedar Waxwing and Black-throated Blue Warbler "pretty good" — everything gets redone.
 - **Expand to 100 species**: the 27 additions are chosen from species most often reported in the
@@ -345,6 +348,12 @@ All three are optional; the app falls back to mock/offline modes without them.
   (CI job, eBird historic API) → `data/nearby-species.json`.
 
 ## Changelog
+
+**2026-11-22 (e) — 27 new species chosen; data split per file.** Jared approved the top-27 from the
+60-day scan with a swap (Great Black-backed Gull, Fish Crow → Great Egret, Red-shouldered Hawk).
+New species live one-per-file in `src/data/birds-new/<id>.js` (auto-loaded, same schema). Capture
+view now honours each species' `captureStats.captureBackground` (previously ignored → everything
+unmapped got forest_edge).
 
 **2026-11-22 (d) — Fixed 9 wrong eBird species codes.** The 60-day scan (Manhattan, Bronx, Bergen;
 187 species not in game, 59 of ours matched) listed Great Blue Heron, White-breasted Nuthatch etc.
