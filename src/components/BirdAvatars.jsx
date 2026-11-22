@@ -2933,48 +2933,82 @@ export function GreatHornedOwlAvatar({ size = 120, animated = false, style = {} 
 
 // ── Waterfowl ─────────────────────────────────────────────────────────────────
 export function WoodDuckAvatar({ size = 120, animated = false, style = {} }) {
+  // Drake Wood Duck, swimming. Field marks: glossy green helmet crest swept back and down,
+  // two thin white crest lines, white throat with chin-strap + cheek spurs, red eye & eye-ring,
+  // "candy-corn" bill (red base, white patch, black tip/culmen, yellow base line), chestnut
+  // breast speckled white, white-then-black vertical shoulder bars, buff vermiculated flanks
+  // edged white/black above, dark iridescent back, long dark tail.
   const [frame, setFrame] = useState(0)
-  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 8), 500); return () => clearInterval(id) }, [animated])
-  // Iridescent head color shifts
-  const iridColor = animated ? ['#1A7040','#205A80','#1A7040','#30208A','#1A7040','#205A80','#30208A','#1A7040'][frame] : '#1A7040'
-  const bodyY = animated ? [0,-1,-2,-1,0,1,2,1][frame] : 0
+  useEffect(() => { if (!animated) return; const id = setInterval(() => setFrame(f => (f + 1) % 8), 450); return () => clearInterval(id) }, [animated])
+  const bob = animated ? [0, -0.8, -1.4, -0.8, 0, 0.6, 1, 0.6][frame] : 0
+  const sheen = animated ? [0.35, 0.5, 0.65, 0.5, 0.35, 0.25, 0.2, 0.25][frame] : 0.4
+  const flecks = []
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 3; c++) {
+    const x = 39 + c * 4 + (r % 2) * 2, y = 79 + r * 4
+    if (x < 50) flecks.push(<path key={`f${r}${c}`} d={`M ${x} ${y} l 1.3 -1.6 l 1.3 1.6 Z`} fill="#F4E8D8" opacity="0.85"/>)
+  }
   return (
     <svg viewBox="0 0 120 130" width={size} height={size} style={style} aria-label="Wood Duck">
-      <g transform={`translate(0,${bodyY})`}>
-        {/* Long tail */}
-        <path d="M 72 88 C 86 90 102 96 106 108 C 94 104 80 96 70 90" fill="#3A2A1A"/>
-        {/* Body — iridescent flanks */}
-        <ellipse cx="58" cy="88" rx="24" ry="16" fill="#C8A050"/>
-        {/* Chestnut breast with white spots */}
-        <path d="M 36 78 C 38 68 46 64 54 68 C 60 72 60 84 54 90 C 46 94 34 88 36 78 Z" fill="#7A2808"/>
-        <circle cx="42" cy="74" r="2.5" fill="white" opacity="0.7"/>
-        <circle cx="46" cy="80" r="2" fill="white" opacity="0.6"/>
-        <circle cx="40" cy="80" r="1.8" fill="white" opacity="0.6"/>
-        {/* White belly */}
-        <ellipse cx="52" cy="94" rx="12" ry="7" fill="#F0EEE0"/>
-        {/* Wings — iridescent blue-green */}
-        <path d="M 50 72 C 64 66 84 68 88 78 C 82 92 64 94 50 90 Z" fill="#1A5040"/>
-        {/* Head — spectacular iridescent green-purple */}
-        <circle cx="42" cy="60" r="18" fill={iridColor}/>
-        {/* White facial stripe from bill back */}
-        <path d="M 24 58 C 30 54 38 52 50 54 C 52 58 50 62 48 62 C 38 60 28 62 24 58 Z" fill="white" opacity="0.9"/>
-        {/* White stripe from eye back */}
-        <path d="M 38 50 C 44 46 54 44 58 46" stroke="white" strokeWidth="2.5" fill="none" opacity="0.9"/>
-        {/* Red eye */}
-        <circle cx="38" cy="55" r="4.5" fill="#CC2000"/>
-        <circle cx="37" cy="54" r="1.6" fill="white" opacity="0.6"/>
-        {/* Red bill with yellow base */}
-        <path d="M 24 60 L 10 61 L 24 66 Z" fill="#CC3000"/>
-        <path d="M 24 60 L 26 61 L 24 66 Z" fill="#E8A000"/>
-        <line x1="10" y1="61" x2="24" y2="61" stroke="#AA2000" strokeWidth="0.8"/>
-        {/* Crest flowing back */}
-        <path d="M 44 46 C 54 40 66 38 68 42 C 60 42 52 46 46 50" fill={iridColor}/>
-        {/* Legs */}
-        <path d="M 48 102 L 44 116" stroke="#8B6030" strokeWidth="2.2" strokeLinecap="round"/>
-        <path d="M 64 102 L 68 116" stroke="#8B6030" strokeWidth="2.2" strokeLinecap="round"/>
-        <path d="M 44 116 L 38 119 M 44 116 L 44 121 M 44 116 L 50 119" stroke="#8B6030" strokeWidth="1.6" strokeLinecap="round"/>
-        <path d="M 68 116 L 62 119 M 68 116 L 68 121 M 68 116 L 74 119" stroke="#8B6030" strokeWidth="1.6" strokeLinecap="round"/>
+      <defs>
+        <linearGradient id="wdHead" x1="0" y1="0" x2="1" y2="0.6">
+          <stop offset="0%" stopColor="#2E7A4A"/><stop offset="55%" stopColor="#14502E"/><stop offset="100%" stopColor="#0E3420"/>
+        </linearGradient>
+        <linearGradient id="wdBack" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#2A3350"/><stop offset="100%" stopColor="#141A28"/>
+        </linearGradient>
+        <linearGradient id="wdWater" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#4C93B8" stopOpacity="0.85"/><stop offset="100%" stopColor="#1E4E6E" stopOpacity="0.95"/>
+        </linearGradient>
+      </defs>
+      <g transform={`translate(0,${bob})`}>
+        {/* Long dark tail */}
+        <path d="M 94 78 C 103 77 112 81 116 88 C 109 89 100 87 92 85 Z" fill="#121820"/>
+        {/* Dark iridescent back / folded wings */}
+        <path d="M 48 74 C 60 65 84 65 100 77 C 94 80 84 79 74 77 C 64 76 55 77 48 76 Z" fill="url(#wdBack)"/>
+        <path d="M 70 70 C 78 68 88 70 94 75 C 86 74 78 73 70 72 Z" fill="#3A5FA8" opacity="0.7"/>
+        {/* Buff vermiculated flanks */}
+        <path d="M 57 77 C 70 75 86 77 97 82 C 95 93 80 100 57 101 C 54 93 54 84 57 77 Z" fill="#D9B97A"/>
+        {[0, 1, 2, 3, 4].map(i => (
+          <path key={i} d={`M ${61 + i * 7} ${80 + (i % 2)} q 2 3 0 6 q -2 3 0 6`} stroke="#B8975A" strokeWidth="0.6" fill="none" opacity="0.8"/>
+        ))}
+        {/* White-then-black edge above flanks */}
+        <path d="M 57 77 C 70 75 86 77 97 82" stroke="#F6F2E8" strokeWidth="1.4" fill="none"/>
+        <path d="M 57 75.4 C 70 73.4 86 75.4 97 80.4" stroke="#0E0E10" strokeWidth="1.2" fill="none"/>
+        {/* Chestnut breast with white flecks */}
+        <path d="M 42 72 C 33 79 33 95 43 101 L 52 101 C 50 92 50 82 52 74 Z" fill="#7A2414"/>
+        {flecks}
+        {/* White then black vertical shoulder bars */}
+        <path d="M 52 74 C 50 82 50 92 52 101 L 54.8 101 C 52.8 92 52.8 82 54.8 75 Z" fill="#FAF7F0"/>
+        <path d="M 54.8 75 C 52.8 82 52.8 92 54.8 101 L 57.4 101 C 55.4 92 55.4 82 57.4 76 Z" fill="#0E0E10"/>
+        {/* Head + swept-back helmet crest */}
+        <path d="M 20 58 C 19 46 29 39 40 41 C 51 42 59 50 67 64 C 61 66 55 66 51 69 C 47 73 41 76 33 75 C 25 73 20 67 20 58 Z" fill="url(#wdHead)"/>
+        {/* Purple sheen on cheek and crest */}
+        <ellipse cx="37" cy="60" rx="9" ry="6" fill="#5A2E7A" opacity={sheen}/>
+        <path d="M 50 50 C 56 54 62 59 66 64 C 60 63 55 60 51 56 Z" fill="#5A2E7A" opacity={sheen}/>
+        {/* White crest lines: bill-base over eye to crest tip; behind eye along lower crest */}
+        <path d="M 23 50.5 C 30 45 41 44 49 49 C 56 54 62 59 66.5 64" stroke="#FFFFFF" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+        <path d="M 39 58 C 47 58.5 55 62 62.5 66" stroke="#FFFFFF" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+        {/* White throat + chin-strap spurs */}
+        <path d="M 21 63 C 23 70 30 75.5 40 75 C 44 74.6 47 72.5 49 70 C 44 71 39 71 34 69.5 C 28 68 24 66 21 63 Z" fill="#FFFFFF"/>
+        <path d="M 28 67.5 C 30 64 32 61.5 34.5 60.5 C 34 63.5 33 66.5 31.5 68.5 Z" fill="#FFFFFF"/>
+        <path d="M 40 71 C 43 68 46.5 66.5 50 66.5 C 48 69 45.5 71 42 72 Z" fill="#FFFFFF"/>
+        {/* Red eye with red eye-ring */}
+        <circle cx="31" cy="53.5" r="5" fill="#E0442A"/>
+        <circle cx="31" cy="53.5" r="3.6" fill="#C81810"/>
+        <circle cx="31" cy="53.5" r="1.9" fill="#1A0606"/>
+        <circle cx="29.7" cy="52.3" r="1.1" fill="#FFFFFF"/>
+        {/* Candy-corn bill */}
+        <path d="M 21 53.5 C 15.5 53.8 10 56 6.5 59 C 9 61.3 14.5 62.2 21 62 Z" fill="#E0381E"/>
+        <ellipse cx="14.2" cy="58.2" rx="2.6" ry="1.7" fill="#FFF6EC"/>
+        <path d="M 10.5 56.7 C 8.6 57.6 7.4 58.4 6.5 59 C 7.6 60.3 9.3 61 11.3 61.2 Z" fill="#141414"/>
+        <path d="M 20.5 53.8 C 16 54.3 11.5 55.8 8.5 57.8" stroke="#141414" strokeWidth="1" fill="none" strokeLinecap="round"/>
+        <path d="M 21.2 53.6 L 21.2 62" stroke="#F0C428" strokeWidth="1.5"/>
+        <circle cx="9.5" cy="58" r="0.6" fill="#141414"/>
       </g>
+      {/* Water surface hides the submerged hull */}
+      <path d={`M 0 ${99 + bob * 0.3} Q 15 ${97 + bob * 0.3} 30 99 T 60 99 T 90 99 T 120 99 L 120 130 L 0 130 Z`} fill="url(#wdWater)"/>
+      <path d="M 30 103 q 8 -2 16 0 M 66 106 q 10 -2 20 0 M 12 110 q 6 -1.5 12 0 M 90 113 q 7 -2 14 0" stroke="#A8D8EC" strokeWidth="1" fill="none" opacity="0.7" strokeLinecap="round"/>
+      <path d="M 40 104 C 46 108 60 108 70 104" stroke="#7A2414" strokeWidth="2" fill="none" opacity="0.25"/>
     </svg>
   )
 }
