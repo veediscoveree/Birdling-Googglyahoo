@@ -55,7 +55,7 @@ export default function BirdEncounter({ bird, info, onStartCapture, onDismiss })
             {info?.distance}m away · {info?.habitat}
             {info?.eBirdLocName && (
               <span style={{ marginLeft: 4, color: 'var(--accent-amber)', fontWeight: 600 }}>
-                · last seen at {info.eBirdLocName}
+                · last seen at {info.eBirdLocName}{info.eBirdKm != null ? ` (${info.eBirdKm < 1 ? Math.round(info.eBirdKm * 1000) + ' m' : info.eBirdKm.toFixed(1) + ' km'} from you)` : ''}
                 {info.eBirdTimeAgo ? ` ${info.eBirdTimeAgo}` : ''}
               </span>
             )}

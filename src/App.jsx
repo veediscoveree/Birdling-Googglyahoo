@@ -189,11 +189,23 @@ export default function App() {
         }
       }
 
-      // Weight toward common species 70% of the time
-      const common = pool.filter(b => b.rarity === 'common')
-      const bird = (common.length > 0 && Math.random() < 0.7)
-        ? common[Math.floor(Math.random() * common.length)]
-        : pool[Math.floor(Math.random() * pool.length)]
+      // With live eBird data, favour birds reported CLOSE to the player, and give
+      // uncommon/rare ones a boost so real finds feel special. Otherwise fall back to
+      // weighting toward common species.
+      let bird
+      if (eBirdActive && eBirdObs.length > 0 && Math.random() < 0.8) {
+        const rarityBoost = { common: 1, uncommon: 2, rare: 3, very_rare: 4, legendary: 4 }
+        const weights = eBirdObs.map(o => (rarityBoost[o.bird.rarity] ?? 1) / (1 + (o.distanceKm ?? 25)))
+        let r = Math.random() * weights.reduce((x, y) => x + y, 0)
+        let idx = 0
+        while (idx < weights.length - 1 && (r -= weights[idx]) > 0) idx++
+        bird = eBirdObs[idx].bird
+      } else {
+        const common = pool.filter(b => b.rarity === 'common')
+        bird = (common.length > 0 && Math.random() < 0.7)
+          ? common[Math.floor(Math.random() * common.length)]
+          : pool[Math.floor(Math.random() * pool.length)]
+      }
 
       // Find matching eBird observation for this bird
       const obs = eBirdActive
@@ -218,6 +230,7 @@ export default function App() {
         isEBirdVerified: !!obs,
         eBirdLocName:  obs?.locName || null,
         eBirdTimeAgo:  obs?.obsDt   ? timeAgo(obs.obsDt) : null,
+        eBirdKm:       obs?.distanceKm ?? null,
         eBirdLat:      obs?.lat ?? null,
         eBirdLng:      obs?.lng ?? null,
       })
@@ -227,7 +240,7 @@ export default function App() {
     }, ENCOUNTER_DELAY_MS)
 
     return () => clearTimeout(timer)
-  }, [screen, nearbyBirds, eBirdActive, capturedBirds.length, seenEggs, devMode])
+  }, [screen, nearbyBirds, eBirdObs, eBirdActive, capturedBirds.length, seenEggs, devMode])
 
   const goToRadar              = useCallback(() => setScreen(SCREEN.RADAR), [])
   const handleStartCapture     = useCallback(() => setScreen(SCREEN.BINOCULARS), [])
@@ -329,7 +342,7 @@ export default function App() {
         color: devMode ? 'rgba(245,166,35,0.9)' : 'rgba(61,220,127,0.55)',
         letterSpacing: 0.5, pointerEvents: 'auto', cursor: 'pointer',
         padding: '4px 6px',
-      }}>{devMode ? 'v2.6-dev ●' : 'v2.6'}</div>
+      }}>{devMode ? 'v2.7-dev ●' : 'v2.7'}</div>
 
       {devMode && (
         <DevPanel

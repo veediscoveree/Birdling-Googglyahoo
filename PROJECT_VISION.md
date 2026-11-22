@@ -330,6 +330,14 @@ All three are optional; the app falls back to mock/offline modes without them.
 
 ## Changelog
 
+**2026-11-22 (b) — Nearest-first eBird (v2.7).** Jared: map worked but sent him to Central Park
+instead of closer sightings. Cause: per-species dedupe kept the *most recent* sighting, not the
+nearest, and the encounter took the first match. Now: haversine distance from the player's GPS;
+nearest sighting per species kept (ties → most recent); list sorted nearest-first; encounter picker
+(80% of the time when eBird is active) weights by `rarityBoost / (1 + km)`; encounter + radar cards
+show real distance ("last seen at X (0.8 km from you)"). Verified with mocked geolocation + eBird.
+Note: if location permission is denied the app falls back to a default NYC point.
+
 **2026-11-22 — eBird confirmed live; "Find it in real life" (v2.6).**
 - On-device **Test eBird passed**: 177 sightings / 177 species within 25 km / 14 days of Jared's
   location, **47 of 73** game species matched. Header-less `key=` request works (CORS ok).

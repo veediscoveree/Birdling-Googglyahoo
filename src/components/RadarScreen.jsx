@@ -74,14 +74,15 @@ function timeAgo(obsDt) {
 // Uses real eBird obs when available, falls back to ambient blips
 function buildSightingCards(eBirdObs, eBirdActive) {
   if (eBirdActive && eBirdObs.length > 0) {
-    // Sort by most recent first, take top 6
+    // Nearest first (then most recent), take top 6
+    const fmt = (km) => km == null ? '' : (km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1)} km`)
     return [...eBirdObs]
-      .sort((a, b) => (b.obsDt > a.obsDt ? 1 : -1))
+      .sort((a, b) => ((a.distanceKm ?? 1e9) - (b.distanceKm ?? 1e9)) || (b.obsDt > a.obsDt ? 1 : -1))
       .slice(0, 6)
       .map(o => ({
         bird:      o.bird,
         label:     o.locName,
-        sublabel:  timeAgo(o.obsDt),
+        sublabel:  [fmt(o.distanceKm), timeAgo(o.obsDt)].filter(Boolean).join(' · '),
         howMany:   o.howMany,
         real:      true,
       }))

@@ -64,7 +64,14 @@ export async function fetchObservations(lat, lng, radiusKm, daysBack) {
 }
 
 // ── Parse eBird obs → our internal format ────────────────────────────────────
-function parseObs(obs) {
+function distKm(lat1, lng1, lat2, lng2) {   // haversine
+  const R = 6371, r = Math.PI / 180
+  const dLat = (lat2 - lat1) * r, dLng = (lng2 - lng1) * r
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(dLng / 2) ** 2
+  return 2 * R * Math.asin(Math.sqrt(a))
+}
+
+function parseObs(obs, userLat, userLng) {
   return obs
     .map(o => {
       const bird = EBIRD_MAP[o.speciesCode]
@@ -78,6 +85,7 @@ function parseObs(obs) {
         lat:       o.lat,
         lng:       o.lng,
         subId:     o.subId,
+        distanceKm: (o.lat != null && o.lng != null) ? distKm(userLat, userLng, o.lat, o.lng) : null,
       }
     })
     .filter(Boolean)
@@ -95,17 +103,17 @@ async function resolveNearbyBirds(lat, lng) {
   for (const [radiusKm, daysBack] of SEARCH_LADDER) {
     try {
       const raw    = await fetchObservations(lat, lng, radiusKm, daysBack)
-      const parsed = parseObs(raw)
+      const parsed = parseObs(raw, lat, lng)
 
-      // Deduplicate: keep the most-recent observation per species
+      // Deduplicate: keep the NEAREST sighting per species (ties → most recent),
+      // then sort nearest-first so the closest birds come up first.
       const bySpecies = {}
       for (const o of parsed) {
-        const id = o.bird.id
-        if (!bySpecies[id] || o.obsDt > bySpecies[id].obsDt) {
-          bySpecies[id] = o
-        }
+        const id = o.bird.id, cur = bySpecies[id]
+        const d = o.distanceKm ?? 1e9, cd = cur ? (cur.distanceKm ?? 1e9) : null
+        if (!cur || d < cd || (d === cd && o.obsDt > cur.obsDt)) bySpecies[id] = o
       }
-      bestObs = Object.values(bySpecies)
+      bestObs = Object.values(bySpecies).sort((a, b) => (a.distanceKm ?? 1e9) - (b.distanceKm ?? 1e9))
 
       if (bestObs.length >= MIN_BIRDS) break   // good enough — stop expanding
     } catch (e) {
