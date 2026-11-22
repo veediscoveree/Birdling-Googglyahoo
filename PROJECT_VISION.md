@@ -349,6 +349,13 @@ All three are optional; the app falls back to mock/offline modes without them.
 
 ## Changelog
 
+**2026-11-22 (f) — 100 species; batch 1 redraw done.** All 27 approved new species added (data +
+3–5-pose habitat avatars each) in `src/data/birds-new/` and `src/components/avatars/`. Batch-1 redraw
+(8 worst): Cooper's, Sharp-shinned, Red-tailed, Kestrel, Osprey, Turkey Vulture, Barn Swallow, Great
+Blue Heron. Built in parallel by helper agents; each reviewed by screenshot before merge. Known polish
+items: heron neck streaking at large size, kestrel face stripes stark, raven soar head, pigeon wing-bar
+angle, Merlin & cormorant flight poses weakest. Next: batch 2 of old-style redraws (~64 left).
+
 **2026-11-22 (e) — 27 new species chosen; data split per file.** Jared approved the top-27 from the
 60-day scan with a swap (Great Black-backed Gull, Fish Crow → Great Egret, Red-shouldered Hawk).
 New species live one-per-file in `src/data/birds-new/<id>.js` (auto-loaded, same schema). Capture
