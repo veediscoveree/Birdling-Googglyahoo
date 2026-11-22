@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-22T04:30:36.666Z",
+ "generated": "2026-11-22T04:39:42.857Z",
  "regions": [
   "US-NY-061",
   "US-NY-005",
@@ -7,7 +7,7 @@
  ],
  "days": 60,
  "maxRegionDays": 180,
- "inGame": 59,
+ "inGame": 67,
  "candidates": [
   {
    "code": "ribgul",
@@ -46,12 +46,6 @@
    "regionDays": 171
   },
   {
-   "code": "grbher3",
-   "comName": "Great Blue Heron",
-   "sciName": "Ardea herodias",
-   "regionDays": 170
-  },
-  {
    "code": "swaspa",
    "comName": "Swamp Sparrow",
    "sciName": "Melospiza georgiana",
@@ -62,12 +56,6 @@
    "comName": "Ruby-crowned Kinglet",
    "sciName": "Corthylio calendula",
    "regionDays": 167
-  },
-  {
-   "code": "whbnut",
-   "comName": "White-breasted Nuthatch",
-   "sciName": "Sitta carolinensis",
-   "regionDays": 162
   },
   {
    "code": "comrav",
@@ -160,12 +148,6 @@
    "regionDays": 130
   },
   {
-   "code": "eastow",
-   "comName": "Eastern Towhee",
-   "sciName": "Pipilo erythrophthalmus",
-   "regionDays": 129
-  },
-  {
    "code": "gnwtea",
    "comName": "Green-winged Teal",
    "sciName": "Anas crecca",
@@ -236,12 +218,6 @@
    "comName": "Ruddy Duck",
    "sciName": "Oxyura jamaicensis",
    "regionDays": 88
-  },
-  {
-   "code": "buhvir",
-   "comName": "Blue-headed Vireo",
-   "sciName": "Vireo solitarius",
-   "regionDays": 86
   },
   {
    "code": "blkvul",
@@ -370,12 +346,6 @@
    "regionDays": 65
   },
   {
-   "code": "ovenbi1",
-   "comName": "Ovenbird",
-   "sciName": "Seiurus aurocapilla",
-   "regionDays": 60
-  },
-  {
    "code": "buffle",
    "comName": "Bufflehead",
    "sciName": "Bucephala albeola",
@@ -404,12 +374,6 @@
    "comName": "Rusty Blackbird",
    "sciName": "Euphagus carolinus",
    "regionDays": 54
-  },
-  {
-   "code": "reevir1",
-   "comName": "Red-eyed Vireo",
-   "sciName": "Vireo olivaceus",
-   "regionDays": 53
   },
   {
    "code": "tenwar",
@@ -610,12 +574,6 @@
    "regionDays": 15
   },
   {
-   "code": "bkbwar",
-   "comName": "Blackburnian Warbler",
-   "sciName": "Setophaga fusca",
-   "regionDays": 15
-  },
-  {
    "code": "rinduc",
    "comName": "Ring-necked Duck",
    "sciName": "Aythya collaris",
@@ -667,12 +625,6 @@
    "code": "musduc",
    "comName": "Muscovy Duck",
    "sciName": "Cairina moschata",
-   "regionDays": 12
-  },
-  {
-   "code": "veery",
-   "comName": "Veery",
-   "sciName": "Catharus fuscescens",
    "regionDays": 12
   },
   {
