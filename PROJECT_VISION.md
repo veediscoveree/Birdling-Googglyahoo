@@ -346,6 +346,12 @@ All three are optional; the app falls back to mock/offline modes without them.
 
 ## Changelog
 
+**2026-11-22 (d) — Fixed 9 wrong eBird species codes.** The 60-day scan (Manhattan, Bronx, Bergen;
+187 species not in game, 59 of ours matched) listed Great Blue Heron, White-breasted Nuthatch etc.
+as "new" — their codes were wrong, so those birds could never match real sightings. Fixed:
+greher→grbher3, wbnu→whbnut, reevir→reevir1, blhvir→buhvir, eastem→eastow, blawar→bkbwar,
+veery1→veery, ovenbi→ovenbi1, prowat→prowar. Remaining 64 codes checked by hand.
+
 **2026-11-22 (c) — Playable bird audio via Wikimedia MP3 (v2.8).** Keys confirmed baked into the
 live build via repo secrets. On-device, xeno-canto rows showed "media error 4" (source not
 supported) for BOTH the static mp3 and /download URLs — likely hotlink/referrer protection on

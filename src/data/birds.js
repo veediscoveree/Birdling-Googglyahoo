@@ -761,7 +761,7 @@ export const BIRDS = [
 
     description: 'Standing four feet tall with a six-foot wingspan, the Great Blue Heron is a living dinosaur. They are consummate hunters — that statue-still pose in the shallows is pure predatory patience, followed by a strike too fast to see. They eat fish, frogs, voles, small birds, even snakes. Colonial nesters called "heronries" can host hundreds of pairs, their giant stick nests filling the tops of tall trees like a fairy-tale forest.',
     funFacts: ['A heron\'s neck can strike with such speed and force that biologists call it a "biological spear gun." The S-curve of the neck stores elastic energy like a spring, releasing it in a strike faster than the eye can follow.', 'Great Blue Herons often hunt by standing completely motionless for minutes at a time, then striking in less than a second — patience refined to an evolutionary art.'],
-    eBirdCode: 'greher',
+    eBirdCode: 'grbher3',
     merlinId: 'Great_Blue_Heron',
   },
 
@@ -1022,7 +1022,7 @@ export const BIRDS = [
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The White-breasted Nuthatch is the only bird that routinely walks headfirst down tree trunks, giving it a unique vantage to spot insects that upward-climbing birds miss. Its nasal "yank yank" call is a staple of woodland soundscapes across the continent. It stuffs seeds and nuts into bark crevices, hammering them open — hence the name "nuthatch" from "nuthack."',
     funFacts: ['White-breasted Nuthatches smear insects around the entrance of their nest hole — possibly to deter squirrels and other predators with the odor.', 'Nuthatches are one of the few birds that routinely travel down tree trunks headfirst — a feeding strategy that lets them find insects woodpeckers miss by going up.'],
-    eBirdCode: 'wbnu', merlinId: 'White-breasted_Nuthatch',
+    eBirdCode: 'whbnut', merlinId: 'White-breasted_Nuthatch',
   },
 
   // ─────────────────────────────────────────────────────────────
@@ -1813,7 +1813,7 @@ export const BIRDS = [
     verificationThreshold: 0.75, verificationMethods: 1,
     description: 'A jewel of the swamp. The Prothonotary Warbler is named for the gold-robed papal secretaries (protonotaries) of the Catholic Church — its plumage really is that intense. Uniquely among eastern warblers, it nests in tree cavities over standing water: old woodpecker holes in stumps and snags rising from flooded bottomlands. Its song echoes across cypress swamps like ringing gold.',
     funFacts: ['The Prothonotary Warbler will readily use nest boxes — one of the easiest warblers to attract to a man-made cavity. Alger Hiss\'s lawyers famously challenged whether a Prothonotary Warbler sighting was credible testimony in his 1948 espionage trial.', 'Prothonotary Warblers are one of only two eastern warblers that nest in tree cavities — their brilliant golden color gives them their name, "prothonotary" being the golden-robed clerk of a Catholic church.'],
-    eBirdCode: 'prowat', merlinId: 'Prothonotary_Warbler',
+    eBirdCode: 'prowar', merlinId: 'Prothonotary_Warbler',
   },
 
   {
@@ -2098,7 +2098,7 @@ export const BIRDS = [
       'A single Red-eyed Vireo male was recorded singing 22,197 times in one day — by far the highest count for any North American bird.',
       'Red-eyed Vireos make the longest overwater migration of any vireo, crossing the Gulf of Mexico in a single overnight flight to reach South America.',
     ],
-    eBirdCode: 'reevir', merlinId: 'Red-eyed_Vireo',
+    eBirdCode: 'reevir1', merlinId: 'Red-eyed_Vireo',
   },
 
   {
@@ -2153,7 +2153,7 @@ export const BIRDS = [
     verificationThreshold: 0.70, verificationMethods: 1,
     description: 'The most visually striking eastern vireo, with a genuine blue-gray head that earns its name. The bold white spectacles — connected eye ring and supercilium — make it look perpetually alert. It\'s an early spring migrant, often appearing in late April before the leaves have fully opened, and it favors hemlock and mixed forest. Its song is slower and more musical than the Red-eyed Vireo\'s.',
     funFacts: ['The Blue-headed Vireo was once lumped with two western species (Cassin\'s Vireo and Plumbeous Vireo) as a single species called "Solitary Vireo." Careful analysis of song and genetics separated them again in 1997.', 'Blue-headed Vireos are remarkably bold: they continue sitting on the nest even when a researcher approaches within arm\'s reach, making them one of the easiest nesting songbirds to observe closely.'],
-    eBirdCode: 'blhvir', merlinId: 'Blue-headed_Vireo',
+    eBirdCode: 'buhvir', merlinId: 'Blue-headed_Vireo',
   },
 
   {
@@ -2564,7 +2564,7 @@ export const BIRDS = [
       'The Eastern Towhee scratches with both feet simultaneously — a technique so loud that many birdwatchers first hear it and look for a squirrel. Very few songbirds use this two-footed kick.',
       'The towhee has two names from its call: "towhee" is one phonetic rendering and "chewink" is another — and birders spent decades arguing which was correct before both names became standard.',
     ],
-    eBirdCode: 'eastem', merlinId: 'Eastern_Towhee',
+    eBirdCode: 'eastow', merlinId: 'Eastern_Towhee',
   },
 
   // ─────────────────────────────────────────────────────────────
@@ -2682,7 +2682,7 @@ export const BIRDS = [
       'The Blackburnian was named after Anna Blackburne, an 18th-century English botanist who never visited North America but maintained a private natural history museum.',
       'Its song is so high-pitched that some birders over 50 genuinely cannot hear it — a hearing test disguised as a field trip.',
     ],
-    eBirdCode: 'blawar', merlinId: 'Blackburnian_Warbler',
+    eBirdCode: 'bkbwar', merlinId: 'Blackburnian_Warbler',
   },
 
   // ── Magnolia Warbler ──────────────────────────────────────────
@@ -3580,7 +3580,7 @@ export const BIRDS = [
     verificationThreshold: 0.68, verificationMethods: 2,
     description: 'The Veery is a master of disguise — a tawny, soft-spotted thrush of moist forests whose descending, spiraling song seems to tumble downward like water falling through reeds. It spends most of its time hidden in the forest understory, making it far more often heard than seen. One of the longest-migrating songbirds in North America, traveling to Brazil for the winter.',
     funFacts: ['Veeries are one of the longest-distance migrants in North America — they travel from the northeastern US to central Brazil, about 8,000 km each way.', 'Research has shown that Veeries end their breeding season earlier in years when hurricane activity in the Atlantic will be high — they may be sensitive to atmospheric cues we don\'t yet understand.'],
-    eBirdCode: 'veery1',
+    eBirdCode: 'veery',
   },
 
   {
@@ -3640,7 +3640,7 @@ export const BIRDS = [
     verificationThreshold: 0.62, verificationMethods: 2,
     description: 'The Ovenbird is a warbler that acts like a thrush — walking deliberately on the forest floor and building a domed, oven-shaped nest from leaves and grass (giving it its name). The explosive "teacher-teacher-TEACHER" song is one of the defining sounds of mature eastern deciduous forest, yet the singer itself is maddeningly hard to spot among the leaf litter.',
     funFacts: ['The Ovenbird builds a domed nest on the forest floor shaped like a Dutch oven — with a side entrance hidden under dead leaves.', 'Ovenbirds are one of the most common victims of window strikes during migration, as they migrate at night and are attracted to lit buildings.'],
-    eBirdCode: 'ovenbi',
+    eBirdCode: 'ovenbi1',
   },
 
   {
