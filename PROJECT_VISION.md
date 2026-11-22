@@ -328,24 +328,57 @@ All three are optional; the app falls back to mock/offline modes without them.
 - **BirdNET**: Cornell Lab's open-source bird-sound classifier (the "Merlin-like" engine).
 - **eBird Record Format**: CSV format eBird accepts for bulk checklist import.
 
-## Avatar style guide (decided by Jared, 2026-11-22)
+## Avatar style guide v2 (Jared's critique, 2026-11-22) — supersedes v1
 
-- **Accurate first, cute second, in habitat.** Field marks from `birds.js` are the acceptance
-  test; cute = slightly large head, big bright eye with catch-light, soft rounded shapes.
-- **3–5 poses per species**, picked at random each time the bird is shown (so it feels alive).
-- **One file per species** in `src/components/avatars/` exporting `meta = { birdId, poses }` and a
-  component taking `{ size, animated, style, pose, scene }`. `scene=false` (binoculars view) drops
-  the habitat backdrop. Reference/template: `avatars/WoodDuck.jsx`.
-- Review: `?gallery=1` (or DEV → Avatar gallery); `?gallery=1&ids=a,b` shows all poses.
-  `node scripts/shot-gallery.mjs out.png dist/index.html ids=a,b` screenshots it.
-- **Quality floor (Jared):** current best old-style avatars are Red-bellied Woodpecker, Eastern
-  Towhee, Canada Warbler, Rose-breasted Grosbeak (plus Red-eyed Vireo, Cedar Waxwing, Black-throated
-  Blue). New work must clearly beat these.
-- Order: worst first, batches of ~8 with before/after sheets. Jared considers only Red-eyed Vireo,
-  Cedar Waxwing and Black-throated Blue Warbler "pretty good" — everything gets redone.
-- **Expand to 100 species**: the 27 additions are chosen from species most often reported in the
-  player's area over the **last two months** (captures migrants), via `scripts/species-scan.mjs`
-  (CI job, eBird historic API) → `data/nearby-species.json`.
+**Principle:** delight without offending against the beauty of nature. A birder should look at it and
+think "yes, that's exactly how that bird sits/flies" — with a little warmth added, never parody.
+
+1. **True shape before cute.** Species silhouette and proportions are the acceptance test: head size,
+   bill shape/length, neck, wing planform, tail length/shape, leg length. Cuteness is limited to a
+   bright eye with a catch-light and slightly softened line work. No blob bodies, no oversized heads,
+   no rounded-off bills. **The bigger the bird, the closer to realistic** (eagles, herons, ducks,
+   raptors get almost no cartooning; tiny songbirds may get a touch more).
+2. **Bills are sacred.** Correct shape, orientation and size, and always visible against the
+   background (contrast edge if needed). E.g. Barn Swallow: tiny, flat, forward-pointing bill with a
+   wide gape base — not a reversed triangle. Kinglets: small but clearly visible.
+3. **Wings are feathers, not blades.** Show primaries/secondaries as separate feathers; correct
+   planform per family — falcons long & pointed (but still feathered, not a single spike), accipiters
+   short & rounded, buteos broad with fingered tips, Osprey long & crooked, eagles plank-like with deep
+   fingers, swallows swept & tapered.
+4. **Flight must obey physics.** Body pitch, wing angle, tail and head all agree with the direction of
+   travel. Soar = steady glide (wings level or dihedral, body horizontal). Hover = body tilted up,
+   tail fanned down, wings beating forward. Stoop = wings partly tucked with structure still visible.
+   Frontal/below views only if the shape still reads true; otherwise use side/three-quarter views.
+5. **Poses: 2–4 max, each characteristic and instantly readable without its label.** Every pose must
+   change the silhouette (perched vs flying vs feeding vs display). No near-duplicates (head tilt,
+   foliage swap, beak open). No poses that rely on speech bubbles, sound arcs or motion lines.
+   Singing only where the posture itself is distinctive. Keep a quirky one only if it is truly
+   characteristic and legible (Ring-billed Gull "fry" stays).
+6. **Habitat art matches the bird art.** Layered, textured, natural colour and light; no primitive
+   "kindergarten" shapes (flat ovals for trees, lollipop bushes). Habitat must suit species and pose.
+7. **No template cloning.** Related species may share technique but never a body: each starts from its
+   own real proportions (the Peregrine/Merlin inherited the Kestrel's flaws — must not happen).
+8. **Process.** One bird at a time, small batches, my own screenshot review against a written
+   field-mark + shape checklist (rules 1–7) before anything ships. Parallel mass production stopped.
+
+**Exemplars (Jared):** Sparrow panel (Swamp/Chipping/Savannah) and Gray Catbird = the bar. Also good
+enough: Golden-crowned Kinglet (bill too faint), Palm Warbler, Red-shouldered Hawk (frontal soar
+shape slightly off), Hairy Woodpecker, Ruby-crowned Kinglet. Passable: Cormorant, Egret, Flicker
+(needs more verisimilitude).
+
+**Needs redo (Jared):** Kestrel (wings narrow, one-feather look), Barn Swallow (bill), Osprey (soar &
+hover pitch), Bald Eagle (head too big, bill/feathers, kindergarten background), Peregrine & Merlin
+(kestrel-cloned shape, stoop wings, duplicate poses, Merlin branch), Belted Kingfisher (hover/plunge
+physics, crest unrealistic, loses grandeur), Common Raven (perch/croak/strut near-identical),
+American Black Duck & Northern Shoveler (over-rounded). All species: cut to 2–4 characteristic poses.
+
+## Avatar system (technical)
+
+- One file per species in `src/components/avatars/` exporting `meta = { birdId, poses }` and a
+  component taking `{ size, animated, style, pose, scene }`; random pose per appearance; `scene=false`
+  in the binoculars view. Review: `?gallery=1&ids=a,b` (all poses), `&legacy=1` for old art;
+  `node scripts/shot-gallery.mjs out.png dist/index.html ids=a,b`.
+- 100 species: 27 added from the 60-day eBird scan (`scripts/species-scan.mjs`).
 
 ## Changelog
 
