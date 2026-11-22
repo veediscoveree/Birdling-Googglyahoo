@@ -4,12 +4,15 @@
 
 import { useRef, useState } from 'react'
 import { useXenoCantoAudio } from '../hooks/useXenoCantoAudio'
+import { useCommonsAudio } from '../hooks/useCommonsAudio'
 
 const QUALITY_COLOR = { A: '#3ddc7f', B: '#a8d878', C: '#f5a623', D: '#ff8a65', E: '#ff5555' }
 
 export default function BirdAudio({ bird }) {
   const speciesName = bird.xenoCantoSpecies || bird.scientificName
-  const { songs, calls, loading, apiError, noKey } = useXenoCantoAudio(speciesName)
+  const { songs, calls, loading: xcLoading, apiError, noKey } = useXenoCantoAudio(speciesName)
+  const { recs: wmRecs, loading: wmLoading } = useCommonsAudio(bird.scientificName)
+  const loading = xcLoading && wmLoading
   const [playing, setPlaying] = useState(null)
   const [failed, setFailed]   = useState({})      // recId → error text
   const audioRef   = useRef(null)
@@ -64,7 +67,7 @@ export default function BirdAudio({ bird }) {
     </div>
   )
 
-  if (!songs.length && !calls.length) return (
+  if (!songs.length && !calls.length && !wmRecs.length && !wmLoading) return (
     <div style={{ padding: '24px 16px', background: 'var(--bg-card)', borderRadius: 12, textAlign: 'center', color: 'var(--text-dim)', fontSize: 13 }}>
       {noKey
         ? <>Bird sounds need a free xeno-canto key.<br/>
@@ -113,13 +116,20 @@ export default function BirdAudio({ bird }) {
             {active && <span style={{ marginLeft: 8, fontSize: 11, animation: 'pulse 1s infinite' }}>♪ playing</span>}
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {rec.recordist} · {rec.location || rec.country} · {rec.length}
+            {[rec.recordist, rec.location || rec.country, rec.length].filter(Boolean).join(' · ')}
           </div>
           {failed[rec.id] && (
-            <div style={{ fontSize: 11, color: '#ff8a65', marginTop: 3 }}>{failed[rec.id]}</div>
+            <div style={{ fontSize: 11, color: '#ff8a65', marginTop: 3 }}>
+              Won't play in the app ·{' '}
+              <a href={rec.xcUrl || rec.pageUrl} target="_blank" rel="noopener noreferrer"
+                 onClick={e => e.stopPropagation()} style={{ color: 'var(--accent-sky)' }}>
+                listen on {rec.source === 'wikimedia' ? 'Wikimedia' : 'xeno-canto'} ↗
+              </a>
+            </div>
           )}
         </div>
 
+        {rec.quality && (
         <div style={{
           width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
           background: `${QUALITY_COLOR[rec.quality] || '#888'}22`,
@@ -129,6 +139,7 @@ export default function BirdAudio({ bird }) {
         }}>
           {rec.quality}
         </div>
+        )}
       </div>
     )
   }
@@ -143,6 +154,15 @@ export default function BirdAudio({ bird }) {
         onError={handleAudioError}
         style={{ display: 'none' }}
       />
+
+      {wmRecs.length > 0 && (
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: 1, marginBottom: 8 }}>
+            PLAYS HERE ({wmRecs.length}) · Wikimedia
+          </div>
+          {wmRecs.map(rec => <RecordingRow key={rec.id} rec={rec} />)}
+        </div>
+      )}
 
       {songs.length > 0 && (
         <div style={{ marginBottom: 16 }}>
@@ -160,6 +180,8 @@ export default function BirdAudio({ bird }) {
 
       <div style={{ fontSize: 11, color: 'var(--text-dim)', lineHeight: 1.5, marginTop: 4 }}>
         Recordings from{' '}
+        <a href="https://commons.wikimedia.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-sky)' }}>Wikimedia Commons</a>
+        {' '}and{' '}
         <a href="https://xeno-canto.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-sky)' }}>xeno-canto.org</a>
         {' '}· Licensed CC BY or CC BY-NC-SA per recording.
       </div>

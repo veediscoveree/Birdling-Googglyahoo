@@ -330,6 +330,15 @@ All three are optional; the app falls back to mock/offline modes without them.
 
 ## Changelog
 
+**2026-11-22 (c) — Playable bird audio via Wikimedia MP3 (v2.8).** Keys confirmed baked into the
+live build via repo secrets. On-device, xeno-canto rows showed "media error 4" (source not
+supported) for BOTH the static mp3 and /download URLs — likely hotlink/referrer protection on
+xeno-canto's audio files (not verifiable from the dev environment). New `useCommonsAudio`: Commons
+search `"<scientific name>" filetype:audio`, plays Commons' MP3 transcode
+(`/transcoded/x/xy/File.ogg/File.ogg.mp3`) which iOS supports. Shown first as "PLAYS HERE";
+xeno-canto rows remain, and a failed row now links out to listen on xeno-canto. Verified headless
+with mocked Commons response.
+
 **2026-11-22 (b) — Nearest-first eBird (v2.7).** Jared: map worked but sent him to Central Park
 instead of closer sightings. Cause: per-species dedupe kept the *most recent* sighting, not the
 nearest, and the encounter took the first match. Now: haversine distance from the player's GPS;
