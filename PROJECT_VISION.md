@@ -349,7 +349,7 @@ think "yes, that's exactly how that bird sits/flies" — with a little warmth ad
    travel. Soar = steady glide (wings level or dihedral, body horizontal). Hover = body tilted up,
    tail fanned down, wings beating forward. Stoop = wings partly tucked with structure still visible.
    Frontal/below views only if the shape still reads true; otherwise use side/three-quarter views.
-5. **Poses: 2–4 max, each characteristic and instantly readable without its label.** Every pose must
+5. **Poses: 1–3 max (only where needed to show the bird), each characteristic and instantly readable without its label.** Every pose must
    change the silhouette (perched vs flying vs feeding vs display). No near-duplicates (head tilt,
    foliage swap, beak open). No poses that rely on speech bubbles, sound arcs or motion lines.
    Singing only where the posture itself is distinctive. Keep a quirky one only if it is truly
@@ -370,7 +370,7 @@ shape slightly off), Hairy Woodpecker, Ruby-crowned Kinglet. Passable: Cormorant
 hover pitch), Bald Eagle (head too big, bill/feathers, kindergarten background), Peregrine & Merlin
 (kestrel-cloned shape, stoop wings, duplicate poses, Merlin branch), Belted Kingfisher (hover/plunge
 physics, crest unrealistic, loses grandeur), Common Raven (perch/croak/strut near-identical),
-American Black Duck & Northern Shoveler (over-rounded). All species: cut to 2–4 characteristic poses.
+American Black Duck & Northern Shoveler (over-rounded). All species: cut to 1–3 characteristic poses. Perched raptors were mostly fine (Kestrel perch "quite good"); flight/action poses are where raptors failed. Checkpoint with Jared once per bird TYPE, then proceed. Keep current new art live until fixes are approved.
 
 ## Avatar system (technical)
 
