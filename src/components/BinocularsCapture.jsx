@@ -1268,7 +1268,7 @@ export default function BinocularsCapture({ bird, encounterDistance, onSuccess, 
         transition: 'filter 0.1s',
         pointerEvents: 'none',
       }}>
-        <BirdAvatar birdId={bird.id} size={avatarSize} animated={started}/>
+        <BirdAvatar birdId={bird.id} size={avatarSize} animated={started} scene={false}/>
       </div>
 
       {/* ── Figure-8 housing (raising phase) — fades out cleanly ── */}

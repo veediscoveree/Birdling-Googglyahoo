@@ -73,7 +73,7 @@ const box = {
 
 export default function DevPanel({
   birds, eggs, open, onToggleOpen,
-  onSummonBird, onTriggerEgg, userLocation,
+  onSummonBird, onTriggerEgg, userLocation, onOpenGallery,
   onGoRadar, onGoAviary, onGoLeaderboard, onExit,
 }) {
   const [query, setQuery]   = useState('')
@@ -215,6 +215,7 @@ export default function DevPanel({
           <button style={btn} onClick={onGoAviary}>Aviary</button>
           <button style={btn} onClick={onGoLeaderboard}>Leaders</button>
         </div>
+        <button style={{ ...btn, width: '100%', flex: 'none', marginBottom: 10 }} onClick={onOpenGallery}>🖼 Avatar gallery (all birds)</button>
 
         {/* eBird key + diagnostics */}
         <div style={{ fontSize: 10, color: '#9ab088', letterSpacing: 1, margin: '2px 0 5px' }}>

@@ -328,6 +328,22 @@ All three are optional; the app falls back to mock/offline modes without them.
 - **BirdNET**: Cornell Lab's open-source bird-sound classifier (the "Merlin-like" engine).
 - **eBird Record Format**: CSV format eBird accepts for bulk checklist import.
 
+## Avatar style guide (decided by Jared, 2026-11-22)
+
+- **Accurate first, cute second, in habitat.** Field marks from `birds.js` are the acceptance
+  test; cute = slightly large head, big bright eye with catch-light, soft rounded shapes.
+- **3–5 poses per species**, picked at random each time the bird is shown (so it feels alive).
+- **One file per species** in `src/components/avatars/` exporting `meta = { birdId, poses }` and a
+  component taking `{ size, animated, style, pose, scene }`. `scene=false` (binoculars view) drops
+  the habitat backdrop. Reference/template: `avatars/WoodDuck.jsx`.
+- Review: `?gallery=1` (or DEV → Avatar gallery); `?gallery=1&ids=a,b` shows all poses.
+  `node scripts/shot-gallery.mjs out.png dist/index.html ids=a,b` screenshots it.
+- Order: worst first, batches of ~8 with before/after sheets. Jared considers only Red-eyed Vireo,
+  Cedar Waxwing and Black-throated Blue Warbler "pretty good" — everything gets redone.
+- **Expand to 100 species**: the 27 additions are chosen from species most often reported in the
+  player's area over the **last two months** (captures migrants), via `scripts/species-scan.mjs`
+  (CI job, eBird historic API) → `data/nearby-species.json`.
+
 ## Changelog
 
 **2026-11-22 (c) — Playable bird audio via Wikimedia MP3 (v2.8).** Keys confirmed baked into the

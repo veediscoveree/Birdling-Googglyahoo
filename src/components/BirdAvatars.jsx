@@ -3770,7 +3770,28 @@ export function KirtlandsWarblerAvatar({ size = 120, animated = false, style = {
 }
 
 // ── Avatar router ─────────────────────────────────────────────────────────────
-export function BirdAvatar({ birdId, size = 120, animated = false, style = {} }) {
+// ── New-style avatars (one file per species in ./avatars/, with poses + scene) ──
+// Each module exports `meta = { birdId, poses: [...] }` and a default component
+// taking { size, animated, style, pose, scene }. These override the legacy ones below.
+const NEW_AVATARS = {}
+for (const mod of Object.values(import.meta.glob('./avatars/*.jsx', { eager: true }))) {
+  if (mod.meta?.birdId && mod.default) NEW_AVATARS[mod.meta.birdId] = mod
+}
+export const AVATAR_POSES = (birdId) => NEW_AVATARS[birdId]?.meta.poses || ['default']
+export const hasNewAvatar = (birdId) => !!NEW_AVATARS[birdId]
+
+// pose: name or index; omitted → a random pose chosen once per mount, so the bird
+// looks different each time you meet it. scene=false drops the habitat backdrop
+// (used inside the binoculars view, which draws its own background).
+export function BirdAvatar({ birdId, size = 120, animated = false, style = {}, pose, scene = true }) {
+  const mod = NEW_AVATARS[birdId]
+  const [randomPose] = useState(() => Math.floor(Math.random() * 1000))
+  if (mod) {
+    const poses = mod.meta.poses
+    const p = typeof pose === 'string' ? pose : poses[(pose ?? randomPose) % poses.length]
+    const A = mod.default
+    return <AvatarErrorBoundary birdId={birdId} size={size} style={style}><A size={size} animated={animated} style={style} pose={p} scene={scene}/></AvatarErrorBoundary>
+  }
   const props = { size, animated, style }
   const avatar = (() => { switch (birdId) {
     case 'northern_cardinal':      return <CardinalAvatar {...props} />

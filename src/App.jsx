@@ -14,6 +14,7 @@ import EasterEggEncounter from './components/EasterEggs/EasterEggEncounter'
 import EasterEggGame from './components/EasterEggs/EasterEggGame'
 import { pickRandomEasterEgg, EASTER_EGGS } from './components/EasterEggs/easterEggData'
 import DevPanel from './components/DevPanel'
+import AvatarGallery from './components/AvatarGallery'
 
 function timeAgo(obsDt) {
   if (!obsDt) return ''
@@ -133,6 +134,7 @@ export default function App() {
     } catch { return false }
   })
   const [devPanelOpen, setDevPanelOpen] = useState(true)
+  const [showGallery, setShowGallery] = useState(() => { try { return new URLSearchParams(window.location.search).has('gallery') } catch { return false } })
   const badgeTapsRef = useRef(0)
   const handleBadgeTap = useCallback(() => {
     badgeTapsRef.current += 1
@@ -344,8 +346,10 @@ export default function App() {
         padding: '4px 6px',
       }}>{devMode ? 'v2.8-dev ●' : 'v2.8'}</div>
 
+      {showGallery && <AvatarGallery onClose={() => setShowGallery(false)}/>}
       {devMode && (
         <DevPanel
+          onOpenGallery={() => setShowGallery(true)}
           birds={BIRDS}
           eggs={EASTER_EGGS}
           open={devPanelOpen}
