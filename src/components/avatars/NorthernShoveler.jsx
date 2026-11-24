@@ -8,7 +8,7 @@
 // drooping black-and-white scapulars. In flight: powder-blue forewing, white bar, green speculum.
 import { useEffect, useState } from 'react'
 
-export const meta = { birdId: 'northern_shoveler', poses: ['swim', 'fly'] }
+export const meta = { birdId: 'northern_shoveler', poses: ['swim'] }
 
 const D = Math.PI / 180
 function rng(seed) { let r = seed; return () => { r = (r * 9301 + 49297) % 233280; return r / 233280 } }
@@ -52,113 +52,123 @@ function Wing({ S, W, H, nP = 10, aO, aI, lO, lI, pw = 4.2, nS = 13, sO, sI, sl 
       {Sx.map(f => <path key={`g${f.i}`} d={featherPath(f.x, f.y, f.a, f.l * 0.9, sw, 'round')} fill={tone(far ? '#1C5A3A' : '#23784A', 0.88 + (f.i % 2) * 0.16)}/>)}
       {P.map(f => <path key={`p${f.i}`} d={featherPath(f.x, f.y, f.a, f.l, pw)} fill={tone(pc, f.k)}/>)}
       {P.map(f => <path key={`r${f.i}`} d={`M ${f.x} ${f.y} l ${(Math.cos(f.a * D) * f.l * 0.9).toFixed(2)} ${(Math.sin(f.a * D) * f.l * 0.9).toFixed(2)}`} stroke="#D8D4CA" strokeWidth="0.25" opacity="0.22"/>)}
-      <path d={`M ${bar.map(p => `${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' L ')}`} stroke="#F4F4EE" strokeWidth="2.6" fill="none" strokeLinejoin="round" strokeLinecap="round"/>
+      <path d={`M ${bar.map(p => `${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' L ')}`} stroke="#EEEEE6" strokeWidth="1.9" opacity="0.9" fill="none" strokeLinejoin="round" strokeLinecap="round"/>
       <path d={covD} fill={far ? 'url(#nshBlueFar)' : 'url(#nshBlue)'}/>
+      {/* primary coverts over the hand are grey-brown, not blue */}
+      <path d={`M ${H[0]} ${H[1]} ${P.map(f => at(f, cov + 0.04)).map(p => `L ${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' ')} L ${W[0]} ${W[1]} Z`} fill={far ? '#3C3A35' : '#55524B'}/>
     </g>
   )
 }
 
 // ── Head ────────────────────────────────────────────────────────────────────
-const NECK = 'M 37.2 76 C 34.2 72.6 32 69 30.6 66 C 29.6 64.2 28.4 63.2 27 62.6 L 27.6 54.6 C 28.6 51 31.4 48.2 35.8 47.4 C 40.6 46.8 44.8 48.6 46.6 52 C 48 55 48 58.6 47.2 61.2 C 47.6 65 49.6 68.4 53 71 Z'
-const HEADONLY = 'M 27 62.6 L 27.6 54.6 C 28.6 51 31.4 48.2 35.8 47.4 C 40.6 46.8 44.8 48.6 46.6 52 C 48 55 48 58.6 47.2 61.2 C 45.6 64.4 41 66 35 65.6 C 31.6 65.2 28.8 64 27 62.6 Z'
+// Small head carried low on a short thick neck; forehead slopes straight into the culmen.
+const NECKHEAD = 'M 24.4 71.2 C 26 69.2 28 67.8 31 67.4 C 34.6 67 37.4 68 39 70.2 C 40.2 72 40.4 74 40 75.6 C 41.4 76.6 43.2 77.2 45.4 77.2 C 44.2 79.6 41.4 81.4 37.4 82.2 C 33.4 82.4 29.8 81.6 27.4 79.4 C 26.4 78.6 25.6 78.2 25 78 Z'
+const HEADONLY = 'M 24.4 71.2 C 26 69.2 28 67.8 31 67.4 C 34.6 67 37.4 68 39 70.2 C 40.2 72 40.6 74.4 40 76.6 C 38 78.8 34 79.8 30 79.4 C 27.6 79.2 26 78.6 25 78 Z'
 
 function Head({ blink, neck = true, sheen = 0 }) {
   const ticks = []
-  for (let x = 3; x <= 20; x += 1.4) ticks.push(<path key={x} d={`M ${x} ${1.5 + x * 0.04} l 0.15 0.9`} stroke="#8A908C" strokeWidth="0.25" opacity="0.35"/>)
+  for (let x = 10; x <= 22; x += 1.2) {
+    const y = x < 15.6 ? lerp(81.6, 79.6, (x - 8.8) / 6.8) : lerp(79.6, 78.2, (x - 15.6) / 9.8)
+    ticks.push(<path key={x} d={`M ${x.toFixed(2)} ${(y - 0.15).toFixed(2)} l 0.1 -0.7`} stroke="#7E8684" strokeWidth="0.22" opacity="0.3"/>)
+  }
   return (
     <g>
       <g filter="url(#nshTex)">
-        <path d={neck ? NECK : HEADONLY} fill="url(#nshHead)"/>
+        <path d={neck ? NECKHEAD : HEADONLY} fill="url(#nshHead)"/>
         <g clipPath={neck ? 'url(#nshNeckClip)' : 'url(#nshHeadClip)'}>
-          <ellipse cx="38" cy="51" rx="7" ry="3.4" fill="#4FA874" opacity={0.35 + sheen} filter="url(#nshBlur2)"/>
-          <ellipse cx="42" cy="56" rx="4" ry="5" fill="#5A3A7A" opacity="0.28" filter="url(#nshBlur2)"/>
-          {neck && <path d="M 30 70 C 36 74 44 74 54 72 L 54 80 L 30 80 Z" fill="#E8E8E0" opacity="0.6" filter="url(#nshBlur)"/>}
+          <ellipse cx="31.5" cy="69" rx="5.4" ry="2.2" fill="#4FA874" opacity={0.4 + sheen} filter="url(#nshBlur2)"/>
+          <ellipse cx="37" cy="74.4" rx="3" ry="3.6" fill="#5A3A7A" opacity="0.3" filter="url(#nshBlur2)"/>
+          <path d="M 26 78 C 30 80.4 34 81.4 38 81 L 40 86 L 24 86 Z" fill="#06140C" opacity="0.4" filter="url(#nshBlur)"/>
         </g>
       </g>
       {blink
-        ? <path d="M 35.8 55.4 q 1.5 0.8 3 0" stroke="#0A1A10" strokeWidth="0.7" fill="none"/>
+        ? <path d="M 31 71.9 q 1.2 0.7 2.4 0" stroke="#0A1A10" strokeWidth="0.6" fill="none"/>
         : <g>
-            <ellipse cx="37.3" cy="55.3" rx="1.55" ry="1.45" fill="#F2C21A"/>
-            <circle cx="37.35" cy="55.35" r="0.72" fill="#060606"/>
-            <circle cx="36.9" cy="54.8" r="0.3" fill="#FFF"/>
-            <path d="M 35.6 54.4 C 36.4 53.7 38.2 53.6 39 54.3" stroke="#0A2216" strokeWidth="0.45" fill="none"/>
+            <ellipse cx="32.2" cy="71.8" rx="1.3" ry="1.22" fill="#EDBE1C"/>
+            <circle cx="32.25" cy="71.85" r="0.6" fill="#060606"/>
+            <circle cx="31.85" cy="71.4" r="0.25" fill="#FFF"/>
+            <path d="M 30.8 71 C 31.6 70.4 33 70.4 33.7 71" stroke="#06180E" strokeWidth="0.4" fill="none"/>
           </g>}
-      {/* the spoon: deep at the base, concave culmen, broadening to a rounded tip; lamellae along the edge */}
-      <g transform="translate(28.4 58.6) rotate(-24) scale(-1 1)">
-        <path d="M -0.6 -3.8 C 6 -2.7 11 -2.1 15 -2.3 C 19 -2.7 23 -3.6 25.4 -2.6 C 27 -1.6 27.3 1.2 26.1 2.7 C 25 3.5 23.4 3.5 22 3.1 C 18 2.3 10 1.8 -0.6 1.6 Z" fill="url(#nshBill)"/>
-        <path d="M -0.6 1.6 C 10 1.8 18 2.3 22 3.1 C 18 4.1 10 4 -0.6 3.8 Z" fill="#141414"/>
-        <path d="M 1 -3.4 C 7 -2.8 11 -2.4 15 -2.6 C 19 -3 23 -3.9 25.6 -2.8 C 25 -1.6 23 -1.1 20 -1.3 C 15 -1.6 8 -2.2 1 -2.8 Z" fill="#6C7472" opacity="0.4"/>
-        <path d="M 22 3.1 C 23.4 3.5 25 3.5 26.1 2.7" stroke="#000" strokeWidth="0.3" fill="none" opacity="0.6"/>
-        {ticks}
-        <ellipse cx="4.6" cy="-1.4" rx="1" ry="0.38" fill="#000"/>
-      </g>
+      {/* the spoon: deep base joined to the forehead, slight waist, deeper rounded tip */}
+      <path d="M 24.6 71 C 20 72.2 16 73.6 13 74 C 10.4 74.3 7.8 73.8 5.9 74.5 C 4 75.3 3.4 77.6 4 79.4 C 4.6 81.1 6.5 81.9 8.8 81.7 C 11.2 81.5 13.2 80.4 15.6 79.6 C 18.8 78.8 22 78.4 25.6 78.2 Z" fill="url(#nshBill)"/>
+      <path d="M 25.4 76.6 C 20 77.1 14 77.9 9.2 78.7 C 7.2 79 5.4 79 4.2 78.6 L 4.2 79.6 C 4.8 81.1 6.5 81.9 8.8 81.7 C 11.2 81.5 13.2 80.4 15.6 79.6 C 18.8 78.8 22 78.4 25.6 78.2 Z" fill="#0E0F0F" opacity="0.55"/>
+      <path d="M 25.4 76.6 C 20 77.1 14 77.9 9.2 78.7 C 7.2 79 5.4 79 4.2 78.6" stroke="#050505" strokeWidth="0.35" fill="none"/>
+      <path d="M 23.4 71.8 C 19 73 15.4 74.2 12.6 74.6 C 10 75 7.4 74.8 5.6 75.6 C 7 76.2 9.6 76 12 75.8 C 15.6 75.4 19.4 74.2 23.4 72.8 Z" fill="#9AA4A6" opacity="0.38" filter="url(#nshBlur)"/>
+      {ticks}
+      <ellipse cx="21.6" cy="73.4" rx="0.9" ry="0.32" fill="#000" opacity="0.85" transform="rotate(-14 21.6 73.4)"/>
     </g>
   )
 }
 
-// ── Swimming drake, waterline y = 90 ───────────────────────────────────────────
-const BODY = 'M 32.6 90 C 30.8 84 32.4 78.6 37.4 75.2 C 42.4 72 49 70.8 57 70.6 C 70 70.4 84 70.6 94 72.4 C 98.6 73.2 102.6 74.4 107 75.6 C 105.4 78 102.8 79.6 99.6 80.4 C 99.4 84.4 97.6 87.6 94.8 90 Z'
-const SCAP = 'M 50 72.4 C 62 68.6 82 69 96 72.6 C 100 73.6 103 74.6 105 75.8 C 98 78.6 88 79.4 76 78.6 C 66 78 57 76.4 50 72.4 Z'
+// ── Swimming drake, waterline y = 90: front-low, back rising gently to a raised stern ───────
+const BODY = 'M 38 90 C 35.4 87.4 35.4 83.4 37.4 80.8 C 40.6 77.4 45.6 75.4 52 74.4 C 62 72.8 76 72.4 88 72.6 C 95 72.6 101 72.4 107.6 71.8 C 106.4 74 104.4 75.6 101.8 76.4 C 101.6 81.4 99.8 86.4 96.8 90 Z'
+const SCAP = 'M 47 76.6 C 58 73.6 76 72.2 92 72.4 C 99 72.6 104 72.4 107.4 72 C 103 75.4 96 77.4 86 78.4 C 74 79.4 60 79.4 47 77.4 Z'
 
 function SwimBody() {
   const r = rng(19)
   const tips = []
-  for (let row = 0; row < 4; row++) for (let i = 0; i < 9; i++) {
-    const x = 52 + i * 5 + (row % 2) * 2.5 + (r() - 0.5) * 2, y = 78 + row * 3 + (r() - 0.5)
-    tips.push(<path key={`${row}-${i}`} d={`M ${x - 1.8} ${y} q 1.8 1.5 3.6 0`} stroke="#E2A272" strokeWidth="0.4" fill="none" opacity={0.08 + r() * 0.1}/>)
+  for (let row = 0; row < 3; row++) for (let i = 0; i < 8; i++) {
+    const x = 56 + i * 5 + (row % 2) * 2.5 + (r() - 0.5) * 2, y = 81 + row * 3 + (r() - 0.5)
+    tips.push(<path key={`${row}-${i}`} d={`M ${x - 1.7} ${y} q 1.7 1.4 3.4 0`} stroke="#E0A070" strokeWidth="0.4" fill="none" opacity={0.08 + r() * 0.1}/>)
   }
   return (
     <g>
-      <g filter="url(#nshTexL)">
-        <path d={BODY} fill="url(#nshWhite)"/>
-      </g>
+      <g filter="url(#nshTexL)"><path d={BODY} fill="url(#nshWhite)"/></g>
       <g filter="url(#nshTex)" clipPath="url(#nshBodyClip)">
-        <path d="M 49 77 C 60 73.4 80 73.6 95 76.4 C 97 82 96.6 87 94 92 L 50 92 C 46.6 86 46.4 81 49 77 Z" fill="url(#nshChest)"/>
+        <path d="M 58 77.6 C 68 76.4 82 75.8 92.6 75.8 C 96 79 96.6 83 95.6 86.4 C 94.6 89 93 91 92 92 L 47 92 C 46 87 49 81.4 58 77.6 Z" fill="url(#nshChest)"/>
+        <ellipse cx="96.6" cy="83.4" rx="2.4" ry="6.4" fill="#F4F4EE" opacity="0.95" filter="url(#nshBlur)"/>
         {tips}
-        <path d="M 99 76 C 101 82 100 88 96.6 92 L 110 92 L 110 74 Z" fill="url(#nshStern)"/>
-        <path d="M 28 86 C 50 90 80 90 100 86 L 100 93 L 28 93 Z" fill="#1A0E08" opacity="0.4" filter="url(#nshBlur2)"/>
-        <path d="M 36 84 C 38 88 40 90 44 91 L 30 92 Z" fill="#6A6A60" opacity="0.3" filter="url(#nshBlur2)"/>
+        <path d="M 93.6 75 C 96.4 81 96 87 93.6 92 L 112 92 L 112 70 Z" fill="url(#nshStern)"/>
+        <path d="M 30 86.4 C 50 90.4 80 90.4 102 86 L 102 93 L 30 93 Z" fill="#1A0E08" opacity="0.4" filter="url(#nshBlur2)"/>
+        <path d="M 37 83 C 38 87 40 89.4 44 90.6 L 32 92 Z" fill="#6A6A60" opacity="0.35" filter="url(#nshBlur2)"/>
       </g>
       <g filter="url(#nshTex)">
-        {/* black tail coverts + whitish tail */}
-        <path d="M 98 72.4 C 102 73.2 105 74.2 107.6 75.4 C 105.6 77.4 103 78.6 100 79 Z" fill="#E4E2DA"/>
-        {/* back and long drooping scapulars: black with white and blue stripes */}
+        <path d="M 100 72.4 C 104 71.8 107.6 71.2 110.6 71 C 109.2 72.8 106.8 74 103.8 74.6 Z" fill="#DEDCD2"/>
+        <path d="M 102 72.8 C 105 72.2 107.6 71.8 109.6 71.6" stroke="#4A4A44" strokeWidth="0.5" fill="none" opacity="0.7"/>
+        {/* long drooping scapulars lying along the back: black with white and pale-blue stripes */}
         <path d={SCAP} fill="url(#nshBack)"/>
-        <path d="M 62 72.6 C 72 71.6 82 72.2 92 74.2 M 68 75.8 C 78 75.2 87 75.6 96 76.8" stroke="#ECECE4" strokeWidth="0.6" fill="none" strokeLinecap="round" opacity="0.7"/>
-        <path d="M 58 75.4 C 66 74.6 74 74.8 82 75.8" stroke="#8FB2D2" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.7"/>
-        <path d="M 54 71 C 66 68.8 84 69 98 72.4" stroke="#6E7A74" strokeWidth="0.8" fill="none" opacity="0.4" filter="url(#nshBlur)"/>
+        <path d="M 60 76.4 C 72 75.2 84 75 97 75.6 M 66 78.4 C 76 78 86 77.6 95 77" stroke="#ECECE4" strokeWidth="0.55" fill="none" strokeLinecap="round" opacity="0.75"/>
+        <path d="M 53 77.6 C 61 76.8 70 76.8 79 77.6" stroke="#93B6D6" strokeWidth="0.8" fill="none" strokeLinecap="round" opacity="0.75"/>
+        <path d="M 52 76.4 C 64 74.4 82 73.4 102 72.8" stroke="#7E8A84" strokeWidth="0.8" fill="none" opacity="0.4" filter="url(#nshBlur)"/>
       </g>
     </g>
   )
 }
 
-function Swimmer({ blink, sheen }) { return <g><SwimBody/><Head blink={blink} sheen={sheen}/></g> }
+function Swimmer({ blink, sheen }) {
+  // hull deepened slightly and shortened so it rides like a duck, not a canoe
+  return <g><g transform="translate(38 90) scale(0.95 1.2) translate(-38 -90)"><SwimBody/></g><g transform="translate(0 -1.2)"><Head blink={blink} sheen={sheen}/></g></g>
+}
 
-// ── Fast direct flight, side view ───────────────────────────────────────────────
+// ── Fast direct flight, three-quarter side view, level; wings mid-downstroke ──────────
 const FBODY = 'M -24 -1 C -23 -6.6 -16 -9.4 -6 -9.8 C 6 -10.2 18 -8.4 27 -4.6 L 35 -2.4 C 33 0.4 30 1.8 26 2.4 C 18 7 6 9.2 -6 9 C -17 8.6 -24 4.8 -24 -1 Z'
 
 function Flyer({ beat, blink, sheen }) {
+  const b = beat * 2
   return (
     <g>
+      {/* far wing: spread outward and back, partly hidden behind the body */}
       <g filter="url(#nshTex)">
-        <Wing far S={[70, 58]} W={[85, 41 - beat * 3]} H={[92, 34 - beat * 3]} aO={-48} aI={-8} lO={29} lI={15} sO={0} sI={26} sl={[17, 14]} nS={14} seed={5}/>
+        <Wing far S={[66, 55]} W={[77, 38 + b]} H={[82, 31 + b]} aO={-58} aI={-16} lO={28} lI={14} sO={24} sI={40} sl={[15, 16]} nS={12} seed={5}/>
       </g>
-      <g transform="translate(68 63) rotate(-2)">
+      <g transform="translate(64 60)">
         <g filter="url(#nshTexL)"><path d={FBODY} fill="url(#nshWhite)"/></g>
         <g filter="url(#nshTex)" clipPath="url(#nshFClip)">
-          <path d="M -10 -12 C -4 -2 -4 4 -12 12 L 22 12 L 22 -12 Z" fill="url(#nshChest)"/>
-          <path d="M 25 -12 L 40 -12 L 40 12 L 27 12 C 29 4 28.6 -4 25 -12 Z" fill="#141414"/>
-          <path d="M -30 -12 L 40 -12 L 40 -5.4 C 20 -4 0 -3.6 -20 -5 Z" fill="url(#nshBack)"/>
+          <path d="M -10 -12 C -5 -2 -5 4 -12 12 L 23 12 L 23 -12 Z" fill="url(#nshChest)"/>
+          <path d="M 23 -12 L 26.4 -12 C 28 -4 28 4 26 12 L 22 12 C 24 4 24.4 -4 23 -12 Z" fill="#F4F4EE"/>
+          <path d="M 26.4 -12 L 40 -12 L 40 12 L 26 12 C 28 4 28 -4 26.4 -12 Z" fill="#141414"/>
+          <path d="M -30 -12 L 40 -12 L 40 -5 C 20 -4 0 -3.6 -20 -5.2 Z" fill="url(#nshBack)"/>
           <path d="M -26 5 C -10 11 10 10 30 3 L 30 12 L -26 12 Z" fill="#1A0E08" opacity="0.35" filter="url(#nshBlur2)"/>
         </g>
-        <path d="M 28 -2.2 L 36.6 -1.6 C 35.6 0 33.6 1 31 1.4 Z" fill="#E4E2DA"/>
-        <path d="M 16 7.6 l 4.6 1.4 l -0.6 1.4 Z" fill="#E07A32"/>
+        <path d="M 28 -2.4 L 36.4 -1.8 C 35.6 -0.2 33.6 0.8 31 1.2 Z" fill="#E4E2DA"/>
+        <path d="M 22 6.4 c 2.4 0.4 4.4 1 6 2 c -2 0.4 -4 0.2 -5.6 -0.6 Z" fill="#E07A32"/>
       </g>
-      {/* neck stretched forward, head and heavy bill slightly drooped */}
-      <g filter="url(#nshTex)"><path d="M 38.4 52.4 C 41 52 44 53 47.6 54.8 L 48 68.6 C 44.6 68 41 66.4 37.4 64.4 Z" fill="url(#nshHead)"/></g>
-      <g transform="translate(-6 0) rotate(-13 37 56)"><Head neck={false} blink={blink} sheen={sheen}/></g>
+      {/* neck extended forward and slightly down; heavy bill leading */}
+      <g filter="url(#nshTex)"><path d="M 30.4 58.6 C 35 56.8 40 55 45 54.2 L 45 65.4 C 40 65.8 35.4 66.4 31.6 67.6 Z" fill="url(#nshHead)"/></g>
+      <g transform="translate(-3 -12.4) rotate(4 27 74)"><Head neck={false} blink={blink} sheen={sheen}/></g>
+      {/* near wing angled down and back, upper surface toward us */}
       <g filter="url(#nshTex)">
-        <Wing ventral S={[64, 62]} W={[61, 40 - beat * 3]} H={[64, 31 - beat * 3]} aO={-76} aI={-40} lO={30} lI={15} pw={4.4} sO={-36} sI={0} sl={[21, 17]} nS={13} cov={0.55} seed={8} bulge={-3}/>
+        <Wing S={[58, 61]} W={[70, 79 - b]} H={[75, 86 - b]} aO={64} aI={16} lO={28} lI={15} pw={4.4} sO={-26} sI={-18} sl={[17, 19]} nS={13} cov={0.44} seed={8} bulge={-3}/>
       </g>
     </g>
   )
@@ -199,7 +209,7 @@ export default function NorthernShoveler({ size = 120, animated = false, style =
     content = (
       <>
         {scene && <Marsh shore={108}/>}
-        <g transform={`translate(9 ${2 + bob * 2}) scale(0.86)`}><Flyer beat={beat} blink={blink} sheen={sheen}/></g>
+        <g transform={`translate(10 ${6 + bob * 2}) scale(0.86)`}><Flyer beat={beat} blink={blink} sheen={sheen}/></g>
       </>
     )
   } else {
@@ -230,7 +240,7 @@ export default function NorthernShoveler({ size = 120, animated = false, style =
         <linearGradient id="nshBlueFar" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#94AEC4"/><stop offset="100%" stopColor="#6E8CA8"/></linearGradient>
         <linearGradient id="nshLining" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#FFFFFF"/><stop offset="70%" stopColor="#EEEEE8"/><stop offset="100%" stopColor="#C8C6BE"/></linearGradient>
         <linearGradient id="nshBill"x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#3A3E3C"/><stop offset="100%" stopColor="#101010"/></linearGradient>
-        <clipPath id="nshNeckClip"><path d={NECK}/></clipPath>
+        <clipPath id="nshNeckClip"><path d={NECKHEAD}/></clipPath>
         <clipPath id="nshHeadClip"><path d={HEADONLY}/></clipPath>
         <clipPath id="nshBodyClip"><path d={BODY}/></clipPath>
         <clipPath id="nshFClip"><path d={FBODY}/></clipPath>
