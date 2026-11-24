@@ -201,7 +201,8 @@ function Perched({ blink }) {
     <g>
       <PerchedBody/>
       <Feet/>
-      <Head blink={blink}/>
+      {/* head scaled down about the neck so it sits in true falcon proportion */}
+      <g transform="translate(48,50) scale(0.8) translate(-48,-50)"><Head blink={blink}/></g>
     </g>
   )
 }
@@ -260,7 +261,7 @@ function Hover({ down }) {
       <HoverTail/>
       <HoverBody/>
       {/* head held level and still, bill angled down at the grass */}
-      <g transform="translate(41,50) rotate(-24) scale(0.8) translate(-47,-37)"><Head/></g>
+      <g transform="translate(41,50) rotate(-24) scale(0.66) translate(-47,-37)"><Head/></g>
       <Wing m={w.near} upper={w.nearUpper}/>
     </g>
   )

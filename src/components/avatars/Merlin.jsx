@@ -201,7 +201,7 @@ function Flight({ up }) {
         <path d="M 40 53.6 C 50 50.4 66 50.6 80 53 C 85 54 88 55.4 90 57.6 C 78 58 62 59.4 44 59.6 Z" fill="url(#merWing)"/>
         <path d="M 52 54 l 0.4 1.6 M 60 53.4 l 0.4 1.6 M 68 54 l 0.4 1.6 M 76 54.8 l 0.4 1.6" stroke="#14161C" strokeWidth="0.6" opacity="0.5"/>
       </g>
-      <g transform="translate(37,54) rotate(4) scale(0.68) translate(-45,-36)"><Head/></g>
+      <g transform="translate(36,56.5) rotate(-16) scale(0.62) translate(-45,-36)"><Head/></g>
       <Wing m={w.near}/>
     </g>
   )
